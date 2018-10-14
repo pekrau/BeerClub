@@ -1,1 +1,164 @@
-{% include 'base.html' %}
+{# Home page when not logged in. #}
+
+{% extends 'base.html' %}
+
+{% block content %}
+<p>
+  You need to be a member to purchase beer. Sign in or register.
+</p>
+
+<div class="card border-primary mt-2">
+  <div class="card-header text-white bg-primary">
+    Sign in
+  </div>
+  <div class="card-body">
+    <form action="{{ reverse_url('home') }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <div class="form-group row">
+        <label for="emailLogin" class="col-md-2 col-form-label">Email</label>
+        <div class="col-md-10">
+          <input type="email" class="form-control" name="email" id="emailLogin">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="password" class="col-md-2 col-form-label">Password</label>
+        <div class="col-md-10">
+          <input type="password" class="form-control"
+                 name="password" id="password">
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <button type="submit" class="btn btn-primary">Sign in</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card border-warning mt-2">
+  <div class="card-header text-white bg-warning">
+    Reset password
+  </div>
+  <div class="card-body">
+    <form action="{{ reverse_url('register') }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <div class="form-group row">
+        <label for="emailReset" class="col-md-2 col-form-label">Email</label>
+        <div class="col-md-10">
+          <input type="email" class="form-control" 
+                 name="email" id="emailReset"
+                 aria-describedby="emailResetHelp">
+          <small id="emailResetHelp" class="form-text text-muted">
+            The email address is the identifier for your account.
+          </small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <button type="submit" class="btn btn-warning"
+                  aria-describedby="resetHelp">Reset</button>
+          <small id="resetHelp" class="form-text text-muted">
+            A one-time reset link URL will be sent to your email
+            address. Go to the link and set your password.
+            <br>
+            To be used if you have forgotten your password.
+          </small>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+  
+<div class="card mt-2">
+  <div class="card-header text-white bg-secondary">
+    Register
+  </div>
+  <div class="card-body">
+    <form action="{{ reverse_url('register') }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <div class="form-group row">
+        <label for="emailRegiser" class="col-md-2 col-form-label">Email</label>
+        <div class="col-md-10">
+          <input type="email" class="form-control" 
+                 name="email" id="emailRegister"
+                 aria-describedby="emailRegisterHelp">
+          <small id="emailRegisterHelp" class="form-text text-muted">
+            Your email address. This is your account identifier.
+            <br>
+            {% if settings['ACCOUNT_EMAIL_AUTOENABLE'] %}
+            If it matches the pattern
+            <code>{{ settings['ACCOUNT_EMAIL_AUTOENABLE'] }}</code>
+            your account will be enabled directly.
+            <br>
+            Otherwise, a {{ settings['SITE_NAME'] }} administrator
+            will enable your account after inspection.
+            {% else %}
+            A {{ settings['SITE_NAME'] }} administrator will enable
+            your account after inspection.
+            {% end %}
+          </small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="name" class="col-md-2 col-form-label">Name</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="name" id="name"
+                 aria-describedby="nameHelp">
+          <small id="nameHelp" class="form-text text-muted">
+            Your first and last name.
+          </small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="phone" class="col-md-2 col-form-label">Phone</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" phone="phone" id="phone"
+                 aria-describedby="phoneHelp">
+          <small id="phoneHelp" class="form-text text-muted">
+            Your phone number.
+          </small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="address" class="col-md-2 col-form-label">Address</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" address="address" id="address"
+                 aria-describedby="addressHelp">
+          <small id="addressHelp" class="form-text text-muted">
+            Your address (institution, affiliation, etc).
+          </small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <button type="submit" class="btn btn-secondary"
+                  aria-describedby="registerHelp">Register</button>
+          <small id="registerHelp" class="form-text text-muted">
+            <p>
+              When your account has been enabled, you will receive an
+              email with a one-time link URL to set your password.
+            </p>
+            <p>
+              By registering, you agree to allow the personal data given
+              here to be handled by the {{ settings['SITE_NAME'] }}
+              according to applicable laws. {{ settings['SITE_NAME'] }}
+              guarantees that no data will be transferred to any external
+              entity.
+            </p>
+          </small>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% end %} {# block content #}

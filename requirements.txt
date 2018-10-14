@@ -1,0 +1,6 @@
+backports-abc==0.5
+CouchDB==1.2
+futures==3.2.0
+singledispatch==3.4.0.3
+six==1.11.0
+tornado==5.1.1
