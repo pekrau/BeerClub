@@ -1,3 +1,3 @@
 # BeerClub
 
-A web application to keep track of the beer tabs for registered users.
+A web application to keep track of the beer accounts for registered members.
