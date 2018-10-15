@@ -5,6 +5,7 @@ import logging
 import tornado.web
 
 from . import constants
+from . import settings
 from . import utils
 from .requesthandler import RequestHandler
 from .saver import Saver
@@ -13,28 +14,35 @@ from .saver import Saver
 class EventSaver(Saver):
     doctype = constants.EVENT
 
-    def finalize(self):
-        "Set the log fields for the event."
-        self['timestamp'] = utils.timestamp()
-        self['date'] = utils.today()
-        if self.rqh:
-            # xheaders argument to HTTPServer takes care of X-Real-Ip
-            # and X-Forwarded-For
-            self['remote_ip'] = self.rqh.request.remote_ip
-            try:
-                self['user_agent'] = self.rqh.request.headers['User-Agent']
-            except KeyError:
-                pass
-        if self.account:
-            try:
-                self['account'] = self.account['email']
-            except (TypeError, AttributeError, KeyError):
-                pass
-
 
 class Event(RequestHandler):
+    "View an event; payment or other."
 
     @tornado.web.authenticated
     def get(self, iuid):
         # XXX
         pass
+
+
+class Purchase(RequestHandler):
+    "Buying one beverage."
+
+    @tornado.web.authenticated
+    def post(self):
+        bid =self.get_argument('beverage')
+        for beverage in settings['BEVERAGE']:
+            if bid == beverage['identifier']: break
+        else:
+            raise KeyError("no such beverage %s" % bid)
+        pid =self.get_argument('payment')
+        for payment in settings['PAYMENT']:
+            if pid == payment['identifier']: break
+        else:
+            raise KeyError("no such payment %s" % bid)
+        with EventSaver(rqh=self) as saver:
+            saver['action']   = constants.PURCHASE
+            saver['beverage'] = beverage['identifier']
+            saver['price']    = - beverage['price']
+            saver['payment']  = payment['identifier']
+            saver['credit']   = payment['credit']
+        self.see_other('home')

@@ -22,6 +22,10 @@ ADMIN  = 'admin'
 MEMBER = 'member'
 ROLES  = (ADMIN, MEMBER)
 
+# Event actions
+PURCHASE  = 'purchase'
+REPAYMENT = 'repayment'
+
 # Misc
 USER_COOKIE = 'beerclub_user'
 EMAIL_PATTERN = '*@*.*'

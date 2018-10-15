@@ -10,6 +10,7 @@ import tornado.web
 
 from . import constants
 from . import settings
+from . import utils
 
 
 class RequestHandler(tornado.web.RequestHandler):
@@ -21,17 +22,18 @@ class RequestHandler(tornado.web.RequestHandler):
         if settings.get('DATABASE_ACCOUNT') and settings.get('DATABASE_PASSWORD'):
             server.resource.credentials = (settings.get('DATABASE_ACCOUNT'),
                                            settings.get('DATABASE_PASSWORD'))
-            try:
-                self.db = server[settings['DATABASE_NAME']]
-            except couchdb.http.ResourceNotFound:
-                raise KeyError("CouchDB database '%s' does not exist." % 
-                               settings['DATABASE_NAME'])
+        try:
+            self.db = server[settings['DATABASE_NAME']]
+        except couchdb.http.ResourceNotFound:
+            raise KeyError("CouchDB database '%s' does not exist." % 
+                           settings['DATABASE_NAME'])
 
     def get_template_namespace(self):
         "Set the variables accessible within the template."
         result = super(RequestHandler, self).get_template_namespace()
         result['constants'] = constants
         result['settings'] = settings
+        result['is_admin'] = self.is_admin()
         result['error'] = self.get_cookie('error', '').replace('_', ' ')
         self.clear_cookie('error')
         result['message'] = self.get_cookie('message', '').replace('_', ' ')
@@ -128,14 +130,15 @@ class RequestHandler(tornado.web.RequestHandler):
             account = self.get_account(email)
         except KeyError:
             return None
-        # Check if login session is invalidated.
-        if account.get('login') is None: raise ValueError
+        # Disabled; must not be allowed to login.
         if account.get('disabled'):
-            logging.info("Session authentication: DISABLED %s",
-                         account['email'])
+            logging.info("Session auth: DISABLED %s", account['email'])
             return None
         else:
-            logging.info("Session authentication: %s", account['email'])
+            # Check if valid login session.
+            if account.get('login') is None: raise ValueError
+            # All fine.
+            logging.info("Session auth: %s", account['email'])
             return account
 
     def get_current_user_basic(self):
@@ -163,3 +166,13 @@ class RequestHandler(tornado.web.RequestHandler):
         else:
             logging.info("Basic auth login: %s", account['email'])
             return account
+
+    def is_admin(self):
+        "Is the current user an administrator?"
+        if not self.current_user: return False
+        return self.current_user['role'] == constants.ADMIN
+
+    def check_admin(self):
+        "Check that the current user is an administrator."
+        if not self.is_admin():
+            raise tornado.web.HTTPError(403, reason="Role 'admin' is required")

@@ -10,15 +10,39 @@ import tornado.ioloop
 from beerclub import utils
 from beerclub import settings
 
-from beerclub.home import Home
-from beerclub.account import (Login,
+from beerclub.requesthandler import RequestHandler
+from beerclub.account import (Account,
+                              AccountEdit,
+                              Login,
+                              Logout,
+                              Reset,
+                              Password,
                               Register)
+from beerclub.event import (Event,
+                            Purchase)
+
+
+class Home(RequestHandler):
+    "Home page; login or payment and account info."
+
+    def get(self):
+        if self.current_user:
+            self.render('home_account.html')
+        else:
+            self.render('home_anon.html')
 
 
 def main():
     url = tornado.web.url
     handlers = [url(r'/', Home, name='home'),
+                url(r'/purchase', Purchase, name='purchase'),
+                url(r'/event/([0-9a-f]{32})', Event, name='event'),
+                url(r'/account/([^/]+)', Account, name='account'),
+                url(r'/account/([^/]+)/edit', AccountEdit, name='account_edit'),
                 url(r'/login', Login, name='login'),
+                url(r'/logout', Logout, name='logout'),
+                url(r'/reset', Reset, name='reset'),
+                url(r'/password', Password, name='password'),
                 url(r'/register', Register, name='register'),
     ]
 

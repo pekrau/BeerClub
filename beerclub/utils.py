@@ -1,17 +1,41 @@
 "Various supporting functions."
 
+import datetime
 import email.mime.text
 import hashlib
 import json
 import logging
+import smtplib
 import sys
+import unicodedata
 import urlparse
 import uuid
 
 import couchdb
 
 import beerclub
+from beerclub import constants
 from beerclub import settings
+
+
+# CouchDB design documents (view index definitions)
+ACCOUNT_EMAIL_MAP = """function(doc) {
+  if (doc.beerclub_doctype !== 'account') return;
+  emit(doc.email, null);
+}"""
+ACCOUNT_ROLE_MAP = """function(doc) {
+  if (doc.beerclub_doctype !== 'account') return;
+  emit(doc.role, doc.email);
+}"""
+ACCOUNT_STATUS_MAP = """function(doc) {
+  if (doc.beerclub_doctype !== 'account') return;
+  emit(doc.status, doc.email);
+}"""
+
+EVENT_ACTION_MAP = """function(doc) {
+  if (doc.beerclub_doctype !== 'event') return;
+  emit(doc.action, null);
+}"""
 
 
 def setup():
@@ -65,12 +89,12 @@ def get_db():
 
 def load_design_documents(db):
     "Load the design documents (view index definitions)."
-    views = dict(email=
-"""function(doc) {
-  if (doc.beerclub_doctype !== 'account') return;
-  emit(doc.email, null);
-}""")
+    views = dict(email=dict(map=ACCOUNT_EMAIL_MAP),
+                 role=dict(map=ACCOUNT_ROLE_MAP),
+                 status=dict(map=ACCOUNT_STATUS_MAP))
     update_design_document(db, 'account', views)
+    views = dict(action=dict(map=EVENT_ACTION_MAP))
+    update_design_document(db, 'event', views)
 
 def update_design_document(db, design, views=dict()):
     "Update the design document (view index definition)."
@@ -163,6 +187,21 @@ def today(days=None):
     result = instant.isoformat()
     return result[:result.index('T')]
 
+def to_ascii(value):
+    "Convert any non-ASCII character to its closest ASCII equivalent."
+    if not isinstance(value, unicode):
+        value = unicode(value, 'utf-8')
+    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+
+def to_utf8(value):
+    "Convert value to UTF-8 representation."
+    if isinstance(value, basestring):
+        if not isinstance(value, unicode):
+            value = unicode(value, 'utf-8')
+        return value.encode('utf-8')
+    else:
+        return value
+
 
 class EmailServer(object):
     "A connection to an email server for sending emails."
@@ -205,3 +244,4 @@ class EmailServer(object):
         mail['From'] = self.email
         mail['To'] = recipient
         self.server.sendmail(self.email, [recipient], mail.as_string())
+        logging.debug("Sent email to %s", recipient)

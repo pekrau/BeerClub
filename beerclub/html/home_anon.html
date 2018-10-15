@@ -4,7 +4,7 @@
 
 {% block content %}
 <p>
-  You need to be a member to purchase beer. Sign in or register.
+  You need to be a member to buy beer. Sign in or register.
 </p>
 
 <div class="card border-primary mt-2">
@@ -12,24 +12,24 @@
     Sign in
   </div>
   <div class="card-body">
-    <form action="{{ reverse_url('home') }}"
+    <form action="{{ reverse_url('login') }}"
           role="form"
           method="POST">
       {% module xsrf_form_html() %}
-      <div class="form-group row">
+      <div class="row form-group">
         <label for="emailLogin" class="col-md-2 col-form-label">Email</label>
         <div class="col-md-10">
           <input type="email" class="form-control" name="email" id="emailLogin">
         </div>
       </div>
-      <div class="form-group row">
+      <div class="row form-group">
         <label for="password" class="col-md-2 col-form-label">Password</label>
         <div class="col-md-10">
           <input type="password" class="form-control"
                  name="password" id="password">
         </div>
       </div>
-      <div class="form-group row">
+      <div class="row form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">
           <button type="submit" class="btn btn-primary">Sign in</button>
@@ -44,12 +44,12 @@
     Reset password
   </div>
   <div class="card-body">
-    <form action="{{ reverse_url('register') }}"
+    <form action="{{ reverse_url('reset') }}"
           role="form"
           method="POST">
       {% module xsrf_form_html() %}
-      <div class="form-group row">
-        <label for="emailReset" class="col-md-2 col-form-label">Email</label>
+      <div class="row form-group">
+        <label class="col-md-2 col-form-label" for="emailReset">Email</label>
         <div class="col-md-10">
           <input type="email" class="form-control" 
                  name="email" id="emailReset"
@@ -59,7 +59,7 @@
           </small>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="row form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">
           <button type="submit" class="btn btn-warning"
@@ -85,7 +85,13 @@
           role="form"
           method="POST">
       {% module xsrf_form_html() %}
-      <div class="form-group row">
+      <div class="row form-group">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          All fields must be filled in.
+        </div>
+      </div>
+      <div class="row form-group">
         <label for="emailRegiser" class="col-md-2 col-form-label">Email</label>
         <div class="col-md-10">
           <input type="email" class="form-control" 
@@ -108,7 +114,7 @@
           </small>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="row form-group">
         <label for="name" class="col-md-2 col-form-label">Name</label>
         <div class="col-md-10">
           <input type="text" class="form-control" name="name" id="name"
@@ -118,7 +124,7 @@
           </small>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="row form-group">
         <label for="phone" class="col-md-2 col-form-label">Phone</label>
         <div class="col-md-10">
           <input type="text" class="form-control" phone="phone" id="phone"
@@ -128,7 +134,7 @@
           </small>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Address</label>
         <div class="col-md-10">
           <input type="text" class="form-control" address="address" id="address"
@@ -138,7 +144,7 @@
           </small>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="row form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">
           <button type="submit" class="btn btn-secondary"

@@ -113,8 +113,23 @@ class Saver(object):
             raise SaverError
 
     def finalize(self):
-        "Perform any final modifications before saving the document."
-        pass
+        "Set the log fields for the event."
+        log = dict(timestamp=utils.timestamp(),
+                   date=utils.today())
+        if self.rqh:
+            # xheaders argument to HTTPServer takes care of X-Real-Ip
+            # and X-Forwarded-For
+            log['remote_ip'] = self.rqh.request.remote_ip
+            try:
+                log['user_agent'] = self.rqh.request.headers['User-Agent']
+            except KeyError:
+                pass
+        if self.account:
+            try:
+                log['account'] = self.account['email']
+            except (TypeError, AttributeError, KeyError):
+                pass
+        self['log'] = log
 
     def post_process(self):
         "Perform any actions after having saved the document."
