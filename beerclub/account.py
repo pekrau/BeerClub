@@ -18,7 +18,7 @@ PENDING_MESSAGE = 'An administrator will inspect your account.' \
 PENDING_SUBJECT = "A {site} account {email} is pending"
 PENDING_TEXT = """A {site} account {email} is pending.
 
-Inspect the account {email} at {url} and enable or disable.
+Inspect the account at {url} and enable or disable.
 """
 
 RESET_SUBJECT = "Your {site} account has been reset."
