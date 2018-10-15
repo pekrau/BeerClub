@@ -40,9 +40,11 @@ class Purchase(RequestHandler):
         else:
             raise KeyError("no such payment %s" % bid)
         with EventSaver(rqh=self) as saver:
+            saver['account'] = self.current_user['email']
             saver['action']   = constants.PURCHASE
             saver['beverage'] = beverage['identifier']
             saver['price']    = - beverage['price']
             saver['payment']  = payment['identifier']
-            saver['credit']   = payment['credit']
+            saver['change']   = payment['change']
+        self.set_message_flash("Your purchased one %s." % beverage['label'])
         self.see_other('home')

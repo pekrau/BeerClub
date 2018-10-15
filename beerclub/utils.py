@@ -21,7 +21,7 @@ from beerclub import settings
 # CouchDB design documents (view index definitions)
 ACCOUNT_EMAIL_MAP = """function(doc) {
   if (doc.beerclub_doctype !== 'account') return;
-  emit(doc.email, null);
+  emit(doc.email, doc.status);
 }"""
 ACCOUNT_ROLE_MAP = """function(doc) {
   if (doc.beerclub_doctype !== 'account') return;
@@ -34,8 +34,14 @@ ACCOUNT_STATUS_MAP = """function(doc) {
 
 EVENT_ACTION_MAP = """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
-  emit(doc.action, null);
+  emit(doc.action, doc.account);
 }"""
+EVENT_CHANGE_MAP = """function(doc) {
+  if (doc.beerclub_doctype !== 'event') return;
+  if (!doc.change) return;
+  emit(doc.account, doc.price);
+}"""
+EVENT_CHANGE_REDUCE = "_sum"
 
 
 def setup():
@@ -93,7 +99,9 @@ def load_design_documents(db):
                  role=dict(map=ACCOUNT_ROLE_MAP),
                  status=dict(map=ACCOUNT_STATUS_MAP))
     update_design_document(db, 'account', views)
-    views = dict(action=dict(map=EVENT_ACTION_MAP))
+    views = dict(action=dict(map=EVENT_ACTION_MAP),
+                 change=dict(map=EVENT_CHANGE_MAP,
+                             reduce=EVENT_CHANGE_REDUCE))
     update_design_document(db, 'event', views)
 
 def update_design_document(db, design, views=dict()):

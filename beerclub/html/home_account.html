@@ -14,7 +14,9 @@
 {% for beverage in settings['BEVERAGE'] %}
 <div class="card mt-3 bg-light">
   <div class="card-body">
-    <h3>I took one {{ beverage['label'] }}...</h3>
+    <h3>I took one {{ beverage['label'] }}...
+      <small>(price {{ beverage['price'] }} {{ settings['CURRENCY'] }})</small>
+    </h3>
     {% for payment in settings['PAYMENT'] %}
     {% set modid = beverage['identifier'] + '_' + payment['identifier'] %}
     <div class="my-4">

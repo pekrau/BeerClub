@@ -1,4 +1,4 @@
-{# Home page when not logged in. #}
+{# Home page for login. #}
 
 {% extends 'base.html' %}
 
@@ -127,7 +127,7 @@
       <div class="row form-group">
         <label for="phone" class="col-md-2 col-form-label">Phone</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" phone="phone" id="phone"
+          <input type="text" class="form-control" name="phone" id="phone"
                  aria-describedby="phoneHelp">
           <small id="phoneHelp" class="form-text text-muted">
             Your phone number.
@@ -137,7 +137,7 @@
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Address</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" address="address" id="address"
+          <input type="text" class="form-control" name="address" id="address"
                  aria-describedby="addressHelp">
           <small id="addressHelp" class="form-text text-muted">
             Your address (institution, affiliation, etc).

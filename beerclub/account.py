@@ -11,14 +11,14 @@ from . import utils
 from .requesthandler import RequestHandler
 from .saver import Saver
 
-PENDING_SUBJECT = "Your {site} account {email} is pending"
-PENDING_TEXT = """Your {site} account {email} is pending.
+EMAIL_SENT = 'An email with instructions has been sent.'
+PENDING_MESSAGE = 'An administrator will inspect your account.' \
+                  ' An email will be sent if the account is enabled.'
 
-A {site} administrator will inspect your account. You will receive
-an email with instructions when the account has been enabled.
+PENDING_SUBJECT = "A {site} account {email} is pending"
+PENDING_TEXT = """A {site} account {email} is pending.
 
-Yours,
-The {site} administrators
+Inspect the account {email} at {url} and enable or disable.
 """
 
 RESET_SUBJECT = "Your {site} account has been reset."
@@ -50,20 +50,53 @@ class AccountSaver(Saver):
         self['password'] = None
 
 
-class Account(RequestHandler):
+class AccountMixin(object):
+
+    def get_check_account(self, email):
+        try:
+            account = self.get_account(email)
+        except KeyError:
+            self.set_error_message('No such account.')
+            return None
+        if not (self.is_admin() or 
+                account['email'] == self.current_user['email']):
+            self.set_error_message('You may not view the account.')
+            return None
+        return account
+
+
+class Account(AccountMixin, RequestHandler):
     "View an account."
 
     @tornado.web.authenticated
     def get(self, email):
-        raise NotImplementedError
+        account = self.get_check_account(email)
+        if account:
+            self.render('account.html', account=account)
+        else:
+            self.see_other('home')
 
 
-class AccountEdit(RequestHandler):
-    "Edit an account."
+class AccountEdit(AccountMixin, RequestHandler):
+    "Edit an account; change values, enable or disable."
 
     @tornado.web.authenticated
     def get(self, email):
-        raise NotImplementedError
+        account = self.get_check_account(email)
+        if account:
+            self.render('account_edit.html', account=account)
+        else:
+            self.see_other('home')
+
+
+class Accounts(RequestHandler):
+    "View a table of all accounts."
+
+    @tornado.web.authenticated
+    def get(self):
+        self.check_admin()
+        accounts = self.get_docs('account/email', key='',last=constants.CEILING)
+        self.render('accounts.html', accounts=accounts)
 
 
 class Login(RequestHandler):
@@ -80,19 +113,25 @@ class Login(RequestHandler):
             return
         try:
             account = self.get_account(email)
+            if account['status'] == constants.DISABLED:
+                raise ValueError
             if utils.hashed_password(password) != account.get('password'):
                 raise KeyError
         except KeyError:
             self.set_error_flash('No such account or invalid password.')
-            self.see_other('home')
+        except ValueError:
+            self.set_error_flash("Your account is disabled."
+                                 " Contact the %s administrators."
+                                 % settings['SITE_NAME'])
         else:
             with AccountSaver(doc=account, rqh=self) as saver:
                 saver['login'] = utils.timestamp()     # Set login session.
-                saver['latest_login'] = saver['login'] # Set latest login.
+                saver['last_login'] = saver['login']   # Set last login.
+            logging.info("Login auth: %s", account['email'])
             self.set_secure_cookie(constants.USER_COOKIE,
                                    account['email'],
                                    expires_days=settings['LOGIN_MAX_AGE_DAYS'])
-            self.redirect(self.reverse_url('home'))
+        self.see_other('home')
 
 
 class Logout(RequestHandler):
@@ -114,7 +153,7 @@ class Reset(RequestHandler):
         try:
             account = self.get_account(self.get_argument('email'))
         except (tornado.web.MissingArgumentError, ValueError):
-            self.see_other('home') # Silent error! Should not show existence.
+            self.see_other('home') # Silent error.
         else:
             if account.get('status') == constants.PENDING:
                 self.see_other('home', error='Cannot reset password.'
@@ -139,10 +178,7 @@ class Reset(RequestHandler):
             if self.current_user and not self.is_admin():
                 # Log out the user if not admin
                 self.set_secure_cookie(constants.USER_COOKIE, '')
-            self.see_other('home',
-                           message="An email has been sent containing"
-                           " a reset code. Please wait a couple of"
-                           " minutes for it and use the link in it.")
+            self.see_other('home', message=EMAIL_SENT)
 
 
 class Password(RequestHandler):
@@ -176,7 +212,8 @@ class Password(RequestHandler):
             return 
         with AccountSaver(doc=account, rqh=self) as saver:
             saver['password'] = utils.hashed_password(password)
-            saver['login'] = utils.timestamp() # Set latest login.
+            saver['login'] = utils.timestamp()     # Set login session.
+            saver['last_login'] = saver['login']   # Set last login.
             saver['code'] = None
         self.set_secure_cookie(constants.USER_COOKIE,
                                account['email'],
@@ -192,7 +229,7 @@ class Register(RequestHandler):
         keys = ['email', 'name', 'phone', 'address']
         for key in keys:
             try:
-                data[key] = self.get_argument('email')
+                data[key] = self.get_argument(key)
             except tornado.web.MissingArgumentError:
                 self.set_error_flash("No %s provided." % key)
                 self.see_other('home')
@@ -220,7 +257,8 @@ class Register(RequestHandler):
             else:
                 saver['role'] = constants.MEMBER
             ptn = settings['ACCOUNT_EMAIL_AUTOENABLE']
-            if count or (ptn and fnmatch.fnmatch(saver['email'], ptn)):
+            # First account will be enabled directly.
+            if count == 0 or (ptn and fnmatch.fnmatch(saver['email'], ptn)):
                 saver['status'] = constants.ENABLED
                 saver['code'] = data['code'] = utils.get_iuid()
         account = saver.doc
@@ -233,17 +271,16 @@ class Register(RequestHandler):
             email_server.send(account['email'],
                               ENABLED_SUBJECT.format(**data),
                               ENABLED_TEXT.format(**data))
-            self.set_message_flash('An email with instructions has been sent.')
+            self.set_message_flash(EMAIL_SENT)
         else:
             data['url'] = self.absolute_reverse_url('account_edit',
                                                     data['email'])
             subject = PENDING_SUBJECT.format(**data)
             text = PENDING_TEXT.format(**data)
-            for admin in self.get_docs(constants.ADMIN, 'account/role'):
+            for admin in self.get_docs('account/role', key=constants.ADMIN):
                 email_server.send(admin['email'], subject, text)
-            self.set_message_flash('Please wait until your account'
-                                   ' has been enabled by an administrator.')
-        self.redirect(self.reverse_url('home'))
+            self.set_message_flash(PENDING_MESSAGE)
+        self.see_other('home')
 
 
 class Enable(RequestHandler):
@@ -256,17 +293,19 @@ class Enable(RequestHandler):
         with AccountSaver(doc=account, rqh=self) as saver:
             saver['status'] = constants.ENABLED
             saver['login'] = None
+            saver['password'] = None
             saver['code'] = utils.get_iuid()
-        self.see_other('account', account['email'])
         email_server = utils.EmailServer()
-        data = dict(site=settings['SITE_NAME'],
+        data = dict(email=account['email'],
+                    site=settings['SITE_NAME'],
                     url=self.absolute_reverse_url('password',
-                                                  email=data['email'],
-                                                  code=data['code']))
+                                                  email=account['email'],
+                                                  code=account['code']))
         email_server.send(account['email'],
                           ENABLED_SUBJECT.format(**data),
                           ENABLED_TEXT.format(**data))
-        self.set_message_flash('An email with instructions has been sent.')
+        self.set_message_flash(EMAIL_SENT)
+        self.see_other('account', account['email'])
 
 
 class Disable(RequestHandler):
@@ -279,5 +318,6 @@ class Disable(RequestHandler):
         with AccountSaver(doc=account, rqh=self) as saver:
             saver['status'] = constants.DISABLED
             saver['login'] = None
+            saver['password'] = None
             saver['code'] = None
         self.see_other('account', account['email'])

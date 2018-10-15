@@ -1,0 +1,63 @@
+{# Account page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Account {{ account['email'] }}{% end %}
+
+{% block body_title %}Account {{ account['email'] }}{% end %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md">
+    <form action="{{ reverse_url('account_edit', account['email']) }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <button type="submit" class="btn btn-primary w-100">Edit</button>
+    </form>
+  </div>
+  {% if is_admin %}
+  <div class="col-md">
+    {% if account['status'] == constants.ENABLED %}
+    <form action="{{ reverse_url('disable', account['email']) }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <button type="submit" class="btn btn-danger w-100">Disable</button>
+    </form>
+    {% else %}
+    <form action="{{ reverse_url('enable', account['email']) }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <button type="submit" class="btn btn-success w-100">Enable</button>
+    </form>
+    {% end %}
+  </div>
+  {% end %}
+</div>
+<table class="table mt-4" id="account">
+  <tbody>
+    <tr>
+      <th scope="row">Name</th>
+      <td>{{ account['name'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Phone</th>
+      <td>{{ account['phone'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Address</th>
+      <td>{{ account['address'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Last login</th>
+      <td>{% module LastLogin(account) %}</td>
+    </tr>
+    <tr>
+      <th scope="row">Status</th>
+      <td>{% module Status(account) %}</td>
+    </tr>
+  </tbody>
+</table>
+{% end %} {# block content #}

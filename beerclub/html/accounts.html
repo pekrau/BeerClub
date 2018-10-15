@@ -1,0 +1,43 @@
+{# Accounts page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Accounts{% end %}
+
+{% block body_title %}Accounts{% end %}
+
+{% block content %}
+<table class="table table-sm" id="accounts">
+  <thead>
+    <th scope="col">Account</th>
+    <th scope="col">Name</th>
+    <th scope="col">Status</th>
+    <th scope="col">Credit</th>
+    <th scope="col">Last login</th>
+  </thead>
+  <tbody>
+    {% for account in accounts %}
+    <tr>
+      <td>
+        <a href="{{ reverse_url('account', account['email']) }}">
+          {{ account['email'] }}</a>
+      </td>
+      <td>{{ account['name'] }}</td>
+      <td>{% module Status(account) %}</td>
+      <td></td>
+      <td>{% module LastLogin(account) %}</td>
+    </tr>
+    {% end %}
+  </tbody>
+</table>
+{% end %} {# block content #}
+
+{% block javascript %}
+<script>
+  $(function() {
+    $("#accounts").DataTable( {
+      "pagingType": "full_numbers",
+    });
+  });
+</script>
+{% end %} {# block javascript #}
