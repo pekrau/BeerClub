@@ -24,7 +24,8 @@ from beerclub.account import (Account,
                               Enable,
                               Disable)
 from beerclub.event import (Event,
-                            Purchase)
+                            Purchase,
+                            Repayment)
 
 
 class Home(RequestHandler):
@@ -40,7 +41,7 @@ class Home(RequestHandler):
 class About(RequestHandler):
     "About page."
     def get(self):
-        raise NotImplementedError
+        self.render('about.html')
 
 
 def main():
@@ -48,11 +49,12 @@ def main():
     handlers = [
         url(r'/', Home, name='home'),
         url(r'/purchase', Purchase, name='purchase'),
+        url(r'/repayment/([^/]+)', Repayment, name='repayment'),
         url(r'/account/([^/]+)', Account, name='account'),
         url(r'/account/([^/]+)/edit', AccountEdit, name='account_edit'),
         url(r'/account/([^/]+)/enable', Enable, name='enable'),
         url(r'/account/([^/]+)/disable', Disable, name='disable'),
-        url(r'/account/([^/]+)/history', AccountHistory,name='account_history'),
+        url(r'/account/([^/]+)/history', AccountHistory,name='history'),
         url(r'/accounts', Accounts, name='accounts'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),

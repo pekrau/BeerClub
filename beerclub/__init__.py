@@ -30,8 +30,18 @@ settings = dict(
                PASSWORD=None,
                SENDER=None),
     LOGIN_MAX_AGE_DAYS=31,
-    HISTORY_LIMIT=40,
+    HISTORY_LIMIT=30,
+    CONTACT_EMAIL=None,
+    POLICY_STATEMENT="The {SITE_NAME} is a non-profit group providing beer"
+    " to its members. Volunteer members must purchase the beer and deliver"
+    " it to the {SITE_NAME}, and will be reimbursed by the {SITE_NAME}"
+    " administrators. Please contact them.",
+    PRIVACY_STATEMENT="By registering, you agree to allow the personal data"
+    " you provide to be handled by the {SITE_NAME} according to"
+    " applicable laws. {SITE_NAME} guarantees that no data will be transferred"
+    " to any external entity.",
     CURRENCY='SEK',
+    AMOUNT_STEP='0.01',
     BEVERAGE=[
         dict(identifier='beer',
              label='beer',
@@ -40,8 +50,8 @@ settings = dict(
         dict(identifier='soft',
              label='soft drink',
              price=10,
-             description='One can or bottle of soft drink.')
-        ],
+             description='One can or bottle of soft drink.'),
+    ],
     PAYMENT=[
         dict(identifier='cash',
              change=False,
@@ -60,5 +70,13 @@ settings = dict(
              label='credit',
              style='warning',
              action='Put it on my credit.',
-             description='Put the amount for one %s on my credit.')],
+             description='Put the amount for one %s on my credit.'),
+    ],
+    REPAYMENT=[
+        dict(identifier='swish',
+             label='Verified Swish payment',
+             default=True),
+        dict(identifier='bank',
+             label='Payment to bank account'),
+    ],
 )

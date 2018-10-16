@@ -1,0 +1,71 @@
+{# Repayment page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Repayment from {{ account['email'] }}{% end %}
+
+{% block body_title %}Repayment from {{ account['email'] }}{% end %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+  </div>
+  <div class="col-md">
+    <form action="{{ reverse_url('account', account['email']) }}"
+          role="form"
+          method="GET">
+      <button type="submit" class="btn btn-default w-100">Cancel</button>
+    </form>
+  </div>
+</div>
+<div class="card mt-2">
+  <div class="card-body">
+    <form action="{{ reverse_url('repayment', account['email']) }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <div class="row form-group">
+        <label for="email" class="col-md-2 col-form-label">Email</label>
+        <div class="col-md-10">
+          <input type="email" class="form-control-plaintext" id="email"
+                 aria-describedby="emailHelp" value="{{ account['email'] }}">
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="address" class="col-md-2 col-form-label">Method</label>
+        <div class="col-md-10">
+          {% for repayment in settings['REPAYMENT'] %}
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="method" id="repayment_{{ repayment['identifier'] }}"
+                   {{ repayment.get('default') and 'checked' or '' }}
+                   value="{{ repayment['identifier'] }}">
+            <label class="form-check-label"
+                   for="repayment_{{ repayment['identifier'] }}">
+              {{ repayment['label'] }}
+            </label>
+          </div>
+          {% end %}
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="amount" class="col-md-2 col-form-label">Amount</label>
+        <div class="col-md-10">
+          <input type="number" min="0" step="{{ settings['AMOUNT_STEP'] }}"
+                 class="form-control" name="amount" id="amount"
+                 aria-describedby="amountHelp" required>
+          <small id="amountHelp" class="form-text text-muted">
+            The amount, in {{ settings['CURRENCY'] }}.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <button type="submit" class="btn btn-dark">Repay</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% end %} {# block content #}

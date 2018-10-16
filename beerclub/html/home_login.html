@@ -19,13 +19,14 @@
       <div class="row form-group">
         <label for="emailLogin" class="col-md-2 col-form-label">Email</label>
         <div class="col-md-10">
-          <input type="email" class="form-control" name="email" id="emailLogin">
+          <input type="email" class="form-control" required
+                 name="email" id="emailLogin">
         </div>
       </div>
       <div class="row form-group">
         <label for="password" class="col-md-2 col-form-label">Password</label>
         <div class="col-md-10">
-          <input type="password" class="form-control"
+          <input type="password" class="form-control" required
                  name="password" id="password">
         </div>
       </div>
@@ -51,7 +52,7 @@
       <div class="row form-group">
         <label class="col-md-2 col-form-label" for="emailReset">Email</label>
         <div class="col-md-10">
-          <input type="email" class="form-control" 
+          <input type="email" class="form-control"  required
                  name="email" id="emailReset"
                  aria-describedby="emailResetHelp">
           <small id="emailResetHelp" class="form-text text-muted">
@@ -94,7 +95,7 @@
       <div class="row form-group">
         <label for="emailRegister" class="col-md-2 col-form-label">Email</label>
         <div class="col-md-10">
-          <input type="email" class="form-control" 
+          <input type="email" class="form-control" required
                  name="email" id="emailRegister"
                  aria-describedby="emailRegisterHelp">
           <small id="emailRegisterHelp" class="form-text text-muted">
@@ -117,7 +118,8 @@
       <div class="row form-group">
         <label for="name" class="col-md-2 col-form-label">Name</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" name="name" id="name"
+          <input type="text" class="form-control" required
+                 name="name" id="name"
                  aria-describedby="nameHelp">
           <small id="nameHelp" class="form-text text-muted">
             Your first and last name.
@@ -127,7 +129,8 @@
       <div class="row form-group">
         <label for="phone" class="col-md-2 col-form-label">Phone</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" name="phone" id="phone"
+          <input type="text" class="form-control" required
+                 name="phone" id="phone"
                  aria-describedby="phoneHelp">
           <small id="phoneHelp" class="form-text text-muted">
             Your phone number.
@@ -137,7 +140,8 @@
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Address</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" name="address" id="address"
+          <input type="text" class="form-control" required
+                 name="address" id="address"
                  aria-describedby="addressHelp">
           <small id="addressHelp" class="form-text text-muted">
             Your address (floor, building, affiliation, etc).
@@ -155,11 +159,7 @@
               email with a one-time link URL to set your password.
             </p>
             <p>
-              By registering, you agree to allow the personal data given
-              here to be handled by the {{ settings['SITE_NAME'] }}
-              according to applicable laws. {{ settings['SITE_NAME'] }}
-              guarantees that no data will be transferred to any external
-              entity.
+              {{ settings['PRIVACY_STATEMENT'] }}
             </p>
           </small>
         </div>

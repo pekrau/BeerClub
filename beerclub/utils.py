@@ -77,6 +77,10 @@ def setup():
         sys.exit(1)
     parts = urlparse.urlparse(settings['BASE_URL'])
     settings['PORT'] = parts.port or 80
+    # Convert format specifiers in statements.
+    settings['POLICY_STATEMENT'] = settings['POLICY_STATEMENT'].format(**settings)
+    settings['PRIVACY_STATEMENT'] = settings['PRIVACY_STATEMENT'].format(**settings)
+    # Set up logging
     if settings.get('LOGGING_DEBUG'):
         kwargs = dict(level=logging.DEBUG)
     else:
@@ -222,6 +226,15 @@ def to_utf8(value):
         return value.encode('utf-8')
     else:
         return value
+
+def to_bool(value):
+    "Convert the value into a boolean, interpreting various string values."
+    if isinstance(value, bool): return value
+    if not value: return False
+    lowvalue = value.lower()
+    if lowvalue in constants.TRUE: return True
+    if lowvalue in constants.FALSE: return False
+    raise ValueError("invalid boolean: '%s'" % value)
 
 
 class EmailServer(object):

@@ -57,3 +57,26 @@ class Purchase(RequestHandler):
                 saver['credit'] = 0
         self.set_message_flash("Your purchased one %s." % beverage['label'])
         self.see_other('home')
+
+
+class Repayment(RequestHandler):
+    "Repayment to increase the credit of an account."
+
+    @tornado.web.authenticated
+    def get(self, email):
+        self.check_admin()
+        try:
+            account = self.get_account(email, check=True)
+        except KeyError:
+            self.see_other('home')
+        else:
+            self.render('repayment.html', account=account)
+
+    @tornado.web.authenticated
+    def post(self, email):
+        self.check_admin()
+        try:
+            account = self.get_account(email, check=True)
+        except KeyError:
+            self.see_other('home')
+            return

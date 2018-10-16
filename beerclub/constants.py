@@ -26,6 +26,10 @@ ROLES  = (ADMIN, MEMBER)
 PURCHASE  = 'purchase'
 REPAYMENT = 'repayment'
 
+# Boolean string values
+TRUE  = frozenset(['true', 'yes', 't', 'y', '1'])
+FALSE = frozenset(['false', 'no', 'f', 'n', '0'])
+
 # Misc
 USER_COOKIE = 'beerclub_user'
 EMAIL_PATTERN = '*@*.*'

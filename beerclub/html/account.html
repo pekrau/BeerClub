@@ -11,11 +11,12 @@
   <div class="col-md-8">
   </div>
   <div class="col-md">
-    <form action="{{ reverse_url('account_edit', account['email']) }}"
-          role="form"
-          method="GET">
-      <button type="submit" class="btn btn-primary w-100">Edit</button>
-    </form>
+    <a href="{{ reverse_url('history', account['email']) }}"
+       role="button" class="btn btn-secondary w-100">History</a>
+  </div>
+  <div class="col-md">
+    <a href="{{ reverse_url('account_edit', account['email']) }}"
+       role="button" class="btn btn-primary w-100">Edit</a>
   </div>
   {% if is_admin %}
   <div class="col-md">
@@ -40,10 +41,6 @@
 <table class="table mt-4">
   <tbody>
     <tr>
-      <th scope="row">Credit</th>
-      <td>{% module Credit(account) %}</td>
-    </tr>
-    <tr>
       <th scope="row">Name</th>
       <td>{{ account['name'] }}</td>
     </tr>
@@ -56,12 +53,20 @@
       <td>{{ account['address'] }}</td>
     </tr>
     <tr>
-      <th scope="row">Last login</th>
-      <td>{% module LastLogin(account) %}</td>
+      <th scope="row">Credit</th>
+      <td>{% module Credit(account) %}</td>
     </tr>
     <tr>
       <th scope="row">Status</th>
       <td>{% module Status(account) %}</td>
+    </tr>
+    <tr>
+      <th scope="row">Role</th>
+      <td>{% module Role(account) %}</td>
+    </tr>
+    <tr>
+      <th scope="row">Last login</th>
+      <td>{% module LastLogin(account) %}</td>
     </tr>
   </tbody>
 </table>

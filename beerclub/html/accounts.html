@@ -9,23 +9,34 @@
 {% block content %}
 <table class="table table-sm" id="accounts">
   <thead>
+    {% if is_admin %}
+    <th scope="col"></th>
+    {% end %}
     <th scope="col">Account</th>
     <th scope="col">Name</th>
-    <th scope="col">Status</th>
     <th scope="col">Credit ({{ settings['CURRENCY'] }})</th>
+    <th scope="col">Status</th>
+    <th scope="col">Role</th>
     <th scope="col">Last login</th>
   </thead>
   <tbody>
     {% for account in accounts %}
     <tr>
       <td>
+        <a href="{{ reverse_url('repayment', account['email']) }}"
+           target="_blank" class="btn btn-sm btn-dark" role="button">Repay</a>
+      </td>
+      <td>
         <a href="{{ reverse_url('account', account['email']) }}">
           {{ account['email'] }}</a>
       </td>
       <td>{{ account['name'] }}</td>
-      <td>{% module Status(account) %}</td>
       <td>{% module Credit(account, currency=False) %}</td>
+      <td>{% module Status(account) %}</td>
+      <td>{% module Role(account) %}</td>
       <td>{% module LastLogin(account) %}</td>
+      {% if is_admin %}
+      {% end %}
     </tr>
     {% end %}
   </tbody>

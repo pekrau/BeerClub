@@ -50,44 +50,26 @@ class AccountSaver(Saver):
         self['password'] = None
 
 
-class AccountMixin(object):
-
-    def get_check_account(self, email):
-        """Return the account given by its email.
-        Raise KeyError if it does not exist, or may not be viewed.
-        """
-        try:
-            account = self.get_account(email)
-        except KeyError:
-            self.set_error_message('No such account.')
-            raise KeyError
-        if not (self.is_admin() or 
-                account['email'] == self.current_user['email']):
-            self.set_error_message('You may not view the account.')
-            raise KeyError
-        return account
-
-
-class Account(AccountMixin, RequestHandler):
+class Account(RequestHandler):
     "View an account."
 
     @tornado.web.authenticated
     def get(self, email):
         try:
-            account = self.get_check_account(email)
+            account = self.get_account(email, check=True)
         except KeyError:
             self.see_other('home')
         else:
             self.render('account.html', account=account)
 
 
-class AccountEdit(AccountMixin, RequestHandler):
+class AccountEdit(RequestHandler):
     "Edit an account; change values, enable or disable."
 
     @tornado.web.authenticated
     def get(self, email):
         try:
-            account = self.get_check_account(email)
+            account = self.get_account(email, check=True)
         except KeyError:
             self.see_other('home')
         else:
@@ -96,7 +78,7 @@ class AccountEdit(AccountMixin, RequestHandler):
     @tornado.web.authenticated
     def post(self, email):
         try:
-            account = self.get_check_account(email)
+            account = self.get_account(email, check=True)
         except KeyError:
             self.see_other('home')
             return
@@ -109,9 +91,18 @@ class AccountEdit(AccountMixin, RequestHandler):
                 self.set_error_flash("No %s provided." % key)
                 self.see_other('home')
                 return
+        role = None
+        if self.is_admin() and self.current_user['email'] != email:
+            try:
+                role = self.get_argument('role')
+                if role not in constants.ROLES: raise ValueError
+            except (tornado.web.MissingArgumentError, ValueError):
+                pass
         with AccountSaver(doc=account, rqh=self) as saver:
             for key in keys:
                 saver[key] = data[key]
+            if role:
+                saver['role'] = role
         self.see_other('account', account['email'])
 
 
@@ -127,17 +118,18 @@ class Accounts(RequestHandler):
 
 
 
-class AccountHistory(AccountMixin, RequestHandler):
+class AccountHistory(RequestHandler):
     "View history of events for an account."
 
     @tornado.web.authenticated
-    def get(self, email, full=False):
+    def get(self, email):
         try:
-            account = self.get_check_account(email)
+            account = self.get_account(email, check=True)
         except KeyError:
             self.see_other('home')
             return 
-        if full:
+        all = utils.to_bool(self.get_argument('all', False))
+        if all:
             kwargs = dict()
         else:
             kwargs = dict(limit=settings['HISTORY_LIMIT'])
@@ -146,10 +138,10 @@ class AccountHistory(AccountMixin, RequestHandler):
                                last=[account['email'], ''],
                                descending=True,
                                **kwargs)
-        self.render('account_history.html',
+        self.render('history.html',
                     account=account,
                     events=events, 
-                    full=full)
+                    all=all)
 
 
 class Login(RequestHandler):
@@ -205,7 +197,7 @@ class Reset(RequestHandler):
         URL = self.absolute_reverse_url
         try:
             account = self.get_account(self.get_argument('email'))
-        except (tornado.web.MissingArgumentError, ValueError):
+        except (tornado.web.MissingArgumentError, KeyError):
             self.see_other('home') # Silent error.
         else:
             if account.get('status') == constants.PENDING:
@@ -244,10 +236,10 @@ class Password(RequestHandler):
 
     def post(self):
         try:
-            account = self.get_account(self.get_argument('email', ''))
-            if account.get('code') != self.get_argument('code', ''):
+            account = self.get_account(self.get_argument('email'))
+            if account.get('code') != self.get_argument('code'):
                 raise ValueError
-        except (KeyError, ValueError):
+        except (tornado.web.MissingArgumentError, KeyError, ValueError):
             self.see_other('home',
                            error="Either the email address or the code" +
                            " for setting password was wrong." +

@@ -1,13 +1,33 @@
-{# Account page. #}
+{# Account history page. #}
 
 {% extends 'base.html' %}
 
 {% block head_title %}Account {{ account['email'] }} history{% end %}
 
-{% block body_title %}Account {{ account['email'] }} history{% end %}
+{% block body_title %}
+Account
+<a href="{{ reverse_url('account', account['email']) }}">
+  {{ account['email'] }}</a>
+ history
+{% end %}
 
 {% block content %}
-<table class="table mt-4" id="events">
+{% if not all %}
+<div class="row">
+  <div class="col-md-10">
+    The most recent {{ settings['HISTORY_LIMIT'] }} events.
+  </div>
+  <div class="col-md">
+    <form action="{{ reverse_url('history', account['email']) }}"
+          role="form"
+          method="GET">
+      <input type="hidden" name="all" value="true">
+      <button type="submit" class="btn btn-primary w-100">All events</button>
+    </form>
+  </div>
+</div>
+  {% end %} {# if not all #}
+<table class="table table-sm mt-4" id="events">
   <thead>
     <tr>
       <th scope="col">Event</th>
@@ -34,3 +54,15 @@
   </tbody>
 </table>
 {% end %} {# block content #}
+
+{% block javascript %}
+{% if all%}
+<script>
+  $(function() {
+    $("#events").DataTable( {
+      "pagingType": "full_numbers",
+    });
+  });
+</script>
+{% end %} {# if all #}
+{% end %} {# block javascript #}

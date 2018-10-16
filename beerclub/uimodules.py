@@ -9,17 +9,6 @@ from . import settings
 from . import utils
 
 
-class Status(tornado.web.UIModule):
-    "HTML for account status."
-
-    def render(self, account):
-        if account['status'] == constants.DISABLED:
-            return '<strong class="text-danger">disabled</strong>'
-        elif account['status'] == constants.PENDING:
-            return '<strong class="text-warning">pending</strong>'
-        else: 
-            return 'enabled'
-
 class Credit(tornado.web.UIModule):
     "HTML for account credit."
 
@@ -33,6 +22,26 @@ class Credit(tornado.web.UIModule):
             return value
         else:
             return '<strong class="text-danger">%s</strong>' % value
+
+class Status(tornado.web.UIModule):
+    "HTML for account status."
+
+    def render(self, account):
+        if account['status'] == constants.DISABLED:
+            return '<strong class="text-danger">disabled</strong>'
+        elif account['status'] == constants.PENDING:
+            return '<strong class="text-warning">pending</strong>'
+        else: 
+            return account['status']
+
+class Role(tornado.web.UIModule):
+    "HTML for account role."
+
+    def render(self, account):
+        if account['role'] == constants.ADMIN:
+            return '<strong class="text-danger">admin</strong>'
+        else: 
+            return account['role']
 
 class LastLogin(tornado.web.UIModule):
     "HTML for account last login."

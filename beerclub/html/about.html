@@ -1,0 +1,24 @@
+{# About page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}About {{ settings['SITE_NAME'] }}{% end %}
+
+{% block body_title %}About {{ settings['SITE_NAME'] }}{% end %}
+
+{% block content %}
+<h4>Policy</h4>
+<p>
+  {{ settings['POLICY_STATEMENT'] }}
+</p>
+{% if settings['CONTACT_EMAIL'] %}
+<h4>Contact</h4>
+<p>
+  {{ settings['CONTACT_EMAIL'] }}
+</p>
+{% end %}
+<h4>Privacy statement</h4>
+<p>
+  {{ settings['PRIVACY_STATEMENT'] }}
+</p>
+{% end %} {# block content #}

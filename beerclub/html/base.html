@@ -40,7 +40,7 @@
           </li>
           <li class="nav-item {% module NavitemActive('accounthistory') %}">
             <a class="nav-link" 
-               href="{{ reverse_url('account_history', current_user['email']) }}">
+               href="{{ reverse_url('history', current_user['email']) }}">
               My history</a>
           </li>
           {% end %}
@@ -106,7 +106,7 @@
       <div class="row">
         <div class="col-md text-right">
           <small>
-            <a href="settings['GITHUB_HREF'] }}">BeerClub</a>
+            <a href="{{ settings['GITHUB_HREF'] }}">BeerClub</a>
             version {{ settings['VERSION'] }}
           </small>
     </div>

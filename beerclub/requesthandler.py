@@ -98,11 +98,21 @@ class RequestHandler(tornado.web.RequestHandler):
         """
         return utils.get_docs(self.db, viewname, key=key, last=last, **kwargs)
 
-    def get_account(self, email):
+    def get_account(self, email, check=False):
         """Get the account identified by the email address.
-        Raise KeyError if no such account.
+        Raise KeyError if no such account or if not allowed to view it.
         """
-        return utils.get_account(self.db, email)
+        try:
+            account = utils.get_account(self.db, email)
+        except KeyError:
+            self.set_error_message('No such account.')
+            raise KeyError
+        if check:
+            if not (self.is_admin() or 
+                    account['email'] == self.current_user['email']):
+                self.set_error_message('You may not view the account.')
+                raise KeyError
+        return account
 
     def get_credit(self, account=None):
         "Get the current credit status for the account."

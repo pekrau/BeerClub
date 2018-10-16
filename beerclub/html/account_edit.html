@@ -14,7 +14,7 @@
     <form action="{{ reverse_url('account', account['email']) }}"
           role="form"
           method="GET">
-      <button type="submit" class="btn btn-white w-100">Cancel</button>
+      <button type="submit" class="btn btn-default w-100">Cancel</button>
     </form>
   </div>
 </div>
@@ -48,7 +48,8 @@
       <div class="row form-group">
         <label for="name" class="col-md-2 col-form-label">Name</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" name="name" id="name"
+          <input type="text" class="form-control" required
+                 name="name" id="name"
                  aria-describedby="nameHelp" value="{{ account['name'] }}">
           <small id="nameHelp" class="form-text text-muted">
             Your first and last name.
@@ -58,7 +59,8 @@
       <div class="row form-group">
         <label for="phone" class="col-md-2 col-form-label">Phone</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" name="phone" id="phone"
+          <input type="text" class="form-control" required
+                 name="phone" id="phone"
                  aria-describedby="phoneHelp" value="{{ account['phone'] }}">
           <small id="phoneHelp" class="form-text text-muted">
             Your phone number.
@@ -68,13 +70,33 @@
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Address</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" name="address" id="address"
-                 aria-describedby="addressHelp" value="{{ account['address'] }}">
+          <input type="text" class="form-control" required
+                 name="address" id="address"
+                 aria-describedby="addressHelp"
+                 value="{{ account['address'] }}">
           <small id="addressHelp" class="form-text text-muted">
             Your address (floor, building affiliation, etc).
           </small>
         </div>
       </div>
+      {% if is_admin and current_user['email'] != account['email'] %}
+      <div class="row form-group">
+        <label for="address" class="col-md-2 col-form-label">Role</label>
+        <div class="col-md-10">
+          {% for role in constants.ROLES %}
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="role" id="role_{{ role }}"
+                   {{ role == account['role'] and 'checked' or '' }}
+                    value="{{ role }}">
+            <label class="form-check-label" for="role_{{ role }}">
+              {{ role }}
+            </label>
+          </div>
+          {% end %}
+        </div>
+      </div>
+      {% end %}
       <div class="row form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">
@@ -85,4 +107,3 @@
   </div>
 </div>
 {% end %} {# block content #}
-

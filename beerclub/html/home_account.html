@@ -11,7 +11,10 @@
 {% block content %}
 <div class="row">
   <div class="col-md">
-    <h4>{{ current_user['email'] }}</h4>
+    <h4>
+      <a href="{{ reverse_url('account', current_user['email']) }}">
+        {{ current_user['email'] }}</a>
+    </h4>
   </div>
   <div class="col-md">
     <h4>{{ beverages_count }} beverages purchased today.</h4>
@@ -60,7 +63,7 @@
                     </p>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
+                    <button type="button" class="btn btn-default"
                             data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Confirm</button>
                   </div>
