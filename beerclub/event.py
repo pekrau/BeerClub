@@ -43,8 +43,11 @@ class Purchase(RequestHandler):
             saver['account'] = self.current_user['email']
             saver['action']   = constants.PURCHASE
             saver['beverage'] = beverage['identifier']
-            saver['price']    = - beverage['price']
+            saver['price']    = beverage['price']
             saver['payment']  = payment['identifier']
-            saver['change']   = payment['change']
+            if payment['change']:
+                saver['credit'] = - beverage['price']
+            else:
+                saver['credit'] = 0
         self.set_message_flash("Your purchased one %s." % beverage['label'])
         self.see_other('home')

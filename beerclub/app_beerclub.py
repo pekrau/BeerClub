@@ -31,9 +31,11 @@ class Home(RequestHandler):
 
     def get(self):
         if self.current_user:
-            self.render('home_account.html')
+            self.render('home_account.html',
+                        beverages_count=self.get_beverages_count(),
+                        home_active=True)
         else:
-            self.render('home_login.html')
+            self.render('home_login.html', home_active=False)
 
 
 def main():

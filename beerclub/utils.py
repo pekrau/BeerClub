@@ -19,29 +19,43 @@ from beerclub import settings
 
 
 # CouchDB design documents (view index definitions)
-ACCOUNT_EMAIL_MAP = """function(doc) {
+ACCOUNT_EMAIL = dict(map="""function(doc) {
   if (doc.beerclub_doctype !== 'account') return;
   emit(doc.email, doc.status);
-}"""
-ACCOUNT_ROLE_MAP = """function(doc) {
+}""")
+
+ACCOUNT_ROLE = dict(map="""function(doc) {
   if (doc.beerclub_doctype !== 'account') return;
   emit(doc.role, doc.email);
-}"""
-ACCOUNT_STATUS_MAP = """function(doc) {
+}""")
+
+ACCOUNT_STATUS = dict(map="""function(doc) {
   if (doc.beerclub_doctype !== 'account') return;
   emit(doc.status, doc.email);
-}"""
+}""")
 
-EVENT_ACTION_MAP = """function(doc) {
+EVENT_ACTION = dict(map="""function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
   emit(doc.action, doc.account);
-}"""
-EVENT_CHANGE_MAP = """function(doc) {
+}""")
+
+EVENT_CREDIT = dict(map="""function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
-  if (!doc.change) return;
-  emit(doc.account, doc.price);
-}"""
-EVENT_CHANGE_REDUCE = "_sum"
+  emit(doc.account, doc.credit);
+}""",
+                    reduce="_sum")
+
+EVENT_BEVERAGES = dict(map="""function(doc) {
+  if (doc.beerclub_doctype !== 'event') return;
+  if (doc.action !== 'purchase') return;
+  emit([doc.account, doc.log.date], doc.beverage);
+}""",
+                       reduce="_count")
+
+EVENT_ACCOUNT = dict(map="""function(doc) {
+  if (doc.beerclub_doctype !== 'event') return;
+  emit([doc.account, doc.log.timestamp], null);
+}""")
 
 
 def setup():
@@ -95,14 +109,13 @@ def get_db():
 
 def load_design_documents(db):
     "Load the design documents (view index definitions)."
-    views = dict(email=dict(map=ACCOUNT_EMAIL_MAP),
-                 role=dict(map=ACCOUNT_ROLE_MAP),
-                 status=dict(map=ACCOUNT_STATUS_MAP))
-    update_design_document(db, 'account', views)
-    views = dict(action=dict(map=EVENT_ACTION_MAP),
-                 change=dict(map=EVENT_CHANGE_MAP,
-                             reduce=EVENT_CHANGE_REDUCE))
-    update_design_document(db, 'event', views)
+    update_design_document(db, 'account', dict(email=ACCOUNT_EMAIL,
+                                               role=ACCOUNT_ROLE,
+                                               status=ACCOUNT_STATUS))
+    update_design_document(db, 'event', dict(action=EVENT_ACTION,
+                                             credit=EVENT_CREDIT,
+                                             beverages=EVENT_BEVERAGES,
+                                             account=EVENT_ACCOUNT))
 
 def update_design_document(db, design, views=dict()):
     "Update the design document (view index definition)."

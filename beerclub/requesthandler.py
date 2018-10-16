@@ -104,6 +104,32 @@ class RequestHandler(tornado.web.RequestHandler):
         """
         return utils.get_account(self.db, email)
 
+    def get_credit(self, account=None):
+        "Get the current credit status for the account."
+        if account is None:
+            account = self.current_user
+        result = list(self.db.view('event/credit',
+                                   key=account['email'],
+                                   group_level=1,
+                                   reduce=True))
+        if result:
+            return result[0].value
+        else:
+            return 0
+
+    def get_beverages_count(self, account=None, date=utils.today()):
+        "Get the number of beverages purchased on the given date."
+        if account is None:
+            account = self.current_user
+        result = list(self.db.view('event/beverages',
+                                   key=[account['email'], date],
+                                   group_level=2,
+                                   reduce=True))
+        if result:
+            return result[0].value
+        else:
+            return 0
+
     def get_current_user(self):
         """Get the currently logged-in user account, or None.
         This overrides a tornado function, otherwise it should have

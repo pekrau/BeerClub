@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '0.2'
+__version__ = '0.3'
 
 settings = dict(
     VERSION=__version__,
@@ -23,13 +23,14 @@ settings = dict(
     PASSWORD_SALT=None, # Set to a secret long string of random characters.
     MIN_PASSWORD_LENGTH=8,
     ACCOUNT_EMAIL_AUTOENABLE=None,
-    EMAIL=dict(HOST=None, # Required!
+    EMAIL=dict(HOST='localhost',
                PORT=None,
                TLS=False,
                USER=None,
                PASSWORD=None,
                SENDER=None),
     LOGIN_MAX_AGE_DAYS=31,
+    HISTORY_COUNT=40,
     CURRENCY='SEK',
     BEVERAGE=[
         dict(identifier='beer',
@@ -46,13 +47,13 @@ settings = dict(
              change=False,
              label='cash',
              style='success',
-             action='I paid cash.',
+             action='I pay cash.',
              description='I paid cash for one %s.'),
         dict(identifier='swish',
              change=True,
              label='Swish',
              style='info',
-             action='I paid to the Swish account.',
+             action='I pay to the Swish account.',
              description='I paid for one %s to the Swish account.'),
         dict(identifier='credit',
              change=True,

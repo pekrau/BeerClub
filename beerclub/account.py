@@ -53,15 +53,18 @@ class AccountSaver(Saver):
 class AccountMixin(object):
 
     def get_check_account(self, email):
+        """Return the account given by its email.
+        Raise KeyError if it does not exist, or may not be viewed.
+        """
         try:
             account = self.get_account(email)
         except KeyError:
             self.set_error_message('No such account.')
-            return None
+            raise KeyError
         if not (self.is_admin() or 
                 account['email'] == self.current_user['email']):
             self.set_error_message('You may not view the account.')
-            return None
+            raise KeyError
         return account
 
 
@@ -70,11 +73,12 @@ class Account(AccountMixin, RequestHandler):
 
     @tornado.web.authenticated
     def get(self, email):
-        account = self.get_check_account(email)
-        if account:
-            self.render('account.html', account=account)
-        else:
+        try:
+            account = self.get_check_account(email)
+        except KeyError:
             self.see_other('home')
+        else:
+            self.render('account.html', account=account)
 
 
 class AccountEdit(AccountMixin, RequestHandler):
@@ -82,11 +86,12 @@ class AccountEdit(AccountMixin, RequestHandler):
 
     @tornado.web.authenticated
     def get(self, email):
-        account = self.get_check_account(email)
-        if account:
-            self.render('account_edit.html', account=account)
-        else:
+        try:
+            account = self.get_check_account(email)
+        except KeyError:
             self.see_other('home')
+        else:
+            self.render('account_edit.html', account=account)
 
 
 class Accounts(RequestHandler):
@@ -98,6 +103,20 @@ class Accounts(RequestHandler):
         accounts = self.get_docs('account/email', key='',last=constants.CEILING)
         self.render('accounts.html', accounts=accounts)
 
+
+
+
+class AccountHistory(AccountMixin, RequestHandler):
+    "View history of events for an account."
+
+    @tornado.web.authenticated
+    def get(self, email, full=False):
+        try:
+            account = self.get_check_account(email)
+        except KeyError:
+            self.see_other('home')
+            return 
+        
 
 class Login(RequestHandler):
     "Login resource."
@@ -273,8 +292,7 @@ class Register(RequestHandler):
                               ENABLED_TEXT.format(**data))
             self.set_message_flash(EMAIL_SENT)
         else:
-            data['url'] = self.absolute_reverse_url('account_edit',
-                                                    data['email'])
+            data['url'] = self.absolute_reverse_url('account', data['email'])
             subject = PENDING_SUBJECT.format(**data)
             text = PENDING_TEXT.format(**data)
             for admin in self.get_docs('account/role', key=constants.ADMIN):

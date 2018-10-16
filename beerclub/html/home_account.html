@@ -6,57 +6,72 @@
 {{ settings['SITE_NAME'] }} {{ current_user['email'] }}
 {% end %}
 
-{% block body_title %}
-{{ settings['SITE_NAME'] }} <small>{{ current_user['email'] }}</small>
-{% end %}
+{% block body_title %}{{ settings['SITE_NAME'] }}{% end %}
 
 {% block content %}
+<div class="row">
+  <div class="col-md">
+    <h4>{{ current_user['email'] }}</h4>
+  </div>
+  <div class="col-md">
+    <h4>{{ beverages_count }} beverages purchased today.</h4>
+  </div>
+  <div class="col-md">
+    <h4>Current credit: {% module Credit(current_user) %}</h4>
+  </div>
+</div>
 {% for beverage in settings['BEVERAGE'] %}
 <div class="card mt-3 bg-light">
   <div class="card-body">
-    <h3>I took one {{ beverage['label'] }}...
-      <small>(price {{ beverage['price'] }} {{ settings['CURRENCY'] }})</small>
-    </h3>
-    {% for payment in settings['PAYMENT'] %}
-    {% set modid = beverage['identifier'] + '_' + payment['identifier'] %}
-    <div class="my-4">
-      <button type="button"
-              class="btn btn-{{ payment['style'] }} w-100 shadow"
-              data-toggle="modal" data-target="#{{ modid }}Modal">
-        {{ payment['action'] }}
-      </button>
-      <div class="modal fade" id="{{ modid }}Modal"
-           tabindex="-1" role="dialog"
-           aria-labelledby="{{ modid }}Label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <form action="{{ reverse_url('purchase') }}"
-                  role="form"
-                  method="POST">
-              {% module xsrf_form_html() %}
-              <input type="hidden" name="beverage" 
-                     value="{{ beverage['identifier']}}">
-              <input type="hidden" name="payment"
-                     value="{{ payment['identifier'] }}">
-              <div class="modal-body">
-                <h5 id="{{ modid }}Label">
-                  {{ payment['description'] % beverage['label'] }}
-                </h5>
-                <p>
-                  It costs {{ beverage['price'] }} {{ settings['CURRENCY'] }}.
-                </p>
+    <div class="row">
+      <div class="col-md">
+        <h4>I am buying one {{ beverage['label'] }}...
+          <small>(price {{ beverage['price'] }} {{ settings['CURRENCY'] }})</small>
+        </h4>
+      </div>
+      <div class="col-md">
+        {% for payment in settings['PAYMENT'] %}
+        {% set modid = beverage['identifier'] + '_' + payment['identifier'] %}
+        <div class="mt-3">
+          <button type="button"
+                  class="btn btn-{{ payment['style'] }} w-100 shadow"
+                  data-toggle="modal" data-target="#{{ modid }}Modal">
+            {{ payment['action'] }}
+          </button>
+          <div class="modal fade" id="{{ modid }}Modal"
+               tabindex="-1" role="dialog"
+               aria-labelledby="{{ modid }}Label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form action="{{ reverse_url('purchase') }}"
+                      role="form"
+                      method="POST">
+                  {% module xsrf_form_html() %}
+                  <input type="hidden" name="beverage" 
+                         value="{{ beverage['identifier']}}">
+                  <input type="hidden" name="payment"
+                         value="{{ payment['identifier'] }}">
+                  <div class="modal-body">
+                    <h5 id="{{ modid }}Label">
+                      {{ payment['description'] % beverage['label'] }}
+                    </h5>
+                    <p>
+                      It costs {{ beverage['price'] }} {{ settings['CURRENCY'] }}.
+                    </p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                  </div>
+                </form>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"
-                        data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Confirm</button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
+        {% end %}
       </div>
     </div>
-    {% end %}
   </div>
 </div>
 {% end %}
