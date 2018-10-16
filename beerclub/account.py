@@ -83,8 +83,7 @@ class AccountEdit(RequestHandler):
             self.see_other('home')
             return
         data = {}
-        keys = ['name', 'phone', 'address']
-        for key in keys:
+        for key in ['name', 'phone', 'address']:
             try:
                 data[key] = self.get_argument(key)
             except tornado.web.MissingArgumentError:
@@ -99,8 +98,9 @@ class AccountEdit(RequestHandler):
             except (tornado.web.MissingArgumentError, ValueError):
                 pass
         with AccountSaver(doc=account, rqh=self) as saver:
-            for key in keys:
-                saver[key] = data[key]
+            saver['name'] = data['name']
+            saver['phone'] = utils.normalize_phone(data['phone'])
+            saver['address'] = data['address']
             if role:
                 saver['role'] = role
         self.see_other('account', account['email'])
@@ -271,8 +271,7 @@ class Register(RequestHandler):
 
     def post(self):
         data = {}
-        keys = ['email', 'name', 'phone', 'address']
-        for key in keys:
+        for key in ['email', 'name', 'phone', 'address']:
             try:
                 data[key] = self.get_argument(key)
             except tornado.web.MissingArgumentError:
@@ -292,9 +291,11 @@ class Register(RequestHandler):
             self.see_other('home')
             return
         with AccountSaver(rqh=self) as saver:
-            for key in keys:
-                saver[key] = data[key]
-            # Set first account to be admin.
+            saver['email'] = data['email']
+            saver['name'] = data['name']
+            saver['phone'] = utils.normalize_phone(data['phone'])
+            saver['address'] = data['address']
+            # Set the very first account to be admin.
             count = len(self.get_docs('account/email', key='',
                                       last=constants.CEILING, limit=2))
             if count == 0:
@@ -302,7 +303,7 @@ class Register(RequestHandler):
             else:
                 saver['role'] = constants.MEMBER
             ptn = settings['ACCOUNT_EMAIL_AUTOENABLE']
-            # First account will be enabled directly.
+            # First account, or pattern match, will be enabled directly.
             if count == 0 or (ptn and fnmatch.fnmatch(saver['email'], ptn)):
                 saver['status'] = constants.ENABLED
                 saver['code'] = data['code'] = utils.get_iuid()

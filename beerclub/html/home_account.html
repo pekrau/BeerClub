@@ -11,16 +11,16 @@
 {% block content %}
 <div class="row">
   <div class="col-md">
-    <h4>
+    <h5>
       <a href="{{ reverse_url('account', current_user['email']) }}">
         {{ current_user['email'] }}</a>
-    </h4>
+    </h5>
   </div>
   <div class="col-md">
-    <h4>{{ beverages_count }} beverages purchased today.</h4>
+    <h5>{{ beverages_count }} beverages purchased today.</h5>
   </div>
   <div class="col-md">
-    <h4>Current credit: {% module Credit(current_user) %}</h4>
+    <h5>Current credit: {% module Credit(current_user) %}</h5>
   </div>
 </div>
 {% for beverage in settings['BEVERAGE'] %}
@@ -28,9 +28,9 @@
   <div class="card-body">
     <div class="row">
       <div class="col-md">
-        <h4>I am buying one {{ beverage['label'] }}...
+        <h5>I am buying one {{ beverage['label'] }}...
           <small>(price {{ beverage['price'] }} {{ settings['CURRENCY'] }})</small>
-        </h4>
+        </h5>
       </div>
       <div class="col-md">
         {% for payment in settings['PAYMENT'] %}

@@ -51,11 +51,11 @@
       <div class="row form-group">
         <label for="amount" class="col-md-2 col-form-label">Amount</label>
         <div class="col-md-10">
-          <input type="number" min="0" step="{{ settings['AMOUNT_STEP'] }}"
+          <input type="number" step="{{ settings['AMOUNT_STEP'] }}"
                  class="form-control" name="amount" id="amount"
                  aria-describedby="amountHelp" required>
           <small id="amountHelp" class="form-text text-muted">
-            The amount, in {{ settings['CURRENCY'] }}.
+            The amount repaid, in {{ settings['CURRENCY'] }}.
           </small>
         </div>
       </div>
@@ -69,3 +69,9 @@
   </div>
 </div>
 {% end %} {# block content #}
+
+{% block javascript %}
+<script>
+  $(function(){ $("#amount").focus(); });
+</script>
+{% end %}

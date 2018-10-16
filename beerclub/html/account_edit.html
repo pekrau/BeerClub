@@ -8,7 +8,7 @@
 
 {% block content %}
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-10">
   </div>
   <div class="col-md">
     <form action="{{ reverse_url('account', account['email']) }}"
@@ -63,7 +63,7 @@
                  name="phone" id="phone"
                  aria-describedby="phoneHelp" value="{{ account['phone'] }}">
           <small id="phoneHelp" class="form-text text-muted">
-            Your phone number.
+            Your phone number. All non-digit characters will be removed.
           </small>
         </div>
       </div>
@@ -100,7 +100,7 @@
       <div class="row form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">
-          <button type="submit" class="btn btn-secondary">Update</button>
+          <button type="submit" class="btn btn-success">Save</button>
         </div>
       </div>
     </form>

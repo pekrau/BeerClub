@@ -12,21 +12,43 @@ Account
 {% end %}
 
 {% block content %}
-{% if not all %}
+{% if all %}
+<div class="row mb-4">
+  <div class="col-md">
+    <h5>All events</h5>
+  </div>
+  <div class="col-md">
+    <form action="{{ reverse_url('history', account['email']) }}"
+          role="form"
+          method="GET">
+      <input type="hidden" name="all" value="false">
+      <button type="submit" class="btn btn-info w-100">
+        The most recent {{ settings['HISTORY_LIMIT'] }} events.
+      </button>
+    </form>
+  </div>
+  <div class="col-md">
+    <h5>Current credit: {% module Credit(account) %}</h5>
+  </div>
+</div>
+{% else %}
 <div class="row">
-  <div class="col-md-10">
-    The most recent {{ settings['HISTORY_LIMIT'] }} events.
+  <div class="col-md">
+    <h5>The most recent {{ settings['HISTORY_LIMIT'] }} events.</h5>
   </div>
   <div class="col-md">
     <form action="{{ reverse_url('history', account['email']) }}"
           role="form"
           method="GET">
       <input type="hidden" name="all" value="true">
-      <button type="submit" class="btn btn-primary w-100">All events</button>
+      <button type="submit" class="btn btn-info w-100">All events</button>
     </form>
   </div>
+  <div class="col-md">
+    <h5>Current credit: {% module Credit(account) %}</h5>
+  </div>
 </div>
-  {% end %} {# if not all #}
+{% end %} {# if all #}
 <table class="table table-sm mt-4" id="events">
   <thead>
     <tr>

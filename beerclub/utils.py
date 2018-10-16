@@ -6,6 +6,7 @@ import hashlib
 import json
 import logging
 import smtplib
+import string
 import sys
 import unicodedata
 import urlparse
@@ -236,6 +237,9 @@ def to_bool(value):
     if lowvalue in constants.FALSE: return False
     raise ValueError("invalid boolean: '%s'" % value)
 
+def normalize_phone(value):
+    "Return normalized phone number. Get rid of all non-digits."
+    return ''.join([c for c in value if c in string.digits])
 
 class EmailServer(object):
     "A connection to an email server for sending emails."
