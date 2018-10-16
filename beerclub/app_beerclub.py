@@ -15,6 +15,7 @@ from beerclub.requesthandler import RequestHandler
 from beerclub.account import (Account,
                               AccountEdit,
                               Accounts,
+                              AccountHistory,
                               Login,
                               Logout,
                               Reset,
@@ -28,7 +29,6 @@ from beerclub.event import (Event,
 
 class Home(RequestHandler):
     "Home page; login or payment and account info."
-
     def get(self):
         if self.current_user:
             self.render('home_account.html',
@@ -37,22 +37,30 @@ class Home(RequestHandler):
         else:
             self.render('home_login.html', home_active=False)
 
+class About(RequestHandler):
+    "About page."
+    def get(self):
+        raise NotImplementedError
+
 
 def main():
     url = tornado.web.url
-    handlers = [url(r'/', Home, name='home'),
-                url(r'/purchase', Purchase, name='purchase'),
-                url(r'/event/([0-9a-f]{32})', Event, name='event'),
-                url(r'/account/([^/]+)', Account, name='account'),
-                url(r'/account/([^/]+)/edit', AccountEdit, name='account_edit'),
-                url(r'/account/([^/]+)/enable', Enable, name='enable'),
-                url(r'/account/([^/]+)/disable', Disable, name='disable'),
-                url(r'/accounts', Accounts, name='accounts'),
-                url(r'/login', Login, name='login'),
-                url(r'/logout', Logout, name='logout'),
-                url(r'/reset', Reset, name='reset'),
-                url(r'/password', Password, name='password'),
-                url(r'/register', Register, name='register'),
+    handlers = [
+        url(r'/', Home, name='home'),
+        url(r'/purchase', Purchase, name='purchase'),
+        url(r'/account/([^/]+)', Account, name='account'),
+        url(r'/account/([^/]+)/edit', AccountEdit, name='account_edit'),
+        url(r'/account/([^/]+)/enable', Enable, name='enable'),
+        url(r'/account/([^/]+)/disable', Disable, name='disable'),
+        url(r'/account/([^/]+)/history', AccountHistory,name='account_history'),
+        url(r'/accounts', Accounts, name='accounts'),
+        url(r'/event/([0-9a-f]{32})', Event, name='event'),
+        url(r'/login', Login, name='login'),
+        url(r'/logout', Logout, name='logout'),
+        url(r'/reset', Reset, name='reset'),
+        url(r'/password', Password, name='password'),
+        url(r'/register', Register, name='register'),
+        url(r'/about', About, name='about'),
     ]
 
     application = tornado.web.Application(

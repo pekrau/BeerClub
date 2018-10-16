@@ -93,6 +93,27 @@ class AccountEdit(AccountMixin, RequestHandler):
         else:
             self.render('account_edit.html', account=account)
 
+    @tornado.web.authenticated
+    def post(self, email):
+        try:
+            account = self.get_check_account(email)
+        except KeyError:
+            self.see_other('home')
+            return
+        data = {}
+        keys = ['name', 'phone', 'address']
+        for key in keys:
+            try:
+                data[key] = self.get_argument(key)
+            except tornado.web.MissingArgumentError:
+                self.set_error_flash("No %s provided." % key)
+                self.see_other('home')
+                return
+        with AccountSaver(doc=account, rqh=self) as saver:
+            for key in keys:
+                saver[key] = data[key]
+        self.see_other('account', account['email'])
+
 
 class Accounts(RequestHandler):
     "View a table of all accounts."
@@ -116,7 +137,20 @@ class AccountHistory(AccountMixin, RequestHandler):
         except KeyError:
             self.see_other('home')
             return 
-        
+        if full:
+            kwargs = dict()
+        else:
+            kwargs = dict(limit=settings['HISTORY_LIMIT'])
+        events = self.get_docs('event/account',
+                               key=[account['email'], constants.CEILING],
+                               last=[account['email'], ''],
+                               descending=True,
+                               **kwargs)
+        self.render('account_history.html',
+                    account=account,
+                    events=events, 
+                    full=full)
+
 
 class Login(RequestHandler):
     "Login resource."

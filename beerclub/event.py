@@ -20,8 +20,14 @@ class Event(RequestHandler):
 
     @tornado.web.authenticated
     def get(self, iuid):
-        # XXX
-        pass
+        event = self.get_doc(iuid)
+        # View access privilege
+        if not (self.is_admin() or
+                event['account'] == self.current_user['email']):
+            self.set_error_flash('You may not view the event data.')
+            self.see_other('home')
+            return
+        self.render('event.html', event=event)
 
 
 class Purchase(RequestHandler):

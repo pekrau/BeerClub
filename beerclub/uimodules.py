@@ -51,3 +51,22 @@ class NavitemActive(tornado.web.UIModule):
             return 'active'
         else:
             return ''
+
+class Step(tornado.web.UIModule):
+    "Step to next item in list and output whenever there is a new value."
+
+    def render(self, value, items, store):
+        if value == store.get('value'):
+            pos = store.get('pos')
+            if pos is None:
+                store['pos'] = pos = 0
+        else:
+            store['value'] = value
+            pos = store.get('pos')
+            if pos is None:
+                store['pos'] = pos = 0
+            else:
+                pos += 1
+                if pos >= len(items):
+                    store['pos'] = pos = 0
+        return items[pos]

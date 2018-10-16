@@ -8,11 +8,12 @@
 
 {% block content %}
 <div class="row">
+  <div class="col-md-8">
+  </div>
   <div class="col-md">
     <form action="{{ reverse_url('account_edit', account['email']) }}"
           role="form"
-          method="POST">
-      {% module xsrf_form_html() %}
+          method="GET">
       <button type="submit" class="btn btn-primary w-100">Edit</button>
     </form>
   </div>
@@ -36,7 +37,7 @@
   </div>
   {% end %}
 </div>
-<table class="table mt-4" id="account">
+<table class="table mt-4">
   <tbody>
     <tr>
       <th scope="row">Credit</th>

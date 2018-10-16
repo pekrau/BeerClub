@@ -1,0 +1,36 @@
+{# Account page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Account {{ account['email'] }} history{% end %}
+
+{% block body_title %}Account {{ account['email'] }} history{% end %}
+
+{% block content %}
+<table class="table mt-4" id="events">
+  <thead>
+    <tr>
+      <th scope="col">Event</th>
+      <th scope="col">Specification</th>
+      <th scope="col">Payment</th>
+      <th scope="col">Credit change</th>
+      <th scope="col">Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% set store = {} %}
+    {% for event in events %}
+    <tr class="{% module Step(event['log']['date'], ['table-active', 'table-light'], store) %}">
+      <td>
+        <a href="{{ reverse_url('event', event['_id']) }}">
+          {{ event['action'] }}</a>
+      </td>
+      <td>{{ event.get('beverage') }}</td>
+      <td>{{ event['payment'] }}</td>
+      <td>{{ event['credit'] }}</td>
+      <td class="localtime">{{ event['log']['timestamp'] }}</td>
+    </tr>
+    {% end %} {# for event in events #}
+  </tbody>
+</table>
+{% end %} {# block content #}

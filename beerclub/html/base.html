@@ -34,7 +34,14 @@
           </li>
           {% if current_user %}
           <li class="nav-item {% module NavitemActive('account') %}">
-            <a class="nav-link" href="{{ reverse_url('account', current_user['email']) }}">My account</a>
+            <a class="nav-link" 
+               href="{{ reverse_url('account', current_user['email']) }}">
+              My account</a>
+          </li>
+          <li class="nav-item {% module NavitemActive('accounthistory') %}">
+            <a class="nav-link" 
+               href="{{ reverse_url('account_history', current_user['email']) }}">
+              My history</a>
           </li>
           {% end %}
           {% if is_admin %}
@@ -50,6 +57,9 @@
             </div>
           </li>
           {% end %} {# if is_admin #}
+          <li class="nav-item {% module NavitemActive('about') %}">
+            <a class="nav-link" href="{{ reverse_url('about') }}">About</a>
+          </li>
         </ul>
         {% if current_user %}
         <form action="{{ reverse_url('logout') }}"

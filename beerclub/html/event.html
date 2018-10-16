@@ -1,0 +1,57 @@
+{# Event page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Event {{ event['_id'] }}{% end %}
+
+{% block body_title %}Event {{ event['_id'] }}{% end %}
+
+{% block content %}
+<table class="table mt-4">
+  <tbody>
+    <tr>
+      <th scope="row">Account</th>
+      <td>
+        <a href="{{ reverse_url('account', event['account']) }}">
+          {{ event['account'] }}</a>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Event</th>
+      <td>{{ event['action'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Beverage</th>
+      <td>{{ event['beverage'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Price</th>
+      <td>{{ event['price'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Payment</th>
+      <td>{{ event['payment'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Credit change</th>
+      <td>{{ event['credit'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Actor</th>
+      <td>{{ event['log']['account'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Timestamp</th>
+      <td class="localtime">{{ event['log']['timestamp'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">User agent</th>
+      <td>{{ event['log']['user_agent'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Remote IP</th>
+      <td>{{ event['log']['remote_ip'] }}</td>
+    </tr>
+  </tbody>
+</table>
+{% end %} {# block content #}
