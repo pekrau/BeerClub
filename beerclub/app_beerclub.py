@@ -7,9 +7,10 @@ import os
 import tornado.web
 import tornado.ioloop
 
-from beerclub import utils
+from beerclub import designs
 from beerclub import settings
 from beerclub import uimodules
+from beerclub import utils
 
 from beerclub.requesthandler import RequestHandler
 from beerclub.account import (Account,
@@ -83,6 +84,6 @@ def main():
 
 if __name__ == "__main__":
     utils.setup()
-    utils.load_design_documents(utils.get_db())
+    designs.load_design_documents(utils.get_db())
     main()
     

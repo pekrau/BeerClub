@@ -19,46 +19,6 @@ from beerclub import constants
 from beerclub import settings
 
 
-# CouchDB design documents (view index definitions)
-ACCOUNT_EMAIL = dict(map="""function(doc) {
-  if (doc.beerclub_doctype !== 'account') return;
-  emit(doc.email, doc.status);
-}""")
-
-ACCOUNT_ROLE = dict(map="""function(doc) {
-  if (doc.beerclub_doctype !== 'account') return;
-  emit(doc.role, doc.email);
-}""")
-
-ACCOUNT_STATUS = dict(map="""function(doc) {
-  if (doc.beerclub_doctype !== 'account') return;
-  emit(doc.status, doc.email);
-}""")
-
-EVENT_ACTION = dict(map="""function(doc) {
-  if (doc.beerclub_doctype !== 'event') return;
-  emit(doc.action, doc.account);
-}""")
-
-EVENT_CREDIT = dict(map="""function(doc) {
-  if (doc.beerclub_doctype !== 'event') return;
-  emit(doc.account, doc.credit);
-}""",
-                    reduce="_sum")
-
-EVENT_BEVERAGES = dict(map="""function(doc) {
-  if (doc.beerclub_doctype !== 'event') return;
-  if (doc.action !== 'purchase') return;
-  emit([doc.account, doc.log.date], doc.beverage);
-}""",
-                       reduce="_count")
-
-EVENT_ACCOUNT = dict(map="""function(doc) {
-  if (doc.beerclub_doctype !== 'event') return;
-  emit([doc.account, doc.log.timestamp], null);
-}""")
-
-
 def setup():
     "Setup: read settings, set logging."
     try:
@@ -111,30 +71,6 @@ def get_db():
     except couchdb.http.ResourceNotFound:
         raise KeyError("CouchDB database '%s' does not exist." % 
                        settings['DATABASE_NAME'])
-
-def load_design_documents(db):
-    "Load the design documents (view index definitions)."
-    update_design_document(db, 'account', dict(email=ACCOUNT_EMAIL,
-                                               role=ACCOUNT_ROLE,
-                                               status=ACCOUNT_STATUS))
-    update_design_document(db, 'event', dict(action=EVENT_ACTION,
-                                             credit=EVENT_CREDIT,
-                                             beverages=EVENT_BEVERAGES,
-                                             account=EVENT_ACCOUNT))
-
-def update_design_document(db, design, views=dict()):
-    "Update the design document (view index definition)."
-    docid = "_design/%s" % design
-    try:
-        doc = db[docid]
-    except couchdb.http.ResourceNotFound:
-        logging.info("loading design document %s", docid)
-        db.save(dict(_id=docid, views=views))
-    else:
-        if doc['views'] != views:
-            doc['views'] = views
-            logging.info("updating design document %s", docid)
-            db.save(doc)
 
 def get_doc(db, key, viewname=None):
     """Get the document with the given i, or from the given view.
