@@ -20,21 +20,28 @@
       <th scope="row">Event</th>
       <td>{{ event['action'] }}</td>
     </tr>
+    {% if event['action'] == constants.EXPENDITURE %}
+    <tr>
+      <th scope="row">Description</th>
+      <td>{{ event.get('description') or '-' }}</td>
+    </tr>
+    {% else %}
     <tr>
       <th scope="row">Beverage</th>
-      <td>{{ event['beverage'] }}</td>
+      <td>{{ event.get('beverage') or '-' }}</td>
     </tr>
     <tr>
       <th scope="row">Price</th>
-      <td>{{ event['price'] }}</td>
+      <td>{% module Money(event.get('price'), padding=0) %}</td>
     </tr>
     <tr>
       <th scope="row">Payment</th>
-      <td>{{ event['payment'] }}</td>
+      <td>{{ event.get('payment') or '-' }}</td>
     </tr>
+    {% end %}
     <tr>
       <th scope="row">Credit change</th>
-      <td>{{ event['credit'] }}</td>
+      <td>{% module Money(event['credit'], padding=0) %}</td>
     </tr>
     <tr>
       <th scope="row">Actor</th>

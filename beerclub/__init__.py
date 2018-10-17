@@ -42,7 +42,8 @@ settings = dict(
     " you provide to be handled by the {SITE_NAME} according to"
     " applicable laws. {SITE_NAME} guarantees that no data will be transferred"
     " to any external entity.",
-    AMOUNT_STEP='0.01',
+    PAYMENT_INFO_HTML=None,
+    MONEY_STEP='0.01',
     BEVERAGE=[
         dict(identifier='beer',
              label='beer',

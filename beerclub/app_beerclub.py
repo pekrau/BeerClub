@@ -25,6 +25,7 @@ from beerclub.account import (Account,
 from beerclub.event import (Event,
                             Purchase,
                             Repayment,
+                            Expenditure,
                             History,
                             Ledger)
 
@@ -58,6 +59,7 @@ def main():
         url(r'/accounts', Accounts, name='accounts'),
         url(r'/history/([^/]+)', History, dict(all=False), name='history'),
         url(r'/history/([^/]+)/all', History,dict(all=True),name='history_all'),
+        url(r'/expenditure', Expenditure, name='expenditure'),
         url(r'/ledger', Ledger, name='ledger'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),

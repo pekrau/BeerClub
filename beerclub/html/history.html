@@ -17,7 +17,7 @@ History
 {% if all %}
 <div class="row my-4">
   <div class="col-md-8">
-    <h5>Current credit: {% module Money(get_credit(account)) %}</h5>
+    <h5>Current credit: {% module Money(get_credit(account), padding=0) %}</h5>
   </div>
   <div class="col-md">
     <a href="{{ reverse_url('history', account['email']) }}"
@@ -27,7 +27,7 @@ History
 {% else %}
 <div class="row my-4">
   <div class="col-md-8">
-    <h5>Current credit: {% module Money(get_credit(account)) %}</h5>
+    <h5>Current credit: {% module Money(get_credit(account), padding=0) %}</h5>
   </div>
   <div class="col-md">
     <a href="{{ reverse_url('history_all', account['email']) }}"

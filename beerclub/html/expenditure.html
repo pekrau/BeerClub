@@ -7,4 +7,61 @@
 {% block body_title %}Expenditure{% end %}
 
 {% block content %}
+<div class="row">
+  <div class="col-md-8">
+  </div>
+  <div class="col-md">
+    <a href="{{ reverse_url('ledger') }}"
+       role="button" class="btn btn-secondary w-100">Cancel</a>
+  </div>
+</div>
+<div class="card mt-2">
+  <div class="card-body">
+    <form action="{{ reverse_url('expenditure') }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <div class="row form-group">
+        <label for="amount" class="col-md-2 col-form-label">Amount</label>
+        <div class="col-md-4">
+          <input type="number" step="{{ settings['MONEY_STEP'] }}"
+                 class="form-control" name="amount" id="amount"
+                 aria-describedby="amountHelp" required>
+          <small id="amountHelp" class="form-text text-muted">
+            The amount expended, in {{ currency }}.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="date" class="col-md-2 col-form-label">Date</label>
+        <div class="col-md-4">
+          <input type="text" class="form-control datepicker"
+                 name="date" id="date"
+                 aria-describedby="dateHelp"
+                 value="{% module Date() %}">
+          <small id="dateHelp" class="form-text text-muted">
+            The date of the expenditure.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="description" class="col-md-2 col-form-label">Description</label>
+        <div class="col-md-8">
+          <textarea class="form-control"
+                    name="description" id="description"
+                    aria-describedby="descriptionHelp"></textarea>
+          <small id="descriptionHelp" class="form-text text-muted">
+            Description of the expenditure: Who obtained what?
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <button type="submit" class="btn btn-warning">Expend</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 {% end %} {# block content #}

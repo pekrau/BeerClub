@@ -89,7 +89,7 @@ class Repayment(RequestHandler):
             saver['account'] = account['email']
             saver['action']  = constants.REPAYMENT
             saver['payment'] = payment['identifier']
-            saver['credit']  = int(self.get_argument('amount'))
+            saver['credit']  = float(self.get_argument('amount'))
             saver['date']    = self.get_argument('date', utils.today())
         self.see_other('accounts')
 
@@ -108,8 +108,9 @@ class Expenditure(RequestHandler):
         with EventSaver(rqh=self) as saver:
             saver['account'] = constants.BEERCLUB
             saver['action']  = constants.EXPENDITURE
-            saver['credit']  = int(self.get_argument('amount'))
+            saver['credit']  = - float(self.get_argument('amount'))
             saver['date']    = self.get_argument('date', utils.today())
+            saver['description'] = self.get_argument('description', None)
         self.see_other('ledger')
 
 

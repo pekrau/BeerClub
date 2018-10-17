@@ -14,13 +14,15 @@ class Money(tornado.web.UIModule):
     "HTML for a money value."
 
     def render(self, money, currency=True, padding=6):
+        if money is None: money = 0
         value = locale.currency(money, symbol=currency, grouping=True)
         padding = '&nbsp;' * max(0, padding - len(str(int(money))))
         value = padding + value
         if money >= 0:
-            return '<span class="text-monospace">%s</span>' % value
+            template = '<span class="text-monospace">%s</span>'
         else:
-            return '<strong class="text-monospace text-danger">%s</strong>' % value
+            template = '<strong class="text-monospace text-danger">%s</strong>'
+        return template % value
 
 class Status(tornado.web.UIModule):
     "HTML for account status."

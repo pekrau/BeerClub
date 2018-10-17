@@ -7,6 +7,14 @@
 {% block body_title %}About {{ settings['SITE_NAME'] }}{% end %}
 
 {% block content %}
+<h4 class="mt-3">Pay your debt</h4>
+{% if not settings['PAYMENT_INFO_HTML'] %}
+<p>
+  <i>Currently, no info on how to pay your debt is available.</i>
+</p>
+{% else %}
+{% raw settings['PAYMENT_INFO_HTML'] %}
+{% end %}
 <h4>Policy</h4>
 <p>
   {{ settings['POLICY_STATEMENT'] }}

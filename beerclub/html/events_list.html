@@ -6,10 +6,10 @@
   <thead>
     <tr>
       <th scope="col">Event</th>
-      <th scope="col">Specification</th>
-      <th scope="col">Payment</th>
-      <th scope="col">Credit change</th>
-      <th scope="col">Timestamp</th>
+      <th scope="col" class="break">Specification</th>
+      <th scope="col" class="break">Payment</th>
+      <th scope="col" class="break">Credit change</th>
+      <th scope="col" class="break">Timestamp</th>
     </tr>
   </thead>
   <tbody>
@@ -25,9 +25,9 @@
         {% end %}
       </td>
       <td>{{ event.get('beverage') or '-' }}</td>
-      <td>{{ event.get('payment') }}</td>
+      <td>{{ event.get('payment') or '-' }}</td>
       <td>{% module Money(event['credit'], currency=False) %}</td>
-      <td class="localtime">{{ event['log']['timestamp'] }}</td>
+      <td class="localtime small">{{ event['log']['timestamp'] }}</td>
     </tr>
     {% end %} {# for event in events #}
   </tbody>

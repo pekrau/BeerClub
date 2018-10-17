@@ -13,6 +13,9 @@
           crossorigin="anonymous">
     <link rel="stylesheet"
           href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
+    <style>
+      .break { word-break: break-all; }
+    </style>
   </head>
   <body>
 
@@ -45,6 +48,10 @@
           {% if is_admin %}
           <li class="nav-item {% module NavitemActive('accounts') %}">
             <a class="nav-link" href="{{ reverse_url('accounts')}}">Accounts</a>
+          </li>
+          <li class="nav-item {% module NavitemActive('expenditure') %}">
+            <a class="nav-link" href="{{ reverse_url('expenditure')}}">
+              Expenditure</a>
           </li>
           {% end %} {# if is_admin #}
           <li class="nav-item {% module NavitemActive('ledger') %}">
@@ -121,6 +128,9 @@
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js">
     </script>
     <script src="{{ static_url('jquery.localtime-0.9.1.min.js') }}">
+    </script>
+    <script>
+      $(function(){ $("#date").datepicker({dateFormat: "yy-mm-dd"}); } );
     </script>
 
     {% block javascript %}
