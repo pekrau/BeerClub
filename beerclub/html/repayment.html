@@ -32,17 +32,17 @@
         </div>
       </div>
       <div class="row form-group">
-        <label for="address" class="col-md-2 col-form-label">Method</label>
+        <label for="address" class="col-md-2 col-form-label">Payment</label>
         <div class="col-md-10">
-          {% for repayment in settings['REPAYMENT'] %}
+          {% for payment in settings['REPAYMENT'] %}
           <div class="form-check">
             <input class="form-check-input" type="radio"
-                   name="method" id="repayment_{{ repayment['identifier'] }}"
-                   {{ repayment.get('default') and 'checked' or '' }}
-                   value="{{ repayment['identifier'] }}">
+                   name="payment" id="payment_{{ payment['identifier'] }}"
+                   {{ payment.get('default') and 'checked' or '' }}
+                   value="{{ payment['identifier'] }}">
             <label class="form-check-label"
-                   for="repayment_{{ repayment['identifier'] }}">
-              {{ repayment['label'] }}
+                   for="type_{{ payment['identifier'] }}">
+              {{ payment['label'] }}
             </label>
           </div>
           {% end %}
@@ -50,12 +50,24 @@
       </div>
       <div class="row form-group">
         <label for="amount" class="col-md-2 col-form-label">Amount</label>
-        <div class="col-md-10">
+        <div class="col-md-4">
           <input type="number" step="{{ settings['AMOUNT_STEP'] }}"
                  class="form-control" name="amount" id="amount"
                  aria-describedby="amountHelp" required>
           <small id="amountHelp" class="form-text text-muted">
             The amount repaid, in {{ settings['CURRENCY'] }}.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="date" class="col-md-2 col-form-label">Date</label>
+        <div class="col-md-4">
+          <input type="text" class="form-control datepicker"
+                 name="date" id="date"
+                 aria-describedby="dateHelp"
+                 value="{% module Date() %}">
+          <small id="dateHelp" class="form-text text-muted">
+            The date of the repayment.
           </small>
         </div>
       </div>
@@ -71,6 +83,9 @@
 {% end %} {# block content #}
 
 {% block javascript %}
+<script>
+  $(function(){ $("#date").datepicker({dateFormat: "yy-mm-dd"}); } );
+</script>
 <script>
   $(function(){ $("#amount").focus(); });
 </script>

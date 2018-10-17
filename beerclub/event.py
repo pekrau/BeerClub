@@ -31,7 +31,7 @@ class Event(RequestHandler):
 
 
 class Purchase(RequestHandler):
-    "Buying one beverage."
+    "Buying one beverage. Always by the currently logged in account."
 
     @tornado.web.authenticated
     def post(self):
@@ -44,7 +44,7 @@ class Purchase(RequestHandler):
         for payment in settings['PAYMENT']:
             if pid == payment['identifier']: break
         else:
-            raise KeyError("no such payment %s" % bid)
+            raise KeyError("no such payment %s" % pid)
         with EventSaver(rqh=self) as saver:
             saver['account'] = self.current_user['email']
             saver['action']   = constants.PURCHASE
@@ -80,3 +80,15 @@ class Repayment(RequestHandler):
         except KeyError:
             self.see_other('home')
             return
+        pid =self.get_argument('payment')
+        for payment in settings['REPAYMENT']:
+            if pid == payment['identifier']: break
+        else:
+            raise KeyError("no such repayment %s" % pid)
+        with EventSaver(rqh=self) as saver:
+            saver['account'] = account['email']
+            saver['action']  = constants.REPAYMENT
+            saver['payment'] = payment['identifier']
+            saver['credit']  = int(self.get_argument('amount'))
+            saver['date']    = self.get_argument('date', utils.today())
+        self.see_other('accounts')

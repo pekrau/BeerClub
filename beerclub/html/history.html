@@ -22,7 +22,7 @@ Account
           role="form"
           method="GET">
       <input type="hidden" name="all" value="false">
-      <button type="submit" class="btn btn-info w-100">
+      <button type="submit" class="btn btn-info">
         The most recent {{ settings['HISTORY_LIMIT'] }} events.
       </button>
     </form>
@@ -41,7 +41,7 @@ Account
           role="form"
           method="GET">
       <input type="hidden" name="all" value="true">
-      <button type="submit" class="btn btn-info w-100">All events</button>
+      <button type="submit" class="btn btn-info">All events</button>
     </form>
   </div>
   <div class="col-md">
@@ -67,9 +67,9 @@ Account
         <a href="{{ reverse_url('event', event['_id']) }}">
           {{ event['action'] }}</a>
       </td>
-      <td>{{ event.get('beverage') }}</td>
-      <td>{{ event['payment'] }}</td>
-      <td>{{ event['credit'] }}</td>
+      <td>{{ event.get('beverage') or '-' }}</td>
+      <td>{{ event.get('payment') }}</td>
+      <td class="text-monospace">{{ event['credit'] }}</td>
       <td class="localtime">{{ event['log']['timestamp'] }}</td>
     </tr>
     {% end %} {# for event in events #}

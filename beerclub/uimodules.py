@@ -79,3 +79,12 @@ class Step(tornado.web.UIModule):
                 if pos >= len(items):
                     store['pos'] = pos = 0
         return items[pos]
+
+class Date(tornado.web.UIModule):
+    "Output the date; today if no value given."
+
+    def render(self, date=None):
+        if date is None:
+            return utils.today()
+        else:
+            return date

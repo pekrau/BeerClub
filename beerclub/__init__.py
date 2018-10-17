@@ -77,7 +77,7 @@ settings = dict(
              label='Verified Swish payment',
              default=True),
         dict(identifier='bank',
-             label='Payment to bank account'),
+             label='Transfer to bank account'),
         dict(identifier='correction',
              label='Correction of an erroneous transaction'),
     ],
