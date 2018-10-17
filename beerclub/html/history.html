@@ -34,7 +34,7 @@ History
   </div>
   <div class="col-md">
     <a href="{{ reverse_url('history_all', account['email']) }}"
-       class="btn btn-info">Show recent events</a>
+       class="btn btn-info">Show all events</a>
     </form>
   </div>
 </div>
@@ -73,6 +73,8 @@ History
   $(function() {
     $("#events").DataTable( {
       "pagingType": "full_numbers",
+      "pageLength": {{ settings['DISPLAY_MAX_HISTORY'] }},
+      "order": [[ 4, "desc"]],
     });
   });
 </script>

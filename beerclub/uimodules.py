@@ -68,16 +68,17 @@ class Step(tornado.web.UIModule):
         if value == store.get('value'):
             pos = store.get('pos')
             if pos is None:
-                store['pos'] = pos = 0
+                pos = 0
         else:
-            store['value'] = value
             pos = store.get('pos')
             if pos is None:
-                store['pos'] = pos = 0
+                pos = 0
             else:
                 pos += 1
                 if pos >= len(items):
-                    store['pos'] = pos = 0
+                    pos = 0
+        store['pos'] = pos
+        store['value'] = value
         return items[pos]
 
 class Date(tornado.web.UIModule):

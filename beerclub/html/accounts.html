@@ -19,6 +19,8 @@
   $(function() {
     $("#accounts").DataTable( {
       "pagingType": "full_numbers",
+      "pageLength": 25,
+      "order": [[ 6, "desc"]],
     });
   });
 </script>
