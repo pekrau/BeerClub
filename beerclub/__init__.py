@@ -22,6 +22,7 @@ settings = dict(
     COOKIE_SECRET=None, # Set to a secret long string of random characters.
     PASSWORD_SALT=None, # Set to a secret long string of random characters.
     MIN_PASSWORD_LENGTH=8,
+    LOGIN_MAX_AGE_DAYS=31,
     ACCOUNT_EMAIL_AUTOENABLE=None,
     EMAIL=dict(HOST='localhost',
                PORT=None,
@@ -29,8 +30,9 @@ settings = dict(
                USER=None,
                PASSWORD=None,
                SENDER=None),
-    LOGIN_MAX_AGE_DAYS=31,
-    HISTORY_LIMIT=30,
+    DISPLAY_NAVBAR_THEME='navbar-light',
+    DISPLAY_NAVBAR_COLOUR= '#a9e15e',
+    DISPLAY_MAX_HISTORY=30,
     CONTACT_EMAIL=None,
     POLICY_STATEMENT="The {SITE_NAME} is a non-profit group providing beer"
     " to its members. Volunteer members must purchase the beer and deliver"
@@ -57,13 +59,13 @@ settings = dict(
              change=False,
              label='cash',
              style='success',
-             action='I pay cash.',
+             action='I paid cash.',
              description='I paid cash for one %s.'),
         dict(identifier='swish',
              change=True,
              label='Swish',
              style='info',
-             action='I pay to the Swish account.',
+             action='I paid to the Swish account.',
              description='I paid for one %s to the Swish account.'),
         dict(identifier='credit',
              change=True,
@@ -80,5 +82,7 @@ settings = dict(
              label='Transfer to bank account'),
         dict(identifier='correction',
              label='Correction of an erroneous transaction'),
+        dict(identifier='init', # When transfering from other bookkeeping.
+             hidden=True),
     ],
 )

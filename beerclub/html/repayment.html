@@ -35,6 +35,9 @@
         <label for="address" class="col-md-2 col-form-label">Payment</label>
         <div class="col-md-10">
           {% for payment in settings['REPAYMENT'] %}
+          {% if payment.get('hidden') %}
+          {% continue %}
+          {% end %}
           <div class="form-check">
             <input class="form-check-input" type="radio"
                    name="payment" id="payment_{{ payment['identifier'] }}"

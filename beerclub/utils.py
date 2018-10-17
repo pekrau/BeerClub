@@ -16,6 +16,7 @@ import couchdb
 
 import beerclub
 from beerclub import constants
+from beerclub import designs
 from beerclub import settings
 
 
@@ -71,6 +72,24 @@ def get_db():
     except couchdb.http.ResourceNotFound:
         raise KeyError("CouchDB database '%s' does not exist." % 
                        settings['DATABASE_NAME'])
+
+def initialize(db=None):
+    """Load the design documents, or update. 
+    Create the beerclub account if it does not exist.
+    """
+    if db is None:
+        db = get_db()
+    designs.load_design_documents(db)
+    try:
+        doc = get_doc(db, 'beerclub')
+    except KeyError:
+        doc = {'_id': 'beerclub',
+               constants.DOCTYPE: constants.META,
+               'version': beerclub.__version__}
+    else:
+        # XXX Do updates as required depending on the version number.
+        pass
+    db.save(doc)
 
 def get_doc(db, key, viewname=None):
     """Get the document with the given i, or from the given view.

@@ -2,50 +2,40 @@
 
 {% extends 'base.html' %}
 
-{% block head_title %}Account {{ account['email'] }} history{% end %}
+{% block head_title %}
+History {{ account['email'] }},{{ all and 'all events' or 'recent events' }}
+{% end %}
 
 {% block body_title %}
-Account
+History
 <a href="{{ reverse_url('account', account['email']) }}">
-  {{ account['email'] }}</a>
- history
+  {{ account['email'] }}</a>,
+<small>{{ all and 'all events' or 'recent events' }}</small>
 {% end %}
 
 {% block content %}
 {% if all %}
-<div class="row mb-4">
-  <div class="col-md">
-    <h5>All events</h5>
-  </div>
-  <div class="col-md">
-    <form action="{{ reverse_url('history', account['email']) }}"
-          role="form"
-          method="GET">
-      <input type="hidden" name="all" value="false">
-      <button type="submit" class="btn btn-info">
-        The most recent {{ settings['HISTORY_LIMIT'] }} events.
-      </button>
-    </form>
-  </div>
-  <div class="col-md">
+<div class="row my-4">
+  <div class="col-md-8">
     <h5>Current credit: {% module Credit(account) %}</h5>
+  </div>
+  <div class="col-md">
+    <a href="{{ reverse_url('history', account['email']) }}"
+       class="btn btn-info">Show recent events</a>
   </div>
 </div>
 {% else %}
-<div class="row">
-  <div class="col-md">
-    <h5>The most recent {{ settings['HISTORY_LIMIT'] }} events.</h5>
-  </div>
-  <div class="col-md">
-    <form action="{{ reverse_url('history', account['email']) }}"
-          role="form"
-          method="GET">
-      <input type="hidden" name="all" value="true">
-      <button type="submit" class="btn btn-info">All events</button>
-    </form>
-  </div>
-  <div class="col-md">
+<div class="row my-4">
+  <div class="col-md-4">
     <h5>Current credit: {% module Credit(account) %}</h5>
+  </div>
+  <div class="col-md-4">
+    <h5>Max {{ settings['DISPLAY_MAX_HISTORY'] }} events shown.</h5>
+  </div>
+  <div class="col-md">
+    <a href="{{ reverse_url('history_all', account['email']) }}"
+       class="btn btn-info">Show recent events</a>
+    </form>
   </div>
 </div>
 {% end %} {# if all #}

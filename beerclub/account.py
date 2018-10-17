@@ -119,7 +119,10 @@ class Accounts(RequestHandler):
 
 
 class AccountHistory(RequestHandler):
-    "View history of events for an account."
+    "View event history for an account."
+
+    def initialize(self, all):
+        self.all = all
 
     @tornado.web.authenticated
     def get(self, email):
@@ -128,11 +131,10 @@ class AccountHistory(RequestHandler):
         except KeyError:
             self.see_other('home')
             return 
-        all = utils.to_bool(self.get_argument('all', False))
-        if all:
+        if self.all:
             kwargs = dict()
         else:
-            kwargs = dict(limit=settings['HISTORY_LIMIT'])
+            kwargs = dict(limit=settings['DISPLAY_MAX_HISTORY'])
         events = self.get_docs('event/account',
                                key=[account['email'], constants.CEILING],
                                last=[account['email'], ''],
@@ -141,7 +143,7 @@ class AccountHistory(RequestHandler):
         self.render('history.html',
                     account=account,
                     events=events, 
-                    all=all)
+                    all=self.all)
 
 
 class Login(RequestHandler):

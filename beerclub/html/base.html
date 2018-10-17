@@ -16,7 +16,8 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg {{ settings['DISPLAY_NAVBAR_THEME'] }}"
+         style="background-color: {{ settings['DISPLAY_NAVBAR_COLOUR'] }};">
       <a class="navbar-brand" href="{{ reverse_url('home') }}">
         <img src="{{ static_url('beer32.png') }}"
              alt="{{ settings['SITE_NAME'] }}"

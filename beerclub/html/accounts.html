@@ -7,7 +7,11 @@
 {% block body_title %}Accounts{% end %}
 
 {% block content %}
-{% include 'accounts_list.html' %}
+<div class="row my-4">
+  <div class="col-md">
+    {% include 'accounts_list.html' %}
+  </div>
+</div>
 {% end %} {# block content #}
 
 {% block javascript %}

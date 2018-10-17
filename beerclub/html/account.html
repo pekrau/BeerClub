@@ -8,35 +8,46 @@
 
 {% block content %}
 <div class="row">
-  <div class="col-md-8">
-  </div>
   <div class="col-md">
+  </div>
+  <div class="col-md-2">
     <a href="{{ reverse_url('history', account['email']) }}"
        role="button" class="btn btn-secondary w-100">History</a>
   </div>
-  <div class="col-md">
+  {% if is_admin %}
+  <div class="col-md-2">
+    <form action="{{ reverse_url('repayment', account['email']) }}"
+          role="form"
+          method="GET">
+      <button type="submit" class="btn btn-dark w-100">Repay</button>
+    </form>
+  </div>
+  {% end %} {# if is_admin #}
+  <div class="col-md-2">
     <a href="{{ reverse_url('account_edit', account['email']) }}"
        role="button" class="btn btn-primary w-100">Edit</a>
   </div>
   {% if is_admin and account['email'] != current_user['email'] %}
-  <div class="col-md">
-    {% if account['status'] == constants.ENABLED %}
+  {% if account['status'] == constants.ENABLED %}
+  <div class="col-md-2">
     <form action="{{ reverse_url('disable', account['email']) }}"
           role="form"
           method="POST">
       {% module xsrf_form_html() %}
       <button type="submit" class="btn btn-danger w-100">Disable</button>
     </form>
-    {% else %}
+  </div>
+  {% else %}
+  <div class="col-md-2">
     <form action="{{ reverse_url('enable', account['email']) }}"
           role="form"
           method="POST">
       {% module xsrf_form_html() %}
       <button type="submit" class="btn btn-success w-100">Enable</button>
     </form>
-    {% end %}
   </div>
-  {% end %}
+  {% end %} {# if account['status'] == ... #}
+  {% end %} {# if is_admin and ... #}
 </div>
 <table class="table mt-4">
   <tbody>

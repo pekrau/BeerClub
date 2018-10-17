@@ -7,7 +7,6 @@ import os
 import tornado.web
 import tornado.ioloop
 
-from beerclub import designs
 from beerclub import settings
 from beerclub import uimodules
 from beerclub import utils
@@ -55,7 +54,10 @@ def main():
         url(r'/account/([^/]+)/edit', AccountEdit, name='account_edit'),
         url(r'/account/([^/]+)/enable', Enable, name='enable'),
         url(r'/account/([^/]+)/disable', Disable, name='disable'),
-        url(r'/account/([^/]+)/history', AccountHistory,name='history'),
+        url(r'/account/([^/]+)/history', 
+            AccountHistory, dict(all=False), name='history'),
+        url(r'/account/([^/]+)/history/all', 
+            AccountHistory, dict(all=True), name='history_all'),
         url(r'/accounts', Accounts, name='accounts'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),
@@ -84,6 +86,6 @@ def main():
 
 if __name__ == "__main__":
     utils.setup()
-    designs.load_design_documents(utils.get_db())
+    utils.initialize()
     main()
     

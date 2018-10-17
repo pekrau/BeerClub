@@ -7,10 +7,11 @@
 CEILING = 'ZZZZZZZZ'
 
 # Entity documents
-DOCTYPE     = 'beerclub_doctype'
-ACCOUNT     = 'account'
-EVENT       = 'event'
-ENTITIES    = (ACCOUNT, EVENT)
+DOCTYPE  = 'beerclub_doctype'
+ACCOUNT  = 'account'
+EVENT    = 'event'
+ENTITIES = (ACCOUNT, EVENT)
+META     = 'meta'
 
 # Account status
 PENDING  = 'pending'
