@@ -100,10 +100,17 @@ class Expenditure(RequestHandler):
     @tornado.web.authenticated
     def get(self):
         self.check_admin()
+        self.render('expenditure.html')
 
     @tornado.web.authenticated
     def post(self):
         self.check_admin()
+        with EventSaver(rqh=self) as saver:
+            saver['account'] = constants.BEERCLUB
+            saver['action']  = constants.EXPENDITURE
+            saver['credit']  = int(self.get_argument('amount'))
+            saver['date']    = self.get_argument('date', utils.today())
+        self.see_other('ledger')
 
 
 class History(RequestHandler):

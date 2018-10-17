@@ -42,7 +42,6 @@ settings = dict(
     " you provide to be handled by the {SITE_NAME} according to"
     " applicable laws. {SITE_NAME} guarantees that no data will be transferred"
     " to any external entity.",
-    CURRENCY='SEK',
     AMOUNT_STEP='0.01',
     BEVERAGE=[
         dict(identifier='beer',
@@ -79,10 +78,10 @@ settings = dict(
              label='Verified Swish payment',
              default=True),
         dict(identifier='bank',
-             label='Transfer to bank account'),
+             label='Bank account transferral'),
         dict(identifier='correction',
              label='Correction of an erroneous transaction'),
-        dict(identifier='init', # When transfering from other bookkeeping.
-             hidden=True),
+        dict(identifier='transfer',
+             label='Transfer of credit from some other source'),
     ],
 )

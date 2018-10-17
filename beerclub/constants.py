@@ -1,5 +1,7 @@
 "Various constants."
 
+BEERCLUB = 'beerclub'
+
 # CouchDB
 # For view ranges: CouchDB uses the Unicode Collation Algorithm,
 # which is not the same as the ASCII collation sequence.
@@ -24,8 +26,9 @@ MEMBER = 'member'
 ROLES  = (ADMIN, MEMBER)
 
 # Event actions
-PURCHASE  = 'purchase'
-REPAYMENT = 'repayment'
+PURCHASE    = 'purchase'
+REPAYMENT   = 'repayment'
+EXPENDITURE = 'expenditure'
 
 # Boolean string values
 TRUE  = frozenset(['true', 'yes', 't', 'y', '1'])

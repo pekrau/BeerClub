@@ -7,7 +7,7 @@
     {% end %}
     <th scope="col">Account</th>
     <th scope="col">Name</th>
-    <th scope="col">Credit ({{ settings['CURRENCY'] }})</th>
+    <th scope="col">Credit ({{ currency }})</th>
     <th scope="col">Status</th>
     <th scope="col">Role</th>
     <th scope="col">Last login</th>
@@ -24,7 +24,7 @@
           {{ account['email'] }}</a>
       </td>
       <td>{{ account['name'] }}</td>
-      <td>{% module Credit(account, currency=False) %}</td>
+      <td>{% module Money(get_credit(account), currency=False) %}</td>
       <td>{% module Status(account) %}</td>
       <td>{% module Role(account) %}</td>
       <td>{% module LastLogin(account) %}</td>

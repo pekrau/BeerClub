@@ -20,7 +20,7 @@
     <h5>{{ beverages_count }} beverages purchased today</h5>
   </div>
   <div class="col-md">
-    <h5>Current credit: {% module Credit(current_user) %}</h5>
+    <h5>Current credit: {% module Money(get_credit(current_user), padding=0) %}</h5>
   </div>
 </div>
 {% for beverage in settings['BEVERAGE'] %}
@@ -29,7 +29,7 @@
     <div class="row">
       <div class="col-md">
         <h5>I am buying one {{ beverage['label'] }}...
-          <small>(price {{ beverage['price'] }} {{ settings['CURRENCY'] }})</small>
+          <small>(price {% module Money(beverage['price'], padding=0) %})</small>
         </h5>
       </div>
       <div class="col-md">
@@ -59,7 +59,7 @@
                       {{ payment['description'] % beverage['label'] }}
                     </h5>
                     <p>
-                      It costs {{ beverage['price'] }} {{ settings['CURRENCY'] }}.
+                      It costs {% module Money(beverage['price'], padding=0) %}.
                     </p>
                   </div>
                   <div class="modal-footer">

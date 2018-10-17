@@ -1,5 +1,6 @@
 "User interface modules."
 
+import locale
 import logging
 
 import tornado.web
@@ -9,19 +10,17 @@ from . import settings
 from . import utils
 
 
-class Credit(tornado.web.UIModule):
-    "HTML for account credit."
+class Money(tornado.web.UIModule):
+    "HTML for a money value."
 
-    def render(self, account, currency=True):
-        credit = self.handler.get_credit(account)
-        if currency:
-            value = "%s %s" % (credit, settings['CURRENCY'])
+    def render(self, money, currency=True, padding=6):
+        value = locale.currency(money, symbol=currency, grouping=True)
+        padding = '&nbsp;' * max(0, padding - len(str(int(money))))
+        value = padding + value
+        if money >= 0:
+            return '<span class="text-monospace">%s</span>' % value
         else:
-            value = str(credit)
-        if credit >= 0:
-            return value
-        else:
-            return '<strong class="text-danger">%s</strong>' % value
+            return '<strong class="text-monospace text-danger">%s</strong>' % value
 
 class Status(tornado.web.UIModule):
     "HTML for account status."
@@ -89,10 +88,3 @@ class Date(tornado.web.UIModule):
             return utils.today()
         else:
             return date
-
-class Number(tornado.web.UIModule):
-    "Output a number, monospace left-padded by non-breaking blanks."
-
-    def render(self, number, padding=6):
-        padding = '&nbsp;' * max(0, padding - len(str(number)))
-        return '<span class="text-monospace">%s%s</span>' % (padding, number)

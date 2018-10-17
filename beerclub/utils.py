@@ -4,6 +4,7 @@ import datetime
 import email.mime.text
 import hashlib
 import json
+import locale
 import logging
 import smtplib
 import string
@@ -42,6 +43,7 @@ def setup():
     # Convert format specifiers in statements.
     settings['POLICY_STATEMENT'] = settings['POLICY_STATEMENT'].format(**settings)
     settings['PRIVACY_STATEMENT'] = settings['PRIVACY_STATEMENT'].format(**settings)
+    locale.setlocale(locale.LC_MONETARY, '')
     # Set up logging
     if settings.get('LOGGING_DEBUG'):
         kwargs = dict(level=logging.DEBUG)
