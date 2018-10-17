@@ -15,7 +15,6 @@ from beerclub.requesthandler import RequestHandler
 from beerclub.account import (Account,
                               AccountEdit,
                               Accounts,
-                              AccountHistory,
                               Login,
                               Logout,
                               Reset,
@@ -25,7 +24,9 @@ from beerclub.account import (Account,
                               Disable)
 from beerclub.event import (Event,
                             Purchase,
-                            Repayment)
+                            Repayment,
+                            History,
+                            Ledger)
 
 
 class Home(RequestHandler):
@@ -54,11 +55,10 @@ def main():
         url(r'/account/([^/]+)/edit', AccountEdit, name='account_edit'),
         url(r'/account/([^/]+)/enable', Enable, name='enable'),
         url(r'/account/([^/]+)/disable', Disable, name='disable'),
-        url(r'/account/([^/]+)/history', 
-            AccountHistory, dict(all=False), name='history'),
-        url(r'/account/([^/]+)/history/all', 
-            AccountHistory, dict(all=True), name='history_all'),
         url(r'/accounts', Accounts, name='accounts'),
+        url(r'/history/([^/]+)', History, dict(all=False), name='history'),
+        url(r'/history/([^/]+)/all', History,dict(all=True),name='history_all'),
+        url(r'/ledger', Ledger, name='ledger'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),
         url(r'/logout', Logout, name='logout'),

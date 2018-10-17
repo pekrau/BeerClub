@@ -50,10 +50,11 @@ EVENT_ACCOUNT = dict(map=
   emit([doc.account, doc.log.timestamp], null);
 }""")
 
-EVENT_TIMESTAMP = dict(map=
+EVENT_LEDGER = dict(reduce="_sum",
+                    map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
-  emit(doc.log.timestamp, doc.account);
+  emit(doc.log.timestamp, doc.credit);
 }""")
 
 
@@ -66,7 +67,7 @@ def load_design_documents(db):
                                              credit=EVENT_CREDIT,
                                              beverages=EVENT_BEVERAGES,
                                              account=EVENT_ACCOUNT,
-                                             timestamp=EVENT_TIMESTAMP))
+                                             ledger=EVENT_LEDGER))
 
 def update_design_document(db, design, views):
     "Update the design document (view index definition)."

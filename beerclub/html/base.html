@@ -36,30 +36,20 @@
             <a class="nav-link" href="{{ reverse_url('home') }}">Home</a>
           </li>
           {% if current_user %}
-          <li class="nav-item {% module NavitemActive('account') %}">
-            <a class="nav-link" 
-               href="{{ reverse_url('account', current_user['email']) }}">
-              My account</a>
-          </li>
-          <li class="nav-item {% module NavitemActive('accounthistory') %}">
+          <li class="nav-item {% module NavitemActive('history') %}">
             <a class="nav-link" 
                href="{{ reverse_url('history', current_user['email']) }}">
-              My history</a>
+              History</a>
           </li>
           {% end %}
           {% if is_admin %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown"
-               role="button" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-              Admin
-            </a>
-            <div class="dropdown-menu" aria-labelledby="adminDropdown">
-              <a class="dropdown-item" href="{{ reverse_url('accounts') }}">
-                Accounts</a>
-            </div>
+          <li class="nav-item {% module NavitemActive('accounts') %}">
+            <a class="nav-link" href="{{ reverse_url('accounts')}}">Accounts</a>
           </li>
           {% end %} {# if is_admin #}
+          <li class="nav-item {% module NavitemActive('ledger') %}">
+            <a class="nav-link" href="{{ reverse_url('ledger') }}">Ledger</a>
+          </li>
           <li class="nav-item {% module NavitemActive('about') %}">
             <a class="nav-link" href="{{ reverse_url('about') }}">About</a>
           </li>

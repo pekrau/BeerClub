@@ -1,0 +1,34 @@
+{# List of events in table; to be included.
+   Requires 'events' list and 'event_link' flag.
+#}
+
+<table class="table table-sm" id="events">
+  <thead>
+    <tr>
+      <th scope="col">Event</th>
+      <th scope="col">Specification</th>
+      <th scope="col">Payment</th>
+      <th scope="col">Credit change</th>
+      <th scope="col">Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% set store = {} %}
+    {% for event in events %}
+    <tr class="{% module Step(event['log']['date'], ['table-active', 'table-light'], store) %}">
+      <td>
+        {% if event_links %}
+        <a href="{{ reverse_url('event', event['_id']) }}">
+          {{ event['action'] }}</a>
+        {% else %}
+        {{ event['action'] }}
+        {% end %}
+      </td>
+      <td>{{ event.get('beverage') or '-' }}</td>
+      <td>{{ event.get('payment') }}</td>
+      <td>{% module Number(event['credit']) %}</td>
+      <td class="localtime">{{ event['log']['timestamp'] }}</td>
+    </tr>
+    {% end %} {# for event in events #}
+  </tbody>
+</table>

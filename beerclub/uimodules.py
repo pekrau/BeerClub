@@ -89,3 +89,10 @@ class Date(tornado.web.UIModule):
             return utils.today()
         else:
             return date
+
+class Number(tornado.web.UIModule):
+    "Output a number, monospace left-padded by non-breaking blanks."
+
+    def render(self, number, padding=6):
+        padding = '&nbsp;' * max(0, padding - len(str(number)))
+        return '<span class="text-monospace">%s%s</span>' % (padding, number)

@@ -26,11 +26,8 @@ History
 </div>
 {% else %}
 <div class="row my-4">
-  <div class="col-md-4">
+  <div class="col-md-8">
     <h5>Current credit: {% module Credit(account) %}</h5>
-  </div>
-  <div class="col-md-4">
-    <h5>Max {{ settings['DISPLAY_MAX_HISTORY'] }} events shown.</h5>
   </div>
   <div class="col-md">
     <a href="{{ reverse_url('history_all', account['email']) }}"
@@ -39,32 +36,14 @@ History
   </div>
 </div>
 {% end %} {# if all #}
-<table class="table table-sm mt-4" id="events">
-  <thead>
-    <tr>
-      <th scope="col">Event</th>
-      <th scope="col">Specification</th>
-      <th scope="col">Payment</th>
-      <th scope="col">Credit change</th>
-      <th scope="col">Timestamp</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% set store = {} %}
-    {% for event in events %}
-    <tr class="{% module Step(event['log']['date'], ['table-active', 'table-light'], store) %}">
-      <td>
-        <a href="{{ reverse_url('event', event['_id']) }}">
-          {{ event['action'] }}</a>
-      </td>
-      <td>{{ event.get('beverage') or '-' }}</td>
-      <td>{{ event.get('payment') }}</td>
-      <td class="text-monospace">{{ event['credit'] }}</td>
-      <td class="localtime">{{ event['log']['timestamp'] }}</td>
-    </tr>
-    {% end %} {# for event in events #}
-  </tbody>
-</table>
+<div class="row mt-4">
+  <div class="col-md">
+    {% include 'events_list.html' %}
+  </div>
+</div>
+{% if not all %}
+<p>Max {{ settings['DISPLAY_MAX_HISTORY'] }} events shown.</p>
+{% end %}
 {% end %} {# block content #}
 
 {% block javascript %}
@@ -73,7 +52,7 @@ History
   $(function() {
     $("#events").DataTable( {
       "pagingType": "full_numbers",
-      "pageLength": {{ settings['DISPLAY_MAX_HISTORY'] }},
+      "pageLength": 25,
       "order": [[ 4, "desc"]],
     });
   });

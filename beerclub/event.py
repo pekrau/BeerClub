@@ -92,3 +92,66 @@ class Repayment(RequestHandler):
             saver['credit']  = int(self.get_argument('amount'))
             saver['date']    = self.get_argument('date', utils.today())
         self.see_other('accounts')
+
+        
+class Expenditure(RequestHandler):
+    "Expenditure that reduces the BeerClub master account."
+
+    @tornado.web.authenticated
+    def get(self):
+        self.check_admin()
+
+    @tornado.web.authenticated
+    def post(self):
+        self.check_admin()
+
+
+class History(RequestHandler):
+    "View event history for an account."
+
+    def initialize(self, all):
+        self.all = all
+
+    @tornado.web.authenticated
+    def get(self, email):
+        try:
+            account = self.get_account(email, check=True)
+        except KeyError:
+            self.see_other('home')
+            return 
+        if self.all:
+            kwargs = dict()
+        else:
+            kwargs = dict(limit=settings['DISPLAY_MAX_HISTORY'])
+        events = self.get_docs('event/account',
+                               key=[account['email'], constants.CEILING],
+                               last=[account['email'], ''],
+                               descending=True,
+                               **kwargs)
+        self.render('history.html',
+                    account=account,
+                    events=events, 
+                    all=self.all,
+                    event_links=True)
+
+
+class Ledger(RequestHandler):
+    "Ledger page for BeerClub master account."
+
+    def get(self):
+        "Display history for the master account between given dates."
+        result = list(self.db.view('event/ledger', group=False))
+        if result:
+            balance = result[0].value
+        else:
+            balance = 0
+        kwargs = (dict(limit=100))
+        events = self.get_docs('event/ledger',
+                               key='2018-10-18',
+                               last='2018-10-15',
+                               descending=True,
+                               **kwargs)
+        self.render('ledger.html',
+                    balance=balance,
+                    events=events,
+                    event_links=self.is_admin())

@@ -1,0 +1,28 @@
+{# Ledger page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Ledger{% end %}
+
+{% block body_title %}Ledger{% end %}
+
+{% block content %}
+<h5 class="my-3">Current balance: {{ balance }} {{ settings['CURRENCY'] }}</h5>
+<div class="row mt-4">
+  <div class="col-md">
+    {% include 'events_list.html' %}
+  </div>
+</div>
+{% end %} {# block content #}
+
+{% block javascript %}
+<script>
+  $(function() {
+    $("#events").DataTable( {
+      "pagingType": "full_numbers",
+      "pageLength": 25,
+      "order": [[ 4, "desc"]],
+    });
+  });
+</script>
+{% end %} {# block javascript #}

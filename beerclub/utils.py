@@ -160,7 +160,7 @@ def timestamp(days=None):
 
 def today(days=None):
     """Current date (UTC) in ISO format.
-    Add the specified offset in days, if given.
+    Add the specified offset in number of days, if given.
     """
     instant = datetime.datetime.utcnow()
     if days:
