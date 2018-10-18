@@ -50,7 +50,7 @@ class LastLogin(tornado.web.UIModule):
 
     def render(self, account):
         if account.get('last_login'):
-            return '<span class="localtime">%s</span>' % account['last_login']
+            return '<span class="localtime small">%s</span>' % account['last_login']
         else: 
             return '-'
 

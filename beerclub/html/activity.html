@@ -1,10 +1,13 @@
-{# Accounts page. #}
+{# Page for accounts having made credit-affecting purchases recently. #}
 
 {% extends 'base.html' %}
 
-{% block head_title %}Accounts{% end %}
+{% block head_title %}Activity{% end %}
 
-{% block body_title %}Accounts{% end %}
+{% block body_title %}
+Activity 
+<small>Accounts active in the last {{ settings['ACTIVITY_CUTOFF'] }} days</small>
+{% end %}
 
 {% block content %}
 <div class="row my-4">
@@ -15,9 +18,7 @@
         <th scope="col">Account</th>
         <th scope="col">Name</th>
         <th scope="col">Credit ({{ currency }})</th>
-        <th scope="col">Status</th>
-        <th scope="col">Role</th>
-        <th scope="col">Last login</th>
+        <th scope="col">Activity</th>
       </thead>
       <tbody>
         {% for account in accounts %}
@@ -33,9 +34,9 @@
           </td>
           <td>{{ account['name'] }}</td>
           <td>{% module Money(get_credit(account), currency=False) %}</td>
-          <td>{% module Status(account) %}</td>
-          <td>{% module Role(account) %}</td>
-          <td>{% module LastLogin(account) %}</td>
+          <td>
+            <span class="localtime small">{{ account['activity'] }}</span>
+          </td>
         </tr>
         {% end %}
       </tbody>
@@ -49,7 +50,7 @@
   $(function() {
     $("#accounts").DataTable( {
       "pagingType": "full_numbers",
-      "order": [[ 6, "desc"]],
+      "order": [[ 4, "desc"]],
     });
   });
 </script>

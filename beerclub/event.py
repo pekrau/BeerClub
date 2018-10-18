@@ -143,9 +143,38 @@ class History(RequestHandler):
                     event_links=True)
 
 
+class Activity(RequestHandler):
+    "Accounts having made credit-affecting purchases recently."
+
+    @tornado.web.authenticated
+    def get(self):
+        self.check_admin()
+        activity = dict()
+        first = utils.today(-settings['ACTIVITY_CUTOFF'])
+        last = utils.today() + constants.CEILING
+        logging.info("first %s", first)
+        logging.info("last %s", last)
+        view = self.db.view('event/activity')
+        for row in view[first:last]:
+            try:
+                activity[row.value] = max(activity[row.value], row.key)
+            except KeyError:
+                activity[row.value] = row.key
+        activity.pop(constants.BEERCLUB, None)
+        activity = activity.items()
+        activity.sort(key=lambda i: i[1])
+        accounts = []
+        for email, timestamp in activity:
+            account = self.get_account(email)
+            account['activity'] = timestamp
+            accounts.append(account)
+        self.render('activity.html', accounts=accounts)
+
+
 class Ledger(RequestHandler):
     "Ledger page for BeerClub master account."
 
+    @tornado.web.authenticated
     def get(self):
         "Display history for the master account between given dates."
         result = list(self.db.view('event/ledger', group=False))
@@ -155,8 +184,8 @@ class Ledger(RequestHandler):
             balance = 0
         kwargs = (dict(limit=100))
         events = self.get_docs('event/ledger',
-                               key='2018-10-18',
-                               last='2018-10-15',
+                               # key='2018-10-18',
+                               # last='2018-10-15',
                                descending=True,
                                **kwargs)
         self.render('ledger.html',

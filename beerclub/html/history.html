@@ -5,10 +5,10 @@
 {% block head_title %}History{% end %}
 
 {% block body_title %}
-History
+History 
 <a href="{{ reverse_url('account', account['email']) }}">
   {{ account['email'] }}</a>
-<small>{{ all and 'all events' or 'recent events' }}</small>
+<small>{{ all and 'All events' or 'Recent events' }}</small>
 {% end %}
 
 {% block content %}
