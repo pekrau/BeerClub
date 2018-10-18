@@ -5,69 +5,75 @@ import logging
 import couchdb
 
 
-ACCOUNT_EMAIL = dict(map=
+DESIGNS = dict(
+
+    account=dict(
+        email=dict(map=         # account/email
 """function(doc) {
   if (doc.beerclub_doctype !== 'account') return;
   emit(doc.email, doc.status);
-}""")
-
-ACCOUNT_ROLE = dict(map=
+}"""),
+        role=dict(map=          # account/role
 """function(doc) {
   if (doc.beerclub_doctype !== 'account') return;
   emit(doc.role, doc.email);
-}""")
-
-ACCOUNT_STATUS = dict(map=
+}"""),
+        status=dict(map=        # account/status
 """function(doc) {
   if (doc.beerclub_doctype !== 'account') return;
   emit(doc.status, doc.email);
-}""")
+}"""),
+    ),
 
-EVENT_ACTION = dict(map=
+    event=dict(
+        action=dict(map=        # event/action
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
   emit(doc.action, doc.account);
-}""")
-
-EVENT_CREDIT = dict(reduce="_sum",
+}"""),
+        credit=dict(reduce="_sum", # event/credit
                     map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
   emit(doc.account, doc.credit);
-}""")
-
-EVENT_BEVERAGES = dict(reduce="_count",
+}"""),
+        beverages=dict(reduce="_count", # event/beverages
                        map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
   if (doc.action !== 'purchase') return;
   emit([doc.account, doc.log.date], doc.beverage);
-}""")
-
-EVENT_ACCOUNT = dict(map=
+}"""),
+        account=dict(map=       # event/account
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
   emit([doc.account, doc.log.timestamp], null);
-}""")
-
-EVENT_LEDGER = dict(reduce="_sum",
+}"""),
+        ledger=dict(reduce="_sum", # event/ledger
                     map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
   emit(doc.log.timestamp, doc.credit);
-}""")
+}"""),
+        activity=dict(map=      # event/activity
+"""function(doc) {
+  if (doc.beerclub_doctype !== 'event') return;
+  if (!doc.credit) return;
+  emit(doc.log.timestamp, doc.account);
+}"""),
+    )
+)
 
 
 def load_design_documents(db):
     "Load the design documents (view index definitions)."
-    update_design_document(db, 'account', dict(email=ACCOUNT_EMAIL,
-                                               role=ACCOUNT_ROLE,
-                                               status=ACCOUNT_STATUS))
-    update_design_document(db, 'event', dict(action=EVENT_ACTION,
-                                             credit=EVENT_CREDIT,
-                                             beverages=EVENT_BEVERAGES,
-                                             account=EVENT_ACCOUNT,
-                                             ledger=EVENT_LEDGER))
+    for entity, designs in DESIGNS.items():
+         updated = update_design_document(db, entity, designs)
+         if updated:
+            for view in designs:
+                name = "%s/%s" % (entity, view)
+                logging.info("regenerating index for view %s" % name)
+                list(db.view(name, limit=10))
 
 def update_design_document(db, design, views):
     "Update the design document (view index definition)."
@@ -77,8 +83,11 @@ def update_design_document(db, design, views):
     except couchdb.http.ResourceNotFound:
         logging.info("loading design document %s", docid)
         db.save(dict(_id=docid, views=views))
+        return True
     else:
         if doc['views'] != views:
             doc['views'] = views
             logging.info("updating design document %s", docid)
             db.save(doc)
+            return True
+        return False

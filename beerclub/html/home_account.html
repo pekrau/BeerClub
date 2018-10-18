@@ -1,21 +1,16 @@
 {# Home page when logged in; payment actions. #}
 
-{% extends 'base.html' %}
+{% extends 'home_base.html' %}
 
-{% block head_title %}
-{{ settings['SITE_NAME'] }} {{ current_user['email'] }}
+{% block head_title %}{{ settings['SITE_NAME'] }}{% end %}
+
+{% block body_title %}
+<a href="{{ reverse_url('account', current_user['email']) }}">
+  {{ current_user['email'] }}</a>
 {% end %}
-
-{% block body_title %}{{ settings['SITE_NAME'] }}{% end %}
 
 {% block content %}
 <div class="row">
-  <div class="col-md">
-    <h5>
-      <a href="{{ reverse_url('account', current_user['email']) }}">
-        {{ current_user['email'] }}</a>
-    </h5>
-  </div>
   <div class="col-md">
     <h5>{{ beverages_count }} beverages purchased today</h5>
   </div>
@@ -28,9 +23,8 @@
   <div class="card-body">
     <div class="row">
       <div class="col-md">
-        <h5>I am buying one {{ beverage['label'] }}...
-          <small>(price {% module Money(beverage['price'], padding=0) %})</small>
-        </h5>
+        <h5>I am buying one {{ beverage['label'] }}...</h5>
+        <h6>Price: {% module Money(beverage['price'], padding=0) %}</h6>
       </div>
       <div class="col-md">
         {% for payment in settings['PAYMENT'] %}
@@ -79,3 +73,12 @@
 </div>
 {% end %}
 {% end %} {# block content #}
+
+{% block footer_payment %}
+<h4>How to pay your debt</h4>
+{% if settings['PAYMENT_INFO_HTML'] %}
+{% raw settings['PAYMENT_INFO_HTML'] %}
+{% else %}
+<i>No payment information available.</i>
+{% end %}
+{% end %} {# block footer_payment #}

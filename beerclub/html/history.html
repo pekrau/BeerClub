@@ -2,14 +2,12 @@
 
 {% extends 'base.html' %}
 
-{% block head_title %}
-History {{ account['email'] }},{{ all and 'all events' or 'recent events' }}
-{% end %}
+{% block head_title %}History{% end %}
 
 {% block body_title %}
 History
 <a href="{{ reverse_url('account', account['email']) }}">
-  {{ account['email'] }}</a>,
+  {{ account['email'] }}</a>
 <small>{{ all and 'all events' or 'recent events' }}</small>
 {% end %}
 
@@ -21,7 +19,7 @@ History
   </div>
   <div class="col-md">
     <a href="{{ reverse_url('history', account['email']) }}"
-       class="btn btn-info">Show recent events</a>
+       class="btn btn-primary">Show recent events</a>
   </div>
 </div>
 {% else %}
@@ -31,7 +29,7 @@ History
   </div>
   <div class="col-md">
     <a href="{{ reverse_url('history_all', account['email']) }}"
-       class="btn btn-info">Show all events</a>
+       class="btn btn-primary">Show all events</a>
     </form>
   </div>
 </div>

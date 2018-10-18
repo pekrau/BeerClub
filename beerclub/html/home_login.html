@@ -1,13 +1,9 @@
 {# Home page for login. #}
 
-{% extends 'base.html' %}
+{% extends 'home_base.html' %}
 
 {% block content %}
-<p>
-  You need to be a member to buy beer. Sign in or register.
-</p>
-
-<div class="card border-primary mt-2">
+<div class="card border-primary mt-3">
   <div class="card-header text-white bg-primary">
     Sign in
   </div>
@@ -40,9 +36,9 @@
   </div>
 </div>
 
-<div class="card border-warning mt-2">
+<div class="card border-warning mt-3">
   <div class="card-header text-white bg-warning">
-    Reset password
+    Reset password <small>you have forgotten it</small>
   </div>
   <div class="card-body">
     <form action="{{ reverse_url('reset') }}"
@@ -68,8 +64,6 @@
           <small id="resetHelp" class="form-text text-muted">
             A one-time reset link URL will be sent to your email
             address. Go to the link and set your password.
-            <br>
-            To be used if you have forgotten your password.
           </small>
         </div>
       </div>
@@ -77,9 +71,9 @@
   </div>
 </div>
   
-<div class="card mt-2">
+<div class="card my-3">
   <div class="card-header text-white bg-secondary">
-    Register
+    Register <small>to become a member</small>
   </div>
   <div class="card-body">
     <form action="{{ reverse_url('register') }}"
@@ -106,10 +100,10 @@
             <code>{{ settings['ACCOUNT_EMAIL_AUTOENABLE'] }}</code>
             your account will be enabled directly.
             <br>
-            Otherwise, a {{ settings['SITE_NAME'] }} administrator
+            Otherwise, the {{ settings['SITE_NAME'] }} administrator
             will enable your account after inspection.
             {% else %}
-            A {{ settings['SITE_NAME'] }} administrator will enable
+            The {{ settings['SITE_NAME'] }} administrator will enable
             your account after inspection.
             {% end %}
           </small>
@@ -157,9 +151,6 @@
             <p>
               When your account has been enabled, you will receive an
               email with a one-time link URL to set your password.
-            </p>
-            <p>
-              {{ settings['PRIVACY_STATEMENT'] }}
             </p>
           </small>
         </div>

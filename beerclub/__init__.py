@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '0.3'
+__version__ = '0.4'
 
 settings = dict(
     VERSION=__version__,
@@ -33,17 +33,22 @@ settings = dict(
     DISPLAY_NAVBAR_THEME='navbar-light',
     DISPLAY_NAVBAR_COLOUR= '#a9e15e',
     DISPLAY_MAX_HISTORY=30,
+    RECENT_CUTOFF=7,
     CONTACT_EMAIL=None,
+    RULES_HTML="<ul><li>You must be a registered member to buy beer.</li></ul>",
+    PAYMENT_INFO_HTML=None,
     POLICY_STATEMENT="The {SITE_NAME} is a non-profit group providing beer"
     " to its members. Volunteer members must purchase the beer and deliver"
-    " it to the {SITE_NAME}, and will be reimbursed by the {SITE_NAME}"
-    " administrators. Please contact them.",
+    " it to the {SITE_NAME}. They will be reimbursed by the {SITE_NAME}"
+    " administrator.",
     PRIVACY_STATEMENT="By registering, you agree to allow the personal data"
     " you provide to be handled by the {SITE_NAME} according to"
     " applicable laws. {SITE_NAME} guarantees that no data will be transferred"
     " to any external entity.",
-    PAYMENT_INFO_HTML=None,
     MONEY_STEP='0.01',
+    CREDIT_STYLES=[(-1000, 'bg-danger text-light'),
+                   (-500, 'bg-warning'),
+                   (-1, 'text-danger')],
     BEVERAGE=[
         dict(identifier='beer',
              label='beer',

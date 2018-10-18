@@ -1,0 +1,26 @@
+{# Base home page. #}
+
+{% extends 'base.html' %}
+
+{% block footer %}
+<h4 class="mt-3">Rules</h4>
+<p>
+  {% raw settings['RULES_HTML'] %}
+</p>
+{% block footer_payment %}
+{% end %} {# block footer_payment #}
+<h4>Policy</h4>
+<p>
+  {{ settings['POLICY_STATEMENT'] }}
+</p>
+<h4>Privacy statement</h4>
+<p>
+  {{ settings['PRIVACY_STATEMENT'] }}
+</p>
+{% if settings['CONTACT_EMAIL'] %}
+<h4>Contact</h4>
+<p>
+  Administrator: {{ settings['CONTACT_EMAIL'] }}
+</p>
+{% end %}
+{% end %} {# block footer #}

@@ -4,7 +4,7 @@
 
 {% block head_title %}Ledger{% end %}
 
-{% block body_title %}Ledger{% end %}
+{% block body_title %}{{ settings['SITE_NAME'] }} ledger{% end %}
 
 {% block content %}
 <h5 class="my-3">Current balance: {% module Money(balance, padding=0) %}</h5>

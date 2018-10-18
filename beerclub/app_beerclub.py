@@ -40,12 +40,6 @@ class Home(RequestHandler):
         else:
             self.render('home_login.html', home_active=False)
 
-class About(RequestHandler):
-    "About page."
-    def get(self):
-        self.render('about.html')
-
-
 def main():
     url = tornado.web.url
     handlers = [
@@ -67,7 +61,6 @@ def main():
         url(r'/reset', Reset, name='reset'),
         url(r'/password', Password, name='password'),
         url(r'/register', Register, name='register'),
-        url(r'/about', About, name='about'),
     ]
 
     application = tornado.web.Application(
