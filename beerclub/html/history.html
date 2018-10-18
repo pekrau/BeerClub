@@ -8,39 +8,26 @@
 History 
 <a href="{{ reverse_url('account', account['email']) }}">
   {{ account['email'] }}</a>
-<small>{{ all and 'All events' or 'Recent events' }}</small>
 {% end %}
 
 {% block content %}
-{% if all %}
-<div class="row my-4">
-  <div class="col-md-8">
-    <h5>Current credit: {% module Money(get_credit(account), padding=0) %}</h5>
-  </div>
-  <div class="col-md">
-    <a href="{{ reverse_url('history', account['email']) }}"
-       class="btn btn-primary">Show recent events</a>
-  </div>
-</div>
+<h5 class="my-4">
+  Current credit: {% module Money(get_credit(account), padding=0) %}
+</h5>
+{% include 'events_list.html' %}
+<p>
+  {% if all %}
+  <a href="{{ reverse_url('history', account['email']) }}"
+     class="btn btn-primary btn-sm">Show recent events</a>
+</p>
 {% else %}
-<div class="row my-4">
-  <div class="col-md-8">
-    <h5>Current credit: {% module Money(get_credit(account), padding=0) %}</h5>
-  </div>
-  <div class="col-md">
-    <a href="{{ reverse_url('history_all', account['email']) }}"
-       class="btn btn-primary">Show all events</a>
-    </form>
-  </div>
-</div>
-{% end %} {# if all #}
-<div class="row mt-4">
-  <div class="col-md">
-    {% include 'events_list.html' %}
-  </div>
-</div>
-{% if not all %}
-<p>Max {{ settings['DISPLAY_MAX_HISTORY'] }} events shown.</p>
+<p class="mt-4 mb-1">
+  Max {{ settings['DISPLAY_MAX_HISTORY'] }} events shown.
+</p>
+<p>
+  <a href="{{ reverse_url('history_all', account['email']) }}"
+     class="btn btn-primary btn-sm">Show all events</a>
+</p>
 {% end %}
 {% end %} {# block content #}
 
