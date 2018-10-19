@@ -57,11 +57,13 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" 
-                 href="{{ reverse_url('members')}}">Members</a>
-              <a class="dropdown-item" 
                  href="{{ reverse_url('activity')}}">Activity</a>
               <a class="dropdown-item" 
                  href="{{ reverse_url('expenditure')}}">Expenditure</a>
+              <a class="dropdown-item" 
+                 href="{{ reverse_url('members')}}">Members</a>
+              <a class="dropdown-item" 
+                 href="{{ reverse_url('pending')}}">Pending</a>
           </li>
           {% end %} {# if is_admin #}
         </ul>

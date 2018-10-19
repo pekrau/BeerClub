@@ -173,15 +173,6 @@ def to_utf8(value):
     else:
         return value
 
-def to_bool(value):
-    "Convert the value into a boolean, interpreting various string values."
-    if isinstance(value, bool): return value
-    if not value: return False
-    lowvalue = value.lower()
-    if lowvalue in constants.TRUE: return True
-    if lowvalue in constants.FALSE: return False
-    raise ValueError("invalid boolean: '%s'" % value)
-
 def normalize_phone(value):
     "Return normalized phone number. Get rid of all non-digits."
     return ''.join([c for c in value if c in string.digits])

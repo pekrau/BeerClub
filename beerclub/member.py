@@ -116,6 +116,16 @@ class Members(RequestHandler):
         self.render('members.html', members=members)
 
 
+class Pending(RequestHandler):
+    "View a table of pending member accounts."
+
+    @tornado.web.authenticated
+    def get(self):
+        self.check_admin()
+        members = self.get_docs('member/status', key=constants.PENDING)
+        self.render('pending.html', members=members)
+
+
 class Login(RequestHandler):
     "Login resource."
 
@@ -325,7 +335,11 @@ class Enable(RequestHandler):
                           ENABLED_SUBJECT.format(**data),
                           ENABLED_TEXT.format(**data))
         self.set_message_flash(EMAIL_SENT)
-        self.see_other('member', member['email'])
+        url = self.get_argument('next', None)
+        if url:
+            self.redirect(url)
+        else:
+            self.see_other('member', member['email'])
 
 
 class Disable(RequestHandler):

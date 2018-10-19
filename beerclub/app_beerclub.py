@@ -13,15 +13,16 @@ from beerclub import utils
 
 from beerclub.requesthandler import RequestHandler
 from beerclub.member import (Member,
-                              MemberEdit,
-                              Members,
-                              Login,
-                              Logout,
-                              Reset,
-                              Password,
-                              Register,
-                              Enable,
-                              Disable)
+                             MemberEdit,
+                             Members,
+                             Pending,
+                             Login,
+                             Logout,
+                             Reset,
+                             Password,
+                             Register,
+                             Enable,
+                             Disable)
 from beerclub.event import (Event,
                             Purchase,
                             Repayment,
@@ -52,6 +53,7 @@ def main():
         url(r'/member/([^/]+)/enable', Enable, name='enable'),
         url(r'/member/([^/]+)/disable', Disable, name='disable'),
         url(r'/members', Members, name='members'),
+        url(r'/pending', Pending, name='pending'),
         url(r'/activity', Activity, name='activity'),
         url(r'/history/([^/]+)', History, dict(all=False), name='history'),
         url(r'/history/([^/]+)/all', History,dict(all=True),name='history_all'),

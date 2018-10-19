@@ -1,0 +1,57 @@
+{# Pending members page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Pending members{% end %}
+
+{% block body_title %}Pending members{% end %}
+
+{% block content %}
+<div class="row my-4">
+  <div class="col-md">
+    <table id="members" class="table table-sm">
+      <thead>
+        <th scope="col">Member</th>
+        <th scope="col">Name</th>
+        <th scope="col">Phone)</th>
+        <th scope="col">Address</th>
+        <th scope="col"></th>
+      </thead>
+      <tbody>
+        {% for member in members %}
+        <tr>
+          <td>
+            <a href="{{ reverse_url('member', member['email']) }}">
+              {{ member['email'] }}</a>
+          </td>
+          <td>{{ member['name'] }}</td>
+          <td>{{ member['phone'] or '-' }}</td>
+          <td>{{ member['address'] or '-' }}</td>
+          <td>
+            <form action="{{ reverse_url('enable', member['email']) }}"
+                  role="form"
+                  method="POST">
+              {% module xsrf_form_html() %}
+              <input type="hidden" name="next" 
+                     value="{{ reverse_url('pending') }}">
+              <button type="submit" class="btn btn-success btn-sm">Enable</button>
+            </form>
+          </td>
+        </tr>
+        {% end %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% end %} {# block content #}
+
+{% block javascript %}
+<script>
+  $(function() {
+    $("#members").DataTable( {
+      "pagingType": "full_numbers",
+      "order": [[ 6, "desc"]],
+    });
+  });
+</script>
+{% end %} {# block javascript #}
