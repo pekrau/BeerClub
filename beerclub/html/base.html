@@ -25,6 +25,7 @@
         <img src="{{ static_url('beer32.png') }}"
              alt="{{ settings['SITE_NAME'] }}"
              title="{{ settings['SITE_NAME'] }}">
+        {{ settings['SITE_NAME'] }}
       </a>
       <button class="navbar-toggler" type="button"
               data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -67,9 +68,6 @@
           </li>
           {% end %} {# if is_admin #}
         </ul>
-            <span class="navbar-text mx-4 font-weight-bold">
-              {{ settings['SITE_NAME'] }}
-            </span>
         {% if current_user %}
         <form action="{{ reverse_url('logout') }}"
               class="form-inline my-2 my-lg-0"
@@ -85,7 +83,7 @@
 
     <div class="container">
       {% if error %}
-      <div class="row mt-2">
+      <div class="row mt-2 mx-2">
 	<div class="col-md alert alert-danger" role="alert">
 	  <strong>Error:</strong> {{ error }}
 	</div>
@@ -93,7 +91,7 @@
       {% end %} {# if error #}
 
       {% if message %}
-      <div class="row mt-2">
+      <div class="row mt-2 mx-2">
 	<div class="col-md alert alert-warning" role="alert">
 	  {# Allow links in message #}
 	  {% raw message %}
@@ -103,7 +101,7 @@
 
       <div class="row mt-3">
         <div class="col-md">
-          <h2>{% block body_title %}{{ settings['SITE_NAME'] }}{% end %}</h2>
+          <h3>{% block body_title %}{{ settings['SITE_NAME'] }}{% end %}</h3>
           {% block content %}
           {% end %} {# block content #}
         </div>
