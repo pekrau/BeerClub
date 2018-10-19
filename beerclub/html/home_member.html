@@ -29,7 +29,7 @@
       <div class="col-md">
         {% for payment in settings['PAYMENT'] %}
         {% set modid = beverage['identifier'] + '_' + payment['identifier'] %}
-        <div class="mt-3">
+        <div class="mb-3">
           <button type="button"
                   class="btn btn-{{ payment['style'] }} w-100 shadow"
                   data-toggle="modal" data-target="#{{ modid }}Modal">

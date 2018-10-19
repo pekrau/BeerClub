@@ -43,8 +43,7 @@ settings = dict(
     " administrator.",
     PRIVACY_STATEMENT="By registering, you agree to allow the personal data"
     " you provide to be handled by the {SITE_NAME} according to"
-    " applicable laws. {SITE_NAME} guarantees that no data will be transferred"
-    " to any external entity.",
+    " applicable laws. No data will be transferred to any external entity.",
     MONEY_STEP='0.01',
     CREDIT_STYLES=[(-1000, 'bg-danger text-light'),
                    (-500, 'bg-warning'),

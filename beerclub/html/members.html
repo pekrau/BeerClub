@@ -28,7 +28,8 @@
                role="button" target="_blank">Repay</a>
           </td>
           <td>
-            <a href="{{ reverse_url('member', member['email']) }}">
+            <a href="{{ reverse_url('member', member['email']) }}"
+              class="break">
               {{ member['email'] }}</a>
           </td>
           <td>{{ member['name'] }}</td>
