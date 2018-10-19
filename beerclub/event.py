@@ -130,7 +130,7 @@ class Accounts(RequestHandler):
         if self.all:
             kwargs = dict()
         else:
-            kwargs = dict(limit=settings['DISPLAY_ACCOUNTS_MAX_EVENTS'])
+            kwargs = dict(limit=settings['DISPLAY_ACCOUNTS_EVENTS'])
         events = self.get_docs('event/member',
                                key=[member['email'], constants.CEILING],
                                last=[member['email'], ''],
@@ -150,12 +150,10 @@ class Activity(RequestHandler):
     def get(self):
         self.check_admin()
         activity = dict()
-        first = utils.today(-settings['ACTIVITY_CUTOFF'])
-        last = utils.today() + constants.CEILING
-        logging.info("first %s", first)
-        logging.info("last %s", last)
+        first = utils.today(-settings['DISPLAY_ACTIVITY_DAYS'])
+        last = utils.today()
         view = self.db.view('event/activity')
-        for row in view[first:last]:
+        for row in view[first : last+constants.CEILING]:
             try:
                 activity[row.value] = max(activity[row.value], row.key)
             except KeyError:
@@ -172,21 +170,30 @@ class Activity(RequestHandler):
 
 
 class Ledger(RequestHandler):
-    "Ledger page for all events."
+    "Ledger page for listing recent events."
 
     @tornado.web.authenticated
     def get(self):
-        "Display all events."
+        "Display recent events."
         result = list(self.db.view('event/ledger', group=False))
         if result:
             balance = result[0].value
         else:
             balance = 0
-        kwargs = (dict(limit=100))
+        try:
+            from_ = self.get_argument('from')
+        except tornado.web.MissingArgumentError:
+            from_ = utils.today(-settings['DISPLAY_LEDGER_DAYS'])
+        try:
+            to = self.get_argument('to')
+        except tornado.web.MissingArgumentError:
+            to = utils.today()
         events = self.get_docs('event/ledger',
-                               descending=True,
-                               **kwargs)
+                               key=from_,
+                               last=to+constants.CEILING)
         self.render('ledger.html',
                     balance=balance,
                     events=events,
-                    event_links=self.is_admin())
+                    event_links=self.is_admin(),
+                    from_=from_,
+                    to=to)
