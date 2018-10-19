@@ -11,11 +11,8 @@
   <div class="col-md-8">
   </div>
   <div class="col-md">
-    <form action="{{ reverse_url('member', member['email']) }}"
-          role="form"
-          method="GET">
-      <button type="submit" class="btn btn-secondary w-100">Cancel</button>
-    </form>
+    <a href="{{ reverse_url('member', member['email']) }}"
+       role="button" class="btn btn-secondary w-100">Cancel</a>
   </div>
 </div>
 <div class="card mt-2">

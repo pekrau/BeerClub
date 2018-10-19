@@ -49,6 +49,33 @@ class MemberSaver(Saver):
         self['status'] = constants.PENDING
         self['password'] = None
 
+    def set_name(self):
+        try:
+            self['name'] = self.rqh.get_argument('name')
+        except tornado.web.MissingArgumentError:
+            raise ValueError('No name provided.')
+
+    def set_phone(self):
+        try:
+            phone = self.rqh.get_argument('phone')
+            if phone:
+                phone = utils.normalize_phone(phone)
+            self['phone'] = phone or None
+        except tornado.web.MissingArgumentError:
+            self['phone'] = None
+
+    def set_address(self):
+        self['address'] = self.rqh.get_argument('address', None) or None
+
+    def set_role(self):
+        if not self.rqh.is_admin(): return
+        if self.rqh.current_user['email'] != self['email']: return
+        try:
+            role = self.rqh.get_argument('role')
+            if role not in constants.ROLES: raise ValueError
+        except (tornado.web.MissingArgumentError, ValueError):
+            pass
+
 
 class Member(RequestHandler):
     "View a member account."
@@ -63,7 +90,7 @@ class Member(RequestHandler):
             self.render('member.html', member=member)
 
 
-class MemberEdit(RequestHandler):
+class Settings(RequestHandler):
     "Edit a member account; change values, enable or disable."
 
     @tornado.web.authenticated
@@ -73,37 +100,30 @@ class MemberEdit(RequestHandler):
         except KeyError:
             self.see_other('home')
         else:
-            self.render('member_edit.html', member=member)
+            self.render('settings.html', member=member)
 
     @tornado.web.authenticated
     def post(self, email):
         try:
             member = self.get_member(email, check=True)
         except KeyError:
+            self.set_error_flash('No such member.')
             self.see_other('home')
             return
-        data = {}
-        for key in ['name', 'phone', 'address']:
-            try:
-                data[key] = self.get_argument(key)
-            except tornado.web.MissingArgumentError:
-                self.set_error_flash("No %s provided." % key)
-                self.see_other('home')
-                return
-        role = None
-        if self.is_admin() and self.current_user['email'] != email:
-            try:
-                role = self.get_argument('role')
-                if role not in constants.ROLES: raise ValueError
-            except (tornado.web.MissingArgumentError, ValueError):
-                pass
-        with MemberSaver(doc=member, rqh=self) as saver:
-            saver['name']    = data['name']
-            saver['phone']   = utils.normalize_phone(data['phone'])
-            saver['address'] = data['address']
-            if role:
-                saver['role'] = role
-        self.see_other('member', member['email'])
+        try:
+            with MemberSaver(doc=member, rqh=self) as saver:
+                saver.set_name()
+                saver.set_phone()
+                saver.set_address()
+                saver.set_role()
+        except ValueError as error:
+            self.set_error_flash(str(err))
+            self.see_other('home')
+            return
+        if self.is_admin():
+            self.see_other('member', member['email'])
+        else:
+            self.see_other('home')
 
 
 class Members(RequestHandler):
@@ -267,15 +287,9 @@ class Register(RequestHandler):
                 else:
                     raise ValueError('Member account exists; use Reset.')
                 saver['email']   = email
-                try:
-                    saver['name'] = self.get_argument('name')
-                except tornado.web.MissingArgumentError:
-                    raise ValueError('No name provided.')
-                try:
-                    saver['phone'] = utils.normalize_phone(self.get_argument('phone'))
-                except tornado.web.MissingArgumentError:
-                    saver['phone'] = None
-                saver['address'] = self.get_argument('address', None)
+                saver.set_name()
+                saver.set_phone()
+                saver.set_address()
                 # Set the very first member account to be admin.
                 count = len(self.get_docs('member/email', key='',
                                           last=constants.CEILING, limit=2))
@@ -288,8 +302,8 @@ class Register(RequestHandler):
                 if count == 0 or (ptn and fnmatch.fnmatch(saver['email'], ptn)):
                     saver['status'] = constants.ENABLED
                     saver['code'] = code = utils.get_iuid()
-        except ValueError as err:
-            self.set_message_flash(str(err))
+        except ValueError as error:
+            self.set_message_flash(str(error))
             self.see_other('home')
             return
         member = saver.doc

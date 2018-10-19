@@ -4,7 +4,7 @@
 
 {% block head_title %}Member {{ member['email'] }}{% end %}
 
-{% block body_title %}Member {{ member['email'] }}{% end %}
+{% block body_title %}Member <small>{{ member['email'] }}</small>{% end %}
 
 {% block content %}
 <div class="row">
@@ -16,16 +16,13 @@
   </div>
   {% if is_admin %}
   <div class="col-md-2">
-    <form action="{{ reverse_url('repayment', member['email']) }}"
-          role="form"
-          method="GET">
-      <button type="submit" class="btn btn-warning w-100">Repay</button>
-    </form>
+    <a href="{{ reverse_url('repayment', member['email']) }}"
+       role="button" class="btn btn-warning w-100">Repay</a>
   </div>
   {% end %} {# if is_admin #}
   <div class="col-md-2">
-    <a href="{{ reverse_url('member_edit', member['email']) }}"
-       role="button" class="btn btn-primary w-100">Edit</a>
+    <a href="{{ reverse_url('settings', member['email']) }}"
+       role="button" class="btn btn-primary w-100">Settings</a>
   </div>
   {% if is_admin and member['email'] != current_user['email'] %}
   {% if member['status'] == constants.ENABLED %}
@@ -52,20 +49,20 @@
 <table class="table mt-4">
   <tbody>
     <tr>
+      <th scope="row">Credit</th>
+      <td>{% module Money(get_credit(member), padding=0) %}</td>
+    </tr>
+    <tr>
       <th scope="row">Name</th>
       <td>{{ member['name'] }}</td>
     </tr>
     <tr>
       <th scope="row">Phone</th>
-      <td>{{ member['phone'] }}</td>
+      <td>{{ member['phone'] or '-' }}</td>
     </tr>
     <tr>
       <th scope="row">Address</th>
-      <td>{{ member['address'] }}</td>
-    </tr>
-    <tr>
-      <th scope="row">Credit</th>
-      <td>{% module Money(get_credit(member), padding=0) %}</td>
+      <td>{{ member['address'] or '-' }}</td>
     </tr>
     <tr>
       <th scope="row">Status</th>

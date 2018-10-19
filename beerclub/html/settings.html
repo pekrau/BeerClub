@@ -1,35 +1,31 @@
-{# Member edit page. #}
+{# Settings; member edit page. #}
 
 {% extends 'base.html' %}
 
-{% block head_title %}Edit member {{ member['email'] }}{% end %}
+{% block head_title %}Settings {{ member['email'] }}{% end %}
 
-{% block body_title %}Edit member {{ member['email'] }}{% end %}
+{% block body_title %}Settings <small>{{ member['email'] }}</small>{% end %}
 
 {% block content %}
 <div class="row">
   <div class="col-md-10">
   </div>
   <div class="col-md">
-    <form action="{{ reverse_url('member', member['email']) }}"
-          role="form"
-          method="GET">
-      <button type="submit" class="btn btn-secondary w-100">Cancel</button>
-    </form>
+    {% if is_admin %}
+    <a href="{{ reverse_url('member', member['email']) }}"
+       role="button" class="btn btn-secondary w-100">Cancel</a>
+    {% else %}
+    <a href="{{ reverse_url('home') }}"
+       role="button" class="btn btn-secondary w-100">Cancel</a>
+    {% end %}
   </div>
 </div>
 <div class="card mt-2">
   <div class="card-body">
-    <form action="{{ reverse_url('member_edit', member['email']) }}"
+    <form action="{{ reverse_url('settings', member['email']) }}"
           role="form"
           method="POST">
       {% module xsrf_form_html() %}
-      <div class="row form-group">
-        <div class="col-md-2"></div>
-        <div class="col-md-10">
-          All fields must be filled in.
-        </div>
-      </div>
       <div class="row form-group">
         <label for="email" class="col-md-2 col-form-label">Email</label>
         <div class="col-md-10">
@@ -49,33 +45,33 @@
         <label for="name" class="col-md-2 col-form-label">Name</label>
         <div class="col-md-10">
           <input type="text" class="form-control" required
-                 name="name" id="name"
-                 aria-describedby="nameHelp" value="{{ member['name'] }}">
+                 name="name" id="name" aria-describedby="nameHelp" 
+                 value="{{ member['name'] }}">
           <small id="nameHelp" class="form-text text-muted">
             Your first and last name.
+            <strong class="text-danger">Required.</strong>
           </small>
         </div>
       </div>
       <div class="row form-group">
         <label for="phone" class="col-md-2 col-form-label">Phone</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" required
-                 name="phone" id="phone"
-                 aria-describedby="phoneHelp" value="{{ member['phone'] }}">
+          <input type="text" class="form-control"
+                 name="phone" id="phone" aria-describedby="phoneHelp"
+                 value="{{ member['phone'] or ''}}">
           <small id="phoneHelp" class="form-text text-muted">
-            Your phone number. All non-digit characters will be removed.
+            Your Swish phone number.
           </small>
         </div>
       </div>
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Address</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" required
-                 name="address" id="address"
-                 aria-describedby="addressHelp"
-                 value="{{ member['address'] }}">
+          <input type="text" class="form-control"
+                 name="address" id="address" aria-describedby="addressHelp"
+                 value="{{ member['address'] or '' }}">
           <small id="addressHelp" class="form-text text-muted">
-            Your address (floor, building affiliation, etc).
+            Your address (floor, building, affiliation, etc).
           </small>
         </div>
       </div>
