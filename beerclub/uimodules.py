@@ -26,31 +26,31 @@ class Money(tornado.web.UIModule):
         return self.FORMAT % (padding, style, value)
 
 class Status(tornado.web.UIModule):
-    "HTML for account status."
+    "HTML for member status."
 
-    def render(self, account):
-        if account['status'] == constants.DISABLED:
+    def render(self, member):
+        if member['status'] == constants.DISABLED:
             return '<strong class="text-danger">disabled</strong>'
-        elif account['status'] == constants.PENDING:
+        elif member['status'] == constants.PENDING:
             return '<strong class="text-warning">pending</strong>'
         else: 
-            return account['status']
+            return member['status']
 
 class Role(tornado.web.UIModule):
-    "HTML for account role."
+    "HTML for member role."
 
-    def render(self, account):
-        if account['role'] == constants.ADMIN:
+    def render(self, member):
+        if member['role'] == constants.ADMIN:
             return '<strong class="text-danger">admin</strong>'
         else: 
-            return account['role']
+            return member['role']
 
 class LastLogin(tornado.web.UIModule):
-    "HTML for account last login."
+    "HTML for member last login."
 
-    def render(self, account):
-        if account.get('last_login'):
-            return '<span class="localtime small">%s</span>' % account['last_login']
+    def render(self, member):
+        if member.get('last_login'):
+            return '<span class="localtime small">%s</span>' % member['last_login']
         else: 
             return '-'
 

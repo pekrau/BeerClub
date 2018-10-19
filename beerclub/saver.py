@@ -19,16 +19,16 @@ class Saver(object):
 
     doctype = None
 
-    def __init__(self, doc=None, rqh=None, db=None, account=None):
+    def __init__(self, doc=None, rqh=None, db=None, member=None):
         assert self.doctype in constants.ENTITIES
         if rqh is not None:
             self.rqh = rqh
             self.db = rqh.db
-            self.account = account or rqh.current_user
+            self.member = member or rqh.current_user
         elif db is not None:
             self.rqh = None
             self.db = db
-            self.account = account
+            self.member = member
         else:
             raise AttributeError('neither db nor rqh given')
         self.doc = doc or dict()
@@ -124,9 +124,9 @@ class Saver(object):
                 log['user_agent'] = self.rqh.request.headers['User-Agent']
             except KeyError:
                 pass
-        if self.account:
+        if self.member:
             try:
-                log['account'] = self.account['email']
+                log['member'] = self.member['email']
             except (TypeError, AttributeError, KeyError):
                 pass
         self['log'] = log

@@ -10,17 +10,16 @@ CEILING = 'ZZZZZZZZ'
 
 # Entity documents
 DOCTYPE  = 'beerclub_doctype'
-ACCOUNT  = 'account'
+MEMBER   = 'member'
 EVENT    = 'event'
-ENTITIES = (ACCOUNT, EVENT)
-META     = 'meta'
+ENTITIES = (MEMBER, EVENT)
 
-# Account status
+# Member status
 PENDING  = 'pending'
 ENABLED  = 'enabled'
 DISABLED = 'disabled'
 
-# Account roles
+# Member roles
 ADMIN  = 'admin'
 MEMBER = 'member'
 ROLES  = (ADMIN, MEMBER)

@@ -76,22 +76,10 @@ def get_db():
                        settings['DATABASE_NAME'])
 
 def initialize(db=None):
-    """Load the design documents, or update. 
-    Create the beerclub account if it does not exist.
-    """
+    "Load the design documents, or update."
     if db is None:
         db = get_db()
     designs.load_design_documents(db)
-    try:
-        doc = get_doc(db, 'beerclub')
-    except KeyError:
-        doc = {'_id': 'beerclub',
-               constants.DOCTYPE: constants.META,
-               'version': beerclub.__version__}
-    else:
-        # XXX Do updates as required depending on the version number.
-        pass
-    db.save(doc)
 
 def get_doc(db, key, viewname=None):
     """Get the document with the given i, or from the given view.
@@ -121,16 +109,16 @@ def get_docs(db, viewname, key=None, last=None, **kwargs):
         iterator = view[key:last]
     return [i.doc for i in iterator]
 
-def get_account(db, email):
-    """Get the account identified by the email address.
-    Raise KeyError if no such account.
+def get_member(db, email):
+    """Get the member identified by the email address.
+    Raise KeyError if no such member.
     """
     try:
-        doc = get_doc(db, email.strip().lower(), 'account/email')
+        doc = get_doc(db, email.strip().lower(), 'member/email')
     except KeyError:
-        raise KeyError("no such account %s" % email)
-    if doc[constants.DOCTYPE] != constants.ACCOUNT:
-        raise KeyError("document %s is not an account" % email)
+        raise KeyError("no such member %s" % email)
+    if doc[constants.DOCTYPE] != constants.MEMBER:
+        raise KeyError("document %s is not a member" % email)
     return doc
 
 def get_iuid():

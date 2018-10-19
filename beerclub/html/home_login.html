@@ -52,7 +52,7 @@
                  name="email" id="emailReset"
                  aria-describedby="emailResetHelp">
           <small id="emailResetHelp" class="form-text text-muted">
-            The email address is the identifier for your account.
+            The email address is the identifier for your member account.
           </small>
         </div>
       </div>
@@ -81,30 +81,25 @@
           method="POST">
       {% module xsrf_form_html() %}
       <div class="row form-group">
-        <div class="col-md-2"></div>
-        <div class="col-md-10">
-          All fields must be filled in.
-        </div>
-      </div>
-      <div class="row form-group">
         <label for="emailRegister" class="col-md-2 col-form-label">Email</label>
         <div class="col-md-10">
           <input type="email" class="form-control" required
                  name="email" id="emailRegister"
                  aria-describedby="emailRegisterHelp">
           <small id="emailRegisterHelp" class="form-text text-muted">
-            Your email address. This is your account identifier.
+            Your email address. This is your member account identifier.
+            <strong class="text-danger">Required.</strong>
             <br>
-            {% if settings['ACCOUNT_EMAIL_AUTOENABLE'] %}
+            {% if settings['MEMBER_EMAIL_AUTOENABLE'] %}
             If it matches the pattern
-            <code>{{ settings['ACCOUNT_EMAIL_AUTOENABLE'] }}</code>
-            your account will be enabled directly.
+            <code>{{ settings['MEMBER_EMAIL_AUTOENABLE'] }}</code>
+            your member account will be enabled directly.
             <br>
             Otherwise, the {{ settings['SITE_NAME'] }} administrator
-            will enable your account after inspection.
+            will enable your member account after inspection.
             {% else %}
             The {{ settings['SITE_NAME'] }} administrator will enable
-            your account after inspection.
+            your member account after inspection.
             {% end %}
           </small>
         </div>
@@ -117,24 +112,25 @@
                  aria-describedby="nameHelp">
           <small id="nameHelp" class="form-text text-muted">
             Your first and last name.
+            <strong class="text-danger">Required.</strong>
           </small>
         </div>
       </div>
       <div class="row form-group">
         <label for="phone" class="col-md-2 col-form-label">Phone</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" required
+          <input type="text" class="form-control"
                  name="phone" id="phone"
                  aria-describedby="phoneHelp">
           <small id="phoneHelp" class="form-text text-muted">
-            Your phone number. All non-digit characters will be removed.
+            Your Swish phone number.
           </small>
         </div>
       </div>
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Address</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" required
+          <input type="text" class="form-control"
                  name="address" id="address"
                  aria-describedby="addressHelp">
           <small id="addressHelp" class="form-text text-muted">
@@ -149,8 +145,9 @@
                   aria-describedby="registerHelp">Register</button>
           <small id="registerHelp" class="form-text text-muted">
             <p>
-              When your account has been enabled, you will receive an
-              email with a one-time link URL to set your password.
+              When your member account has been enabled, you will
+              receive an email with a one-time link URL to set your
+              password.
             </p>
           </small>
         </div>

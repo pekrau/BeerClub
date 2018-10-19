@@ -5,7 +5,7 @@
 {% block head_title %}{{ settings['SITE_NAME'] }}{% end %}
 
 {% block body_title %}
-<a href="{{ reverse_url('account', current_user['email']) }}">
+<a href="{{ reverse_url('member', current_user['email']) }}">
   {{ current_user['email'] }}</a>
 {% end %}
 

@@ -101,28 +101,26 @@ class RequestHandler(tornado.web.RequestHandler):
         """
         return utils.get_docs(self.db, viewname, key=key, last=last, **kwargs)
 
-    def get_account(self, email, check=False):
-        """Get the account identified by the email address.
-        Raise KeyError if no such account or if not allowed to view it.
+    def get_member(self, email, check=False):
+        """Get the member identified by the email address.
+        Raise KeyError if no such member or if not allowed to view it.
         """
         try:
-            account = utils.get_account(self.db, email)
+            member = utils.get_member(self.db, email)
         except KeyError:
-            self.set_error_message('No such account.')
-            raise KeyError
+            raise KeyError('No such member account.')
         if check:
             if not (self.is_admin() or 
-                    account['email'] == self.current_user['email']):
-                self.set_error_message('You may not view the account.')
-                raise KeyError
-        return account
+                    member['email'] == self.current_user['email']):
+                raise KeyError('You may not view the member account.')
+        return member
 
-    def get_credit(self, account=None):
-        "Get the current credit status for the account."
-        if account is None:
-            account = self.current_user
+    def get_credit(self, member=None):
+        "Get the current credit status for the member."
+        if member is None:
+            member = self.current_user
         result = list(self.db.view('event/credit',
-                                   key=account['email'],
+                                   key=member['email'],
                                    group_level=1,
                                    reduce=True))
         if result:
@@ -130,12 +128,12 @@ class RequestHandler(tornado.web.RequestHandler):
         else:
             return 0
 
-    def get_beverages_count(self, account=None, date=utils.today()):
+    def get_beverages_count(self, member=None, date=utils.today()):
         "Get the number of beverages purchased on the given date."
-        if account is None:
-            account = self.current_user
+        if member is None:
+            member = self.current_user
         result = list(self.db.view('event/beverages',
-                                   key=[account['email'], date],
+                                   key=[member['email'], date],
                                    group_level=2,
                                    reduce=True))
         if result:
@@ -144,9 +142,9 @@ class RequestHandler(tornado.web.RequestHandler):
             return 0
 
     def get_current_user(self):
-        """Get the currently logged-in user account, or None.
+        """Get the currently logged-in user member, or None.
         This overrides a tornado function, otherwise it should have
-        been called 'get_current_account', since the term 'account'
+        been called 'get_current_member', since the term 'member'
         is used in this code rather than 'user'."""
         try:
             return self.get_current_user_session()
@@ -166,19 +164,19 @@ class RequestHandler(tornado.web.RequestHandler):
             max_age_days=settings['LOGIN_MAX_AGE_DAYS'])
         if not email: raise ValueError
         try:
-            account = self.get_account(email)
+            member = self.get_member(email)
         except KeyError:
             return None
         # Disabled; must not be allowed to login.
-        if account.get('disabled'):
-            logging.info("Session auth: DISABLED %s", account['email'])
+        if member.get('disabled'):
+            logging.info("Session auth: DISABLED %s", member['email'])
             return None
         else:
             # Check if valid login session.
-            if account.get('login') is None: raise ValueError
+            if member.get('login') is None: raise ValueError
             # All fine.
-            logging.info("Session auth: %s", account['email'])
-            return account
+            logging.info("Session auth: %s", member['email'])
+            return member
 
     def get_current_user_basic(self):
         """Get the current user by HTTP Basic authentication.
@@ -194,17 +192,17 @@ class RequestHandler(tornado.web.RequestHandler):
             if auth[0].lower() != 'basic': raise ValueError
             auth = base64.b64decode(auth[1])
             email, password = auth.split(':', 1)
-            account = self.get_account(email)
-            if utils.hashed_password(password) != account.get('password'):
+            member = self.get_member(email)
+            if utils.hashed_password(password) != member.get('password'):
                 raise ValueError
         except (IndexError, ValueError, TypeError):
             raise ValueError
-        if account.get('disabled'):
-            logging.info("Basic auth login: DISABLED %s", account['email'])
+        if member.get('disabled'):
+            logging.info("Basic auth login: DISABLED %s", member['email'])
             return None
         else:
-            logging.info("Basic auth login: %s", account['email'])
-            return account
+            logging.info("Basic auth login: %s", member['email'])
+            return member
 
     def is_admin(self):
         "Is the current user an administrator?"

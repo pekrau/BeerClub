@@ -7,20 +7,20 @@ import couchdb
 
 DESIGNS = dict(
 
-    account=dict(
-        email=dict(map=         # account/email
+    member=dict(
+        email=dict(map=         # member/email
 """function(doc) {
-  if (doc.beerclub_doctype !== 'account') return;
+  if (doc.beerclub_doctype !== 'member') return;
   emit(doc.email, doc.status);
 }"""),
-        role=dict(map=          # account/role
+        role=dict(map=          # member/role
 """function(doc) {
-  if (doc.beerclub_doctype !== 'account') return;
+  if (doc.beerclub_doctype !== 'member') return;
   emit(doc.role, doc.email);
 }"""),
-        status=dict(map=        # account/status
+        status=dict(map=        # member/status
 """function(doc) {
-  if (doc.beerclub_doctype !== 'account') return;
+  if (doc.beerclub_doctype !== 'member') return;
   emit(doc.status, doc.email);
 }"""),
     ),
@@ -29,25 +29,25 @@ DESIGNS = dict(
         action=dict(map=        # event/action
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
-  emit(doc.action, doc.account);
+  emit(doc.action, doc.member);
 }"""),
         credit=dict(reduce="_sum", # event/credit
                     map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
-  emit(doc.account, doc.credit);
+  emit(doc.member, doc.credit);
 }"""),
         beverages=dict(reduce="_count", # event/beverages
                        map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
   if (doc.action !== 'purchase') return;
-  emit([doc.account, doc.log.date], doc.beverage);
+  emit([doc.member, doc.log.date], doc.beverage);
 }"""),
-        account=dict(map=       # event/account
+        member=dict(map=       # event/member
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
-  emit([doc.account, doc.log.timestamp], null);
+  emit([doc.member, doc.log.timestamp], null);
 }"""),
         ledger=dict(reduce="_sum", # event/ledger
                     map=
@@ -59,7 +59,7 @@ DESIGNS = dict(
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
   if (!doc.credit) return;
-  emit(doc.log.timestamp, doc.account);
+  emit(doc.log.timestamp, doc.member);
 }"""),
     )
 )

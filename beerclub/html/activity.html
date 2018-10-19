@@ -1,4 +1,4 @@
-{# Page for accounts having made credit-affecting purchases recently. #}
+{# Page for members having made credit-affecting purchases recently. #}
 
 {% extends 'base.html' %}
 
@@ -6,36 +6,36 @@
 
 {% block body_title %}
 Activity 
-<small>Accounts active in the last {{ settings['ACTIVITY_CUTOFF'] }} days</small>
+<small>Members active in the last {{ settings['ACTIVITY_CUTOFF'] }} days</small>
 {% end %}
 
 {% block content %}
 <div class="row my-4">
   <div class="col-md">
-    <table id="accounts" class="table table-sm">
+    <table id="members" class="table table-sm">
       <thead>
         <th scope="col"></th>
-        <th scope="col">Account</th>
+        <th scope="col">Member</th>
         <th scope="col">Name</th>
         <th scope="col">Credit ({{ currency }})</th>
         <th scope="col">Activity</th>
       </thead>
       <tbody>
-        {% for account in accounts %}
+        {% for member in members %}
         <tr>
           <td>
-            <a href="{{ reverse_url('repayment', account['email']) }}"
+            <a href="{{ reverse_url('repayment', member['email']) }}"
                class="btn btn-sm btn-warning"
                role="button" target="_blank">Repay</a>
           </td>
           <td>
-            <a href="{{ reverse_url('account', account['email']) }}">
-              {{ account['email'] }}</a>
+            <a href="{{ reverse_url('member', member['email']) }}">
+              {{ member['email'] }}</a>
           </td>
-          <td>{{ account['name'] }}</td>
-          <td>{% module Money(get_credit(account), currency=False) %}</td>
+          <td>{{ member['name'] }}</td>
+          <td>{% module Money(get_credit(member), currency=False) %}</td>
           <td>
-            <span class="localtime small">{{ account['activity'] }}</span>
+            <span class="localtime small">{{ member['activity'] }}</span>
           </td>
         </tr>
         {% end %}
@@ -48,7 +48,7 @@ Activity
 {% block javascript %}
 <script>
   $(function() {
-    $("#accounts").DataTable( {
+    $("#members").DataTable( {
       "pagingType": "full_numbers",
       "order": [[ 4, "desc"]],
     });

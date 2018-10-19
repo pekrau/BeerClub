@@ -10,10 +10,10 @@
 <table class="table mt-4">
   <tbody>
     <tr>
-      <th scope="row">Account</th>
+      <th scope="row">Member</th>
       <td>
-        <a href="{{ reverse_url('account', event['account']) }}">
-          {{ event['account'] }}</a>
+        <a href="{{ reverse_url('member', event['member']) }}">
+          {{ event['member'] }}</a>
       </td>
     </tr>
     <tr>
@@ -45,7 +45,7 @@
     </tr>
     <tr>
       <th scope="row">Actor</th>
-      <td>{{ event['log']['account'] }}</td>
+      <td>{{ event['log']['member'] }}</td>
     </tr>
     <tr>
       <th scope="row">Timestamp</th>

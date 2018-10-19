@@ -23,7 +23,7 @@ class Event(RequestHandler):
         event = self.get_doc(iuid)
         # View access privilege
         if not (self.is_admin() or
-                event['account'] == self.current_user['email']):
+                event['member'] == self.current_user['email']):
             self.set_error_flash('You may not view the event data.')
             self.see_other('home')
             return
@@ -31,7 +31,7 @@ class Event(RequestHandler):
 
 
 class Purchase(RequestHandler):
-    "Buying one beverage. Always by the currently logged in account."
+    "Buying one beverage. Always by the currently logged in member."
 
     @tornado.web.authenticated
     def post(self):
@@ -46,7 +46,7 @@ class Purchase(RequestHandler):
         else:
             raise KeyError("no such payment %s" % pid)
         with EventSaver(rqh=self) as saver:
-            saver['account'] = self.current_user['email']
+            saver['member']   = self.current_user['email']
             saver['action']   = constants.PURCHASE
             saver['beverage'] = beverage['identifier']
             saver['price']    = beverage['price']
@@ -60,23 +60,23 @@ class Purchase(RequestHandler):
 
 
 class Repayment(RequestHandler):
-    "Repayment to increase the credit of an account."
+    "Repayment to increase the credit of an member."
 
     @tornado.web.authenticated
     def get(self, email):
         self.check_admin()
         try:
-            account = self.get_account(email, check=True)
+            member = self.get_member(email, check=True)
         except KeyError:
             self.see_other('home')
         else:
-            self.render('repayment.html', account=account)
+            self.render('repayment.html', member=member)
 
     @tornado.web.authenticated
     def post(self, email):
         self.check_admin()
         try:
-            account = self.get_account(email, check=True)
+            member = self.get_member(email, check=True)
         except KeyError:
             self.see_other('home')
             return
@@ -86,16 +86,16 @@ class Repayment(RequestHandler):
         else:
             raise KeyError("no such repayment %s" % pid)
         with EventSaver(rqh=self) as saver:
-            saver['account'] = account['email']
+            saver['member']  = member['email']
             saver['action']  = constants.REPAYMENT
             saver['payment'] = payment['identifier']
             saver['credit']  = float(self.get_argument('amount'))
             saver['date']    = self.get_argument('date', utils.today())
-        self.see_other('accounts')
+        self.see_other('members')
 
         
 class Expenditure(RequestHandler):
-    "Expenditure that reduces the BeerClub master account."
+    "Expenditure that reduces the BeerClub master member."
 
     @tornado.web.authenticated
     def get(self):
@@ -106,16 +106,16 @@ class Expenditure(RequestHandler):
     def post(self):
         self.check_admin()
         with EventSaver(rqh=self) as saver:
-            saver['account'] = constants.BEERCLUB
-            saver['action']  = constants.EXPENDITURE
-            saver['credit']  = - float(self.get_argument('amount'))
-            saver['date']    = self.get_argument('date', utils.today())
+            saver['member'] = constants.BEERCLUB
+            saver['action'] = constants.EXPENDITURE
+            saver['credit'] = - float(self.get_argument('amount'))
+            saver['date']   = self.get_argument('date', utils.today())
             saver['description'] = self.get_argument('description', None)
         self.see_other('ledger')
 
 
 class History(RequestHandler):
-    "View event history for an account."
+    "View event history for an member."
 
     def initialize(self, all):
         self.all = all
@@ -123,7 +123,7 @@ class History(RequestHandler):
     @tornado.web.authenticated
     def get(self, email):
         try:
-            account = self.get_account(email, check=True)
+            member = self.get_member(email, check=True)
         except KeyError:
             self.see_other('home')
             return 
@@ -131,20 +131,20 @@ class History(RequestHandler):
             kwargs = dict()
         else:
             kwargs = dict(limit=settings['DISPLAY_MAX_HISTORY'])
-        events = self.get_docs('event/account',
-                               key=[account['email'], constants.CEILING],
-                               last=[account['email'], ''],
+        events = self.get_docs('event/member',
+                               key=[member['email'], constants.CEILING],
+                               last=[member['email'], ''],
                                descending=True,
                                **kwargs)
         self.render('history.html',
-                    account=account,
+                    member=member,
                     events=events, 
                     all=self.all,
                     event_links=True)
 
 
 class Activity(RequestHandler):
-    "Accounts having made credit-affecting purchases recently."
+    "Members having made credit-affecting purchases recently."
 
     @tornado.web.authenticated
     def get(self):
@@ -163,20 +163,20 @@ class Activity(RequestHandler):
         activity.pop(constants.BEERCLUB, None)
         activity = activity.items()
         activity.sort(key=lambda i: i[1])
-        accounts = []
+        members = []
         for email, timestamp in activity:
-            account = self.get_account(email)
-            account['activity'] = timestamp
-            accounts.append(account)
-        self.render('activity.html', accounts=accounts)
+            member = self.get_member(email)
+            member['activity'] = timestamp
+            members.append(member)
+        self.render('activity.html', members=members)
 
 
 class Ledger(RequestHandler):
-    "Ledger page for BeerClub master account."
+    "Ledger page for BeerClub master member."
 
     @tornado.web.authenticated
     def get(self):
-        "Display history for the master account between given dates."
+        "Display history for the master member between given dates."
         result = list(self.db.view('event/ledger', group=False))
         if result:
             balance = result[0].value

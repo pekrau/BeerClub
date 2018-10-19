@@ -1,4 +1,4 @@
-"Account handling; member of Beer Club."
+"Member account handling; member of Beer Club."
 
 import logging
 import fnmatch
@@ -12,17 +12,17 @@ from .requesthandler import RequestHandler
 from .saver import Saver
 
 EMAIL_SENT = 'An email with instructions has been sent.'
-PENDING_MESSAGE = 'An administrator will inspect your account.' \
-                  ' An email will be sent if the account is enabled.'
+PENDING_MESSAGE = 'An administrator will inspect your registration.' \
+                  ' An email will be sent if the it is enabled.'
 
-PENDING_SUBJECT = "A {site} account {email} is pending"
-PENDING_TEXT = """A {site} account {email} is pending.
+PENDING_SUBJECT = "A {site} member account {email} is pending"
+PENDING_TEXT = """A {site} member account {email} is pending.
 
-Inspect the account at {url} and enable or disable.
+Inspect the member account at {url} and enable or disable.
 """
 
-RESET_SUBJECT = "Your {site} account has been reset."
-RESET_TEXT = """Your {site} account {email} has been reset.
+RESET_SUBJECT = "Your {site} member account has been reset."
+RESET_TEXT = """Your {site} member account {email} has been reset.
 
 To set its password, go to {url}. This link contains a
 one-time code allowing you to set the password.
@@ -31,8 +31,8 @@ Yours,
 The {site} administrators
 """
 
-ENABLED_SUBJECT = "Your {site} account enabled"
-ENABLED_TEXT = """Your {site} account {email} has been enabled.
+ENABLED_SUBJECT = "Your {site} member account is enabled"
+ENABLED_TEXT = """Your {site} member account {email} has been enabled.
 
 You need to set the password for it. Go to {url}. This link contains a
 one-time code allowing you to set the password.
@@ -42,43 +42,43 @@ The {site} administrators
 """
 
 
-class AccountSaver(Saver):
-    doctype = constants.ACCOUNT
+class MemberSaver(Saver):
+    doctype = constants.MEMBER
 
     def initialize(self):
         self['status'] = constants.PENDING
         self['password'] = None
 
 
-class Account(RequestHandler):
-    "View an account."
+class Member(RequestHandler):
+    "View a member account."
 
     @tornado.web.authenticated
     def get(self, email):
         try:
-            account = self.get_account(email, check=True)
+            member = self.get_member(email, check=True)
         except KeyError:
             self.see_other('home')
         else:
-            self.render('account.html', account=account)
+            self.render('member.html', member=member)
 
 
-class AccountEdit(RequestHandler):
-    "Edit an account; change values, enable or disable."
+class MemberEdit(RequestHandler):
+    "Edit a member account; change values, enable or disable."
 
     @tornado.web.authenticated
     def get(self, email):
         try:
-            account = self.get_account(email, check=True)
+            member = self.get_member(email, check=True)
         except KeyError:
             self.see_other('home')
         else:
-            self.render('account_edit.html', account=account)
+            self.render('member_edit.html', member=member)
 
     @tornado.web.authenticated
     def post(self, email):
         try:
-            account = self.get_account(email, check=True)
+            member = self.get_member(email, check=True)
         except KeyError:
             self.see_other('home')
             return
@@ -97,30 +97,30 @@ class AccountEdit(RequestHandler):
                 if role not in constants.ROLES: raise ValueError
             except (tornado.web.MissingArgumentError, ValueError):
                 pass
-        with AccountSaver(doc=account, rqh=self) as saver:
-            saver['name'] = data['name']
-            saver['phone'] = utils.normalize_phone(data['phone'])
+        with MemberSaver(doc=member, rqh=self) as saver:
+            saver['name']    = data['name']
+            saver['phone']   = utils.normalize_phone(data['phone'])
             saver['address'] = data['address']
             if role:
                 saver['role'] = role
-        self.see_other('account', account['email'])
+        self.see_other('member', member['email'])
 
 
-class Accounts(RequestHandler):
-    "View a table of all accounts."
+class Members(RequestHandler):
+    "View a table of all member accounts."
 
     @tornado.web.authenticated
     def get(self):
         self.check_admin()
-        accounts = self.get_docs('account/email', key='',last=constants.CEILING)
-        self.render('accounts.html', accounts=accounts)
+        members = self.get_docs('member/email', key='',last=constants.CEILING)
+        self.render('members.html', members=members)
 
 
 class Login(RequestHandler):
     "Login resource."
 
     def post(self):
-        "Login to a account account. Set a secure cookie."
+        "Login to a member account. Set a secure cookie."
         try:
             email = self.get_argument('email')
             password = self.get_argument('password')
@@ -129,24 +129,24 @@ class Login(RequestHandler):
             self.see_other('home')
             return
         try:
-            account = self.get_account(email)
-            if account['status'] == constants.DISABLED:
+            member = self.get_member(email)
+            if member['status'] == constants.DISABLED:
                 raise ValueError
-            if utils.hashed_password(password) != account.get('password'):
+            if utils.hashed_password(password) != member.get('password'):
                 raise KeyError
         except KeyError:
-            self.set_error_flash('No such account or invalid password.')
+            self.set_error_flash('No such member or invalid password.')
         except ValueError:
-            self.set_error_flash("Your account is disabled."
+            self.set_error_flash("Your member account is disabled."
                                  " Contact the %s administrators."
                                  % settings['SITE_NAME'])
         else:
-            with AccountSaver(doc=account, rqh=self) as saver:
-                saver['login'] = utils.timestamp()     # Set login session.
-                saver['last_login'] = saver['login']   # Set last login.
-            logging.info("Login auth: %s", account['email'])
+            with MemberSaver(doc=member, rqh=self) as saver:
+                saver['login']      = utils.timestamp() # Set login session.
+                saver['last_login'] = saver['login']    # Set last login.
+            logging.info("Login auth: %s", member['email'])
             self.set_secure_cookie(constants.USER_COOKIE,
-                                   account['email'],
+                                   member['email'],
                                    expires_days=settings['LOGIN_MAX_AGE_DAYS'])
         self.see_other('home')
 
@@ -156,40 +156,40 @@ class Logout(RequestHandler):
 
     @tornado.web.authenticated
     def post(self):
-        with AccountSaver(doc=self.current_user, rqh=self) as saver:
+        with MemberSaver(doc=self.current_user, rqh=self) as saver:
             saver['login'] = None  # Unset login session.
         self.set_secure_cookie(constants.USER_COOKIE, '')
         self.see_other('home')
 
 
 class Reset(RequestHandler):
-    "Reset the password of a account account."
+    "Reset the password of a member account."
 
     def post(self):
         URL = self.absolute_reverse_url
         try:
-            account = self.get_account(self.get_argument('email'))
+            member = self.get_member(self.get_argument('email'))
         except (tornado.web.MissingArgumentError, KeyError):
             self.see_other('home') # Silent error.
         else:
-            if account.get('status') == constants.PENDING:
+            if member.get('status') == constants.PENDING:
                 self.see_other('home', error='Cannot reset password.'
-                               ' Account has not been enabled.')
+                               ' Member account has not been enabled.')
                 return
-            elif account.get('status') == constants.DISABLED:
+            elif member.get('status') == constants.DISABLED:
                 self.see_other('home', error='Cannot reset password.'
-                               ' Account is disabled; contact the site admin.')
+                               ' Member account is disabled.')
                 return
-            with AccountSaver(doc=account, rqh=self) as saver:
+            with MemberSaver(doc=member, rqh=self) as saver:
                 saver['password'] = None
-                saver['code'] = utils.get_iuid()
-            data = dict(email=account['email'],
+                saver['code']     = utils.get_iuid()
+            data = dict(email=member['email'],
                         site=settings['SITE_NAME'],
                         url = self.absolute_reverse_url('password',
-                                                    email=account['email'],
-                                                    code=account['code']))
+                                                    email=member['email'],
+                                                    code=member['code']))
             email_server = utils.EmailServer()
-            email_server.send(account['email'],
+            email_server.send(member['email'],
                               RESET_SUBJECT.format(**data),
                               RESET_TEXT.format(**data))
             if self.current_user and not self.is_admin():
@@ -199,7 +199,7 @@ class Reset(RequestHandler):
 
 
 class Password(RequestHandler):
-    "Set the password of a account account; requires a code."
+    "Set the password of a member account; requires a code."
 
     def get(self):
         self.render('password.html',
@@ -208,8 +208,8 @@ class Password(RequestHandler):
 
     def post(self):
         try:
-            account = self.get_account(self.get_argument('email'))
-            if account.get('code') != self.get_argument('code'):
+            member = self.get_member(self.get_argument('email'))
+            if member.get('code') != self.get_argument('code'):
                 raise ValueError
         except (tornado.web.MissingArgumentError, KeyError, ValueError):
             self.see_other('home',
@@ -227,114 +227,117 @@ class Password(RequestHandler):
                            code=self.get_argument('code') or '',
                            error=str(msg))
             return 
-        with AccountSaver(doc=account, rqh=self) as saver:
+        with MemberSaver(doc=member, rqh=self) as saver:
             saver['password'] = utils.hashed_password(password)
             saver['login'] = utils.timestamp()     # Set login session.
             saver['last_login'] = saver['login']   # Set last login.
             saver['code'] = None
         self.set_secure_cookie(constants.USER_COOKIE,
-                               account['email'],
+                               member['email'],
                                expires_days=settings['LOGIN_MAX_AGE_DAYS'])
         self.see_other('home')
 
 
 class Register(RequestHandler):
-    "Register an account."
+    "Register a member account."
 
     def post(self):
-        data = {}
-        for key in ['email', 'name', 'phone', 'address']:
-            try:
-                data[key] = self.get_argument(key)
-            except tornado.web.MissingArgumentError:
-                self.set_error_flash("No %s provided." % key)
-                self.see_other('home')
-                return
-        if not fnmatch.fnmatch(data['email'], constants.EMAIL_PATTERN):
-            self.set_error_flash('Invalid email provided.')
-            self.see_other('home')
-            return
         try:
-            account = self.get_doc(data['email'], 'account/email')
-        except KeyError:
-            pass
-        else:
-            self.set_message_flash('Account already exists, use Reset.')
+            with MemberSaver(rqh=self) as saver:
+                try:
+                    email = self.get_argument('email')
+                except tornado.web.MissingArgumentError:
+                    raise ValueError('No email provided.')
+                if not fnmatch.fnmatch(email, constants.EMAIL_PATTERN):
+                    raise ValueError('Invalid email provided.')
+                try:
+                    member = self.get_doc(email, 'member/email')
+                except KeyError:
+                    pass
+                else:
+                    raise ValueError('Member account exists; use Reset.')
+                saver['email']   = email
+                try:
+                    saver['name'] = self.get_argument('name')
+                except tornado.web.MissingArgumentError:
+                    raise ValueError('No name provided.')
+                try:
+                    saver['phone'] = utils.normalize_phone(self.get_argument('phone'))
+                except tornado.web.MissingArgumentError:
+                    saver['phone'] = None
+                saver['address'] = self.get_argument('address', None)
+                # Set the very first member account to be admin.
+                count = len(self.get_docs('member/email', key='',
+                                          last=constants.CEILING, limit=2))
+                if count == 0:
+                    saver['role'] = constants.ADMIN
+                else:
+                    saver['role'] = constants.MEMBER
+                ptn = settings['MEMBER_EMAIL_AUTOENABLE']
+                # First member account, or pattern match, enabled directly.
+                if count == 0 or (ptn and fnmatch.fnmatch(saver['email'], ptn)):
+                    saver['status'] = constants.ENABLED
+                    saver['code'] = code = utils.get_iuid()
+        except ValueError as err:
+            self.set_message_flash(str(err))
             self.see_other('home')
             return
-        with AccountSaver(rqh=self) as saver:
-            saver['email'] = data['email']
-            saver['name'] = data['name']
-            saver['phone'] = utils.normalize_phone(data['phone'])
-            saver['address'] = data['address']
-            # Set the very first account to be admin.
-            count = len(self.get_docs('account/email', key='',
-                                      last=constants.CEILING, limit=2))
-            if count == 0:
-                saver['role'] = constants.ADMIN
-            else:
-                saver['role'] = constants.MEMBER
-            ptn = settings['ACCOUNT_EMAIL_AUTOENABLE']
-            # First account, or pattern match, will be enabled directly.
-            if count == 0 or (ptn and fnmatch.fnmatch(saver['email'], ptn)):
-                saver['status'] = constants.ENABLED
-                saver['code'] = data['code'] = utils.get_iuid()
-        account = saver.doc
-        data['site'] = settings['SITE_NAME']
+        member = saver.doc
+        data = dict(email=member['email'], site=settings['SITE_NAME'])
         email_server = utils.EmailServer()
-        if account['status'] == constants.ENABLED:
+        if member['status'] == constants.ENABLED:
             data['url'] = self.absolute_reverse_url('password',
-                                                    email=data['email'],
-                                                    code=data['code'])
-            email_server.send(account['email'],
+                                                    email=email,
+                                                    code=code)
+            email_server.send(member['email'],
                               ENABLED_SUBJECT.format(**data),
                               ENABLED_TEXT.format(**data))
             self.set_message_flash(EMAIL_SENT)
         else:
-            data['url'] = self.absolute_reverse_url('account', data['email'])
+            data['url'] = self.absolute_reverse_url('member', data['email'])
             subject = PENDING_SUBJECT.format(**data)
             text = PENDING_TEXT.format(**data)
-            for admin in self.get_docs('account/role', key=constants.ADMIN):
+            for admin in self.get_docs('member/role', key=constants.ADMIN):
                 email_server.send(admin['email'], subject, text)
             self.set_message_flash(PENDING_MESSAGE)
         self.see_other('home')
 
 
 class Enable(RequestHandler):
-    "Enable an account."
+    "Enable a member account."
 
     @tornado.web.authenticated
     def post(self, email):
         self.check_admin()
-        account = self.get_account(email)
-        with AccountSaver(doc=account, rqh=self) as saver:
-            saver['status'] = constants.ENABLED
-            saver['login'] = None
+        member = self.get_member(email)
+        with MemberSaver(doc=member, rqh=self) as saver:
+            saver['status']   = constants.ENABLED
+            saver['login']    = None
             saver['password'] = None
-            saver['code'] = utils.get_iuid()
+            saver['code']     = utils.get_iuid()
         email_server = utils.EmailServer()
-        data = dict(email=account['email'],
+        data = dict(email=member['email'],
                     site=settings['SITE_NAME'],
                     url=self.absolute_reverse_url('password',
-                                                  email=account['email'],
-                                                  code=account['code']))
-        email_server.send(account['email'],
+                                                  email=member['email'],
+                                                  code=member['code']))
+        email_server.send(member['email'],
                           ENABLED_SUBJECT.format(**data),
                           ENABLED_TEXT.format(**data))
         self.set_message_flash(EMAIL_SENT)
-        self.see_other('account', account['email'])
+        self.see_other('member', member['email'])
 
 
 class Disable(RequestHandler):
-    "Disable an account."
+    "Disable a member account."
 
     @tornado.web.authenticated
     def post(self, email):
         self.check_admin()
-        account = self.get_account(email)
-        with AccountSaver(doc=account, rqh=self) as saver:
-            saver['status'] = constants.DISABLED
-            saver['login'] = None
+        member = self.get_member(email)
+        with MemberSaver(doc=member, rqh=self) as saver:
+            saver['status']   = constants.DISABLED
+            saver['login']    = None
             saver['password'] = None
-            saver['code'] = None
-        self.see_other('account', account['email'])
+            saver['code']     = None
+        self.see_other('member', member['email'])

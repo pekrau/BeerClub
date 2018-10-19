@@ -12,9 +12,9 @@ from beerclub import uimodules
 from beerclub import utils
 
 from beerclub.requesthandler import RequestHandler
-from beerclub.account import (Account,
-                              AccountEdit,
-                              Accounts,
+from beerclub.member import (Member,
+                              MemberEdit,
+                              Members,
                               Login,
                               Logout,
                               Reset,
@@ -32,10 +32,10 @@ from beerclub.event import (Event,
 
 
 class Home(RequestHandler):
-    "Home page; login or payment and account info."
+    "Home page; login or payment and member info."
     def get(self):
         if self.current_user:
-            self.render('home_account.html',
+            self.render('home_member.html',
                         beverages_count=self.get_beverages_count(),
                         home_active=True)
         else:
@@ -47,11 +47,11 @@ def main():
         url(r'/', Home, name='home'),
         url(r'/purchase', Purchase, name='purchase'),
         url(r'/repayment/([^/]+)', Repayment, name='repayment'),
-        url(r'/account/([^/]+)', Account, name='account'),
-        url(r'/account/([^/]+)/edit', AccountEdit, name='account_edit'),
-        url(r'/account/([^/]+)/enable', Enable, name='enable'),
-        url(r'/account/([^/]+)/disable', Disable, name='disable'),
-        url(r'/accounts', Accounts, name='accounts'),
+        url(r'/member/([^/]+)', Member, name='member'),
+        url(r'/member/([^/]+)/edit', MemberEdit, name='member_edit'),
+        url(r'/member/([^/]+)/enable', Enable, name='enable'),
+        url(r'/member/([^/]+)/disable', Disable, name='disable'),
+        url(r'/members', Members, name='members'),
         url(r'/activity', Activity, name='activity'),
         url(r'/history/([^/]+)', History, dict(all=False), name='history'),
         url(r'/history/([^/]+)/all', History,dict(all=True),name='history_all'),

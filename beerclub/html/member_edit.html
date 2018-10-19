@@ -1,17 +1,17 @@
-{# Account edit page. #}
+{# Member edit page. #}
 
 {% extends 'base.html' %}
 
-{% block head_title %}Edit account {{ account['email'] }}{% end %}
+{% block head_title %}Edit member {{ member['email'] }}{% end %}
 
-{% block body_title %}Edit account {{ account['email'] }}{% end %}
+{% block body_title %}Edit member {{ member['email'] }}{% end %}
 
 {% block content %}
 <div class="row">
   <div class="col-md-10">
   </div>
   <div class="col-md">
-    <form action="{{ reverse_url('account', account['email']) }}"
+    <form action="{{ reverse_url('member', member['email']) }}"
           role="form"
           method="GET">
       <button type="submit" class="btn btn-secondary w-100">Cancel</button>
@@ -20,7 +20,7 @@
 </div>
 <div class="card mt-2">
   <div class="card-body">
-    <form action="{{ reverse_url('account_edit', account['email']) }}"
+    <form action="{{ reverse_url('member_edit', member['email']) }}"
           role="form"
           method="POST">
       {% module xsrf_form_html() %}
@@ -34,14 +34,14 @@
         <label for="email" class="col-md-2 col-form-label">Email</label>
         <div class="col-md-10">
           <input type="email" class="form-control-plaintext" id="email"
-                 aria-describedby="emailHelp" value="{{ account['email'] }}">
+                 aria-describedby="emailHelp" value="{{ member['email'] }}">
           <small id="emailHelp" class="form-text text-muted">
-            Your email address. This is your account identifier.
+            Your email address. This is your member account identifier.
             It cannot be changed.
             <br>
-            If your email has changed, register a new account, and ask
-            the {{ settings['SITE_NAME'] }} to transfer your credit.
-            See the <a href="{{ reverse_url('about') }}">About</a> page.
+            If your email has changed, register a new member account,
+            and ask the {{ settings['SITE_NAME'] }} administrator to
+            transfer your credit.
           </small>
         </div>
       </div>
@@ -50,7 +50,7 @@
         <div class="col-md-10">
           <input type="text" class="form-control" required
                  name="name" id="name"
-                 aria-describedby="nameHelp" value="{{ account['name'] }}">
+                 aria-describedby="nameHelp" value="{{ member['name'] }}">
           <small id="nameHelp" class="form-text text-muted">
             Your first and last name.
           </small>
@@ -61,7 +61,7 @@
         <div class="col-md-10">
           <input type="text" class="form-control" required
                  name="phone" id="phone"
-                 aria-describedby="phoneHelp" value="{{ account['phone'] }}">
+                 aria-describedby="phoneHelp" value="{{ member['phone'] }}">
           <small id="phoneHelp" class="form-text text-muted">
             Your phone number. All non-digit characters will be removed.
           </small>
@@ -73,13 +73,13 @@
           <input type="text" class="form-control" required
                  name="address" id="address"
                  aria-describedby="addressHelp"
-                 value="{{ account['address'] }}">
+                 value="{{ member['address'] }}">
           <small id="addressHelp" class="form-text text-muted">
             Your address (floor, building affiliation, etc).
           </small>
         </div>
       </div>
-      {% if is_admin and current_user['email'] != account['email'] %}
+      {% if is_admin and current_user['email'] != member['email'] %}
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Role</label>
         <div class="col-md-10">
@@ -87,7 +87,7 @@
           <div class="form-check">
             <input class="form-check-input" type="radio"
                    name="role" id="role_{{ role }}"
-                   {{ role == account['role'] and 'checked' or '' }}
+                   {{ role == member['role'] and 'checked' or '' }}
                     value="{{ role }}">
             <label class="form-check-label" for="role_{{ role }}">
               {{ role }}

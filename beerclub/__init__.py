@@ -23,7 +23,7 @@ settings = dict(
     PASSWORD_SALT=None, # Set to a secret long string of random characters.
     MIN_PASSWORD_LENGTH=8,
     LOGIN_MAX_AGE_DAYS=31,
-    ACCOUNT_EMAIL_AUTOENABLE=None,
+    MEMBER_EMAIL_AUTOENABLE=None,
     EMAIL=dict(HOST='localhost',
                PORT=None,
                TLS=False,

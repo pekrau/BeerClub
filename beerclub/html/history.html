@@ -1,4 +1,4 @@
-{# Account history page. #}
+{# Member history page. #}
 
 {% extends 'base.html' %}
 
@@ -6,18 +6,18 @@
 
 {% block body_title %}
 History 
-<a href="{{ reverse_url('account', account['email']) }}">
-  {{ account['email'] }}</a>
+<a href="{{ reverse_url('member', member['email']) }}">
+  {{ member['email'] }}</a>
 {% end %}
 
 {% block content %}
 <h5 class="my-4">
-  Current credit: {% module Money(get_credit(account), padding=0) %}
+  Current credit: {% module Money(get_credit(member), padding=0) %}
 </h5>
 {% include 'events_list.html' %}
 <p>
   {% if all %}
-  <a href="{{ reverse_url('history', account['email']) }}"
+  <a href="{{ reverse_url('history', member['email']) }}"
      class="btn btn-primary btn-sm">Show recent events</a>
 </p>
 {% else %}
@@ -25,7 +25,7 @@ History
   Max {{ settings['DISPLAY_MAX_HISTORY'] }} events shown.
 </p>
 <p>
-  <a href="{{ reverse_url('history_all', account['email']) }}"
+  <a href="{{ reverse_url('history_all', member['email']) }}"
      class="btn btn-primary btn-sm">Show all events</a>
 </p>
 {% end %}
