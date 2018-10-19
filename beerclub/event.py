@@ -60,7 +60,7 @@ class Purchase(RequestHandler):
 
 
 class Repayment(RequestHandler):
-    "Repayment to increase the credit of an member."
+    "Repayment to increase the credit of a member."
 
     @tornado.web.authenticated
     def get(self, email):
@@ -114,8 +114,8 @@ class Expenditure(RequestHandler):
         self.see_other('ledger')
 
 
-class History(RequestHandler):
-    "View event history for an member."
+class Accounts(RequestHandler):
+    "View event accounts for a member."
 
     def initialize(self, all):
         self.all = all
@@ -130,13 +130,13 @@ class History(RequestHandler):
         if self.all:
             kwargs = dict()
         else:
-            kwargs = dict(limit=settings['DISPLAY_MAX_HISTORY'])
+            kwargs = dict(limit=settings['DISPLAY_ACCOUNTS_MAX_EVENTS'])
         events = self.get_docs('event/member',
                                key=[member['email'], constants.CEILING],
                                last=[member['email'], ''],
                                descending=True,
                                **kwargs)
-        self.render('history.html',
+        self.render('accounts.html',
                     member=member,
                     events=events, 
                     all=self.all,
@@ -172,11 +172,11 @@ class Activity(RequestHandler):
 
 
 class Ledger(RequestHandler):
-    "Ledger page for BeerClub master member."
+    "Ledger page for all events."
 
     @tornado.web.authenticated
     def get(self):
-        "Display history for the master member between given dates."
+        "Display all events."
         result = list(self.db.view('event/ledger', group=False))
         if result:
             balance = result[0].value
@@ -184,8 +184,6 @@ class Ledger(RequestHandler):
             balance = 0
         kwargs = (dict(limit=100))
         events = self.get_docs('event/ledger',
-                               # key='2018-10-18',
-                               # last='2018-10-15',
                                descending=True,
                                **kwargs)
         self.render('ledger.html',

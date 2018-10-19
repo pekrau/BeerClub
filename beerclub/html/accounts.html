@@ -1,11 +1,11 @@
-{# Member history page. #}
+{# Member accounts page. #}
 
 {% extends 'base.html' %}
 
-{% block head_title %}History{% end %}
+{% block head_title %}Accounts{% end %}
 
 {% block body_title %}
-History 
+Accounts 
 <a href="{{ reverse_url('member', member['email']) }}">
   {{ member['email'] }}</a>
 {% end %}
@@ -17,15 +17,15 @@ History
 {% include 'events_list.html' %}
 <p>
   {% if all %}
-  <a href="{{ reverse_url('history', member['email']) }}"
+  <a href="{{ reverse_url('accounts', member['email']) }}"
      class="btn btn-primary btn-sm">Show recent events</a>
 </p>
 {% else %}
 <p class="mt-4 mb-1">
-  Max {{ settings['DISPLAY_MAX_HISTORY'] }} events shown.
+  Max {{ settings['DISPLAY_ACCOUNTS_MAX_EVENTS'] }} events shown.
 </p>
 <p>
-  <a href="{{ reverse_url('history_all', member['email']) }}"
+  <a href="{{ reverse_url('accounts_all', member['email']) }}"
      class="btn btn-primary btn-sm">Show all events</a>
 </p>
 {% end %}
