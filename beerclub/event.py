@@ -140,7 +140,8 @@ class Accounts(RequestHandler):
                     member=member,
                     events=events, 
                     all=self.all,
-                    event_links=True)
+                    show_event_links=True,
+                    show_member_col=False)
 
 
 class Activity(RequestHandler):
@@ -194,6 +195,7 @@ class Ledger(RequestHandler):
         self.render('ledger.html',
                     balance=balance,
                     events=events,
-                    event_links=self.is_admin(),
                     from_=from_,
-                    to=to)
+                    to=to,
+                    show_event_links=self.is_admin(),
+                    show_member_col=self.is_admin())

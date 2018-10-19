@@ -18,7 +18,7 @@
 </p>
 {% else %}
 <p class="mt-4 mb-1">
-  Max {{ settings['DISPLAY_ACCOUNTS_MAX_EVENTS'] }} events shown.
+  Max {{ settings['DISPLAY_ACCOUNTS_EVENTS'] }} events shown.
 </p>
 <p>
   <a href="{{ reverse_url('accounts_all', member['email']) }}"
