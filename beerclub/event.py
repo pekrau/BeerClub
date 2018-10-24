@@ -117,9 +117,6 @@ class Expenditure(RequestHandler):
 class Accounts(RequestHandler):
     "View event accounts for a member."
 
-    def initialize(self, all):
-        self.all = all
-
     @tornado.web.authenticated
     def get(self, email):
         try:
@@ -127,21 +124,24 @@ class Accounts(RequestHandler):
         except KeyError:
             self.see_other('home')
             return 
-        if self.all:
-            kwargs = dict()
-        else:
-            kwargs = dict(limit=settings['DISPLAY_ACCOUNTS_EVENTS'])
+        try:
+            from_ = self.get_argument('from')
+        except tornado.web.MissingArgumentError:
+            from_ = utils.today(-settings['DISPLAY_LEDGER_DAYS'])
+        try:
+            to = self.get_argument('to')
+        except tornado.web.MissingArgumentError:
+            to = utils.today()
         events = self.get_docs('event/member',
-                               key=[member['email'], constants.CEILING],
-                               last=[member['email'], ''],
-                               descending=True,
-                               **kwargs)
+                               key=[member['email'], from_],
+                               last=[member['email'], to + constants.CEILING])
         self.render('accounts.html',
                     member=member,
                     events=events, 
-                    all=self.all,
-                    show_event_links=True,
-                    show_member_col=False)
+                    from_=from_,
+                    to=to,
+                    show_event_links=self.is_admin(),
+                    show_member_col=self.is_admin())
 
 
 class Activity(RequestHandler):

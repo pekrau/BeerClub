@@ -1,0 +1,14 @@
+{# Javascript for list of events in table; to be included.
+   Requires 'show_event_link' and 'show_member_col' flags.
+#}
+
+{% block javascript %}
+<script>
+  $(function() {
+    $("#events").DataTable( {
+      "pagingType": "full_numbers",
+      "order": [[ {{ show_member_col and 5 or 4 }}, "desc"]],
+    });
+  });
+</script>
+{% end %} {# block javascript #}
