@@ -35,7 +35,7 @@ class RequestHandler(tornado.web.RequestHandler):
         result['constants'] = constants
         result['settings'] = settings
         result['currency'] = locale.localeconv()['currency_symbol']
-        result['get_credit'] = self.get_credit
+        result['get_balance'] = self.get_balance
         result['is_admin'] = self.is_admin()
         result['error'] = self.get_cookie('error', '').replace('_', ' ')
         self.clear_cookie('error')
@@ -115,8 +115,8 @@ class RequestHandler(tornado.web.RequestHandler):
                 raise KeyError('You may not view the member account.')
         return member
 
-    def get_credit(self, member=None):
-        "Get the current credit status for the member."
+    def get_balance(self, member=None):
+        "Get the current balance for the member."
         if member is None:
             member = self.current_user
         result = list(self.db.view('event/credit',

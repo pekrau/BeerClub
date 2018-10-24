@@ -8,7 +8,7 @@
 
 {% block content %}
 <h5 class="my-4">
-  Current credit: {% module Money(get_credit(member), padding=0) %}
+  Current balance: {% module Money(get_balance(member), padding=0) %}
 </h5>
 {% include 'events_list.html' %}
 <p>

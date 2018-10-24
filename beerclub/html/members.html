@@ -14,7 +14,7 @@
         <th scope="col"></th>
         <th scope="col">Member</th>
         <th scope="col">Name</th>
-        <th scope="col">Credit ({{ currency }})</th>
+        <th scope="col">Balance ({{ currency }})</th>
         <th scope="col">Role</th>
         <th scope="col">Status</th>
         <th scope="col">Last login</th>
@@ -33,7 +33,7 @@
               {{ member['email'] }}</a>
           </td>
           <td>{{ member['name'] }}</td>
-          <td>{% module Money(get_credit(member), currency=False) %}</td>
+          <td>{% module Money(get_balance(member), currency=False) %}</td>
           <td>{% module Role(member) %}</td>
           <td>{% module Status(member) %}</td>
           <td>{% module LastLogin(member) %}</td>

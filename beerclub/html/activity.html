@@ -17,7 +17,7 @@ Activity
         <th scope="col"></th>
         <th scope="col">Member</th>
         <th scope="col">Name</th>
-        <th scope="col">Credit ({{ currency }})</th>
+        <th scope="col">Balance ({{ currency }})</th>
         <th scope="col">Activity</th>
       </thead>
       <tbody>
@@ -33,7 +33,7 @@ Activity
               {{ member['email'] }}</a>
           </td>
           <td>{{ member['name'] }}</td>
-          <td>{% module Money(get_credit(member), currency=False) %}</td>
+          <td>{% module Money(get_balance(member), currency=False) %}</td>
           <td>
             <span class="localtime small">{{ member['activity'] }}</span>
           </td>

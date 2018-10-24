@@ -12,7 +12,7 @@
     {{ beverages_count }} beverages purchased today
  </div>
   <div class="col-md">
-    Current credit: {% module Money(get_credit(current_user), padding=0) %}
+    Current balance: {% module Money(get_balance(current_user), padding=0) %}
   </div>
 </div>
 {% for beverage in settings['BEVERAGE'] %}
