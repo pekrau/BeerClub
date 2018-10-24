@@ -80,6 +80,15 @@ class MemberSaver(Saver):
 class Member(RequestHandler):
     "View a member account."
 
+    def no_events(self, member):
+        "Are there no events for the member?"
+        events = self.get_docs('event/member',            
+                               key=[member['email'], constants.CEILING],
+                               last=[member['email'], ''],
+                               descending=True,
+                               limit=1)
+        return len(events) == 0
+
     @tornado.web.authenticated
     def get(self, email):
         try:
@@ -87,7 +96,25 @@ class Member(RequestHandler):
         except KeyError:
             self.see_other('home')
         else:
-            self.render('member.html', member=member)
+            self.render('member.html', 
+                        member=member, 
+                        deletable=self.no_events(member))
+
+    @tornado.web.authenticated
+    def post(self, email):
+        "Delete this member; only if no events."
+        try:
+            member = self.get_member(email, check=True)
+        except KeyError:
+            self.see_other('home')
+            return
+        if self.no_events(member):
+            self.db.delete(member)
+        url = self.get_argument('next', None)
+        if url:
+            self.redirect(url)
+        else:
+            self.see_other('home')
 
 
 class Settings(RequestHandler):
@@ -107,7 +134,6 @@ class Settings(RequestHandler):
         try:
             member = self.get_member(email, check=True)
         except KeyError:
-            self.set_error_flash('No such member.')
             self.see_other('home')
             return
         try:

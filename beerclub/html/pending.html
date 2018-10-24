@@ -13,8 +13,9 @@
       <thead>
         <th scope="col">Member</th>
         <th scope="col">Name</th>
-        <th scope="col">Phone)</th>
+        <th scope="col">Phone</th>
         <th scope="col">Address</th>
+        <th scope="col"></th>
         <th scope="col"></th>
       </thead>
       <tbody>
@@ -32,9 +33,21 @@
                   role="form"
                   method="POST">
               {% module xsrf_form_html() %}
-              <input type="hidden" name="next" 
-                     value="{{ reverse_url('pending') }}">
+              <input type="hidden"
+                     name="next" value="{{ reverse_url('pending') }}">
               <button type="submit" class="btn btn-success btn-sm">Enable</button>
+            </form>
+          </td>
+          <td>
+            <form action="{{ reverse_url('member', member['email']) }}"
+                  role="form"
+                  method="POST">
+              {% module xsrf_form_html() %}
+              <input type="hidden"
+                     name="next" value="{{ reverse_url('pending') }}">
+              <button type="submit" class="btn btn-danger btn-sm"
+                      onclick="return confirm('Really delete this member?');">
+                Delete</button>
             </form>
           </td>
         </tr>
