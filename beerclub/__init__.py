@@ -33,7 +33,7 @@ settings = dict(
     DISPLAY_NAVBAR_THEME='navbar-light',
     DISPLAY_NAVBAR_COLOUR= '#a9e15e',
     DISPLAY_ACCOUNTS_EVENTS=40,
-    DISPLAY_ACTIVITY_DAYS=7,
+    DISPLAY_ACTIVITY_DAYS=6,
     DISPLAY_LEDGER_DAYS=30,
     CONTACT_EMAIL=None,
     RULES_HTML="<ul><li>You must be a registered member to buy beer.</li></ul>",
@@ -46,6 +46,8 @@ settings = dict(
     " you provide to be handled by the {SITE_NAME} according to"
     " applicable laws. No data will be transferred to any external entity.",
     MONEY_STEP='0.01',
+    MEMBER_SWISH=True,   # Enable Swish phone number field for member.
+    MEMBER_ADDRESS=True, # Enable address field for member.
     CREDIT_STYLES=[(-1000, 'bg-danger text-light'),
                    (-500, 'bg-warning'),
                    (-1, 'text-danger')],
@@ -68,10 +70,10 @@ settings = dict(
              description='I paid cash for one %s.'),
         dict(identifier='swish',
              change=True,
-             label='Swish',
+             label='Beer Club Swish',
              style='info',
-             action='I paid to the Swish account.',
-             description='I paid for one %s to the Swish account.'),
+             action='I paid to the Beer Club Swish account.',
+             description='I paid for one %s to the Beer Club Swish account.'),
         dict(identifier='credit',
              change=True,
              label='credit',

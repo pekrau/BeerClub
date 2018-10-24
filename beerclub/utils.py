@@ -173,9 +173,10 @@ def to_utf8(value):
     else:
         return value
 
-def normalize_phone(value):
-    "Return normalized phone number. Get rid of all non-digits."
+def normalize_swish(value):
+    "Return normalized Swish phone number. Get rid of all non-digits."
     return ''.join([c for c in value if c in string.digits])
+
 
 class EmailServer(object):
     "A connection to an email server for sending emails."

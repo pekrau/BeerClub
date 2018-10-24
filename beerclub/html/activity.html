@@ -2,11 +2,11 @@
 
 {% extends 'base.html' %}
 
-{% block head_title %}Activity{% end %}
+{% block head_title %}Active members{% end %}
 
 {% block body_title %}
-Activity 
-<small>Members active in the last {{ settings['ACTIVITY_CUTOFF'] }} days</small>
+Active members
+<small>in the last {{ settings['DISPLAY_ACTIVITY_DAYS'] }} days</small>
 {% end %}
 
 {% block content %}

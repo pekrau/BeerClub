@@ -26,8 +26,8 @@
               {{ member['email'] }}</a>
           </td>
           <td>{{ member['name'] }}</td>
-          <td>{{ member['phone'] or '-' }}</td>
-          <td>{{ member['address'] or '-' }}</td>
+          <td>{{ member.get('phone') or '-' }}</td>
+          <td>{{ member.get('address') or '-' }}</td>
           <td>
             <form action="{{ reverse_url('enable', member['email']) }}"
                   role="form"

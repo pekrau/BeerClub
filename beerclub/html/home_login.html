@@ -116,17 +116,20 @@
           </small>
         </div>
       </div>
+      {% if settings['MEMBER_SWISH'] %}
       <div class="row form-group">
-        <label for="phone" class="col-md-2 col-form-label">Phone</label>
+        <label for="swish" class="col-md-2 col-form-label">Swish</label>
         <div class="col-md-10">
           <input type="text" class="form-control"
-                 name="phone" id="phone"
-                 aria-describedby="phoneHelp">
-          <small id="phoneHelp" class="form-text text-muted">
+                 name="swish" id="swish"
+                 aria-describedby="swishHelp">
+          <small id="swishHelp" class="form-text text-muted">
             Your Swish phone number.
           </small>
         </div>
       </div>
+      {% end %}
+      {% if settings['MEMBER_ADDRESS'] %}
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Address</label>
         <div class="col-md-10">
@@ -138,6 +141,7 @@
           </small>
         </div>
       </div>
+      {% end %}
       <div class="row form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">

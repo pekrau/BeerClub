@@ -68,14 +68,18 @@
       <th scope="row">Name</th>
       <td>{{ member['name'] }}</td>
     </tr>
+    {% if settings['MEMBER_SWISH'] %}
     <tr>
-      <th scope="row">Phone</th>
-      <td>{{ member['phone'] or '-' }}</td>
+      <th scope="row">Swish</th>
+      <td>{{ member.get('swish') or '-' }}</td>
     </tr>
+    {% end %}
+    {% if settings['MEMBER_ADDRESS'] %}
     <tr>
       <th scope="row">Address</th>
-      <td>{{ member['address'] or '-' }}</td>
+      <td>{{ member.get('address') or '-' }}</td>
     </tr>
+    {% end %}
     <tr>
       <th scope="row">Status</th>
       <td>{% module Status(member) %}</td>

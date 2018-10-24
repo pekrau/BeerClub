@@ -53,17 +53,20 @@
           </small>
         </div>
       </div>
+      {% if settings['MEMBER_SWISH'] %}
       <div class="row form-group">
-        <label for="phone" class="col-md-2 col-form-label">Phone</label>
+        <label for="swish" class="col-md-2 col-form-label">Swish</label>
         <div class="col-md-10">
           <input type="text" class="form-control"
-                 name="phone" id="phone" aria-describedby="phoneHelp"
-                 value="{{ member['phone'] or ''}}">
-          <small id="phoneHelp" class="form-text text-muted">
+                 name="swish" id="swish" aria-describedby="swishHelp"
+                 value="{{ member.get('swish') or ''}}">
+          <small id="swishHelp" class="form-text text-muted">
             Your Swish phone number.
           </small>
         </div>
       </div>
+      {% end %}
+      {% if settings['MEMBER_ADDRESS'] %}
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Address</label>
         <div class="col-md-10">
@@ -75,6 +78,7 @@
           </small>
         </div>
       </div>
+      {% end %}
       {% if is_admin and current_user['email'] != member['email'] %}
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Role</label>

@@ -55,14 +55,14 @@ class MemberSaver(Saver):
         except tornado.web.MissingArgumentError:
             raise ValueError('No name provided.')
 
-    def set_phone(self):
+    def set_swish(self):
         try:
-            phone = self.rqh.get_argument('phone')
-            if phone:
-                phone = utils.normalize_phone(phone)
-            self['phone'] = phone or None
+            swish = self.rqh.get_argument('swish')
+            if swish:
+                swish = utils.normalize_swish(swish)
+            self['swish'] = swish or None
         except tornado.web.MissingArgumentError:
-            self['phone'] = None
+            self['swish'] = None
 
     def set_address(self):
         self['address'] = self.rqh.get_argument('address', None) or None
@@ -139,7 +139,7 @@ class Settings(RequestHandler):
         try:
             with MemberSaver(doc=member, rqh=self) as saver:
                 saver.set_name()
-                saver.set_phone()
+                saver.set_swish()
                 saver.set_address()
                 saver.set_role()
         except ValueError as error:
@@ -314,7 +314,7 @@ class Register(RequestHandler):
                     raise ValueError('Member account exists; use Reset.')
                 saver['email']   = email
                 saver.set_name()
-                saver.set_phone()
+                saver.set_swish()
                 saver.set_address()
                 # Set the very first member account to be admin.
                 count = len(self.get_docs('member/email', key='',
