@@ -27,6 +27,9 @@ RESET_TEXT = """Your {site} member account {email} has been reset.
 To set its password, go to {url}. This link contains a
 one-time code allowing you to set the password.
 
+Please check and correct your member settings:
+first name, last name, Swish phone number and address.
+
 Yours,
 The {site} administrators
 """
@@ -51,9 +54,10 @@ class MemberSaver(Saver):
 
     def set_name(self):
         try:
-            self['name'] = self.rqh.get_argument('name')
+            self['first_name'] = self.rqh.get_argument('first_name')
+            self['last_name'] = self.rqh.get_argument('last_name')
         except tornado.web.MissingArgumentError:
-            raise ValueError('No name provided.')
+            raise ValueError('Missing first or last name.')
 
     def set_swish(self):
         try:
@@ -157,6 +161,7 @@ class Members(RequestHandler):
 
     @tornado.web.authenticated
     def get(self):
+        import time
         self.check_admin()
         members = self.get_docs('member/email', key='',last=constants.CEILING)
         self.render('members.html', members=members)

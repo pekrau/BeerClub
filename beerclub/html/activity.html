@@ -16,7 +16,8 @@ Active members
       <thead>
         <th scope="col"></th>
         <th scope="col">Member</th>
-        <th scope="col">Name</th>
+        <th scope="col">First name</th>
+        <th scope="col">Last name</th>
         <th scope="col">Balance ({{ currency }})</th>
         <th scope="col">Activity</th>
       </thead>
@@ -32,7 +33,8 @@ Active members
             <a href="{{ reverse_url('member', member['email']) }}">
               {{ member['email'] }}</a>
           </td>
-          <td>{{ member['name'] }}</td>
+          <td>{{ member['first_name'] }}</td>
+          <td>{{ member['last_name'] }}</td>
           <td>{% module Money(get_balance(member), currency=False) %}</td>
           <td>
             <span class="localtime small">{{ member['activity'] }}</span>
@@ -50,7 +52,7 @@ Active members
   $(function() {
     $("#members").DataTable( {
       "pagingType": "full_numbers",
-      "order": [[ 4, "desc"]],
+      "order": [[ 5, "desc"]],
     });
   });
 </script>

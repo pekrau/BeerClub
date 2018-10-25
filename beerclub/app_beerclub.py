@@ -86,4 +86,3 @@ if __name__ == "__main__":
     utils.setup()
     utils.initialize()
     main()
-    
