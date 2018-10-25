@@ -25,8 +25,9 @@
         <tr>
           <td>
             <a href="{{ reverse_url('repayment', member['email']) }}"
-               class="btn btn-sm btn-warning"
-               role="button" target="_blank">Repay</a>
+               target="_blank">
+              <span class="badge badge-warning">Repay</span>
+            </a>
           </td>
           <td>
             <a href="{{ reverse_url('member', member['email']) }}"
