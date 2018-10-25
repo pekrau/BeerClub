@@ -48,9 +48,9 @@ settings = dict(
     MONEY_STEP='0.01',
     MEMBER_SWISH=True,   # Enable Swish phone number field for member.
     MEMBER_ADDRESS=True, # Enable address field for member.
-    CREDIT_STYLES=[(-1000, 'bg-danger text-light'),
-                   (-500, 'bg-warning'),
-                   (-1, 'text-danger')],
+    CREDIT_CLASSES=[(-1000, 'bg-danger text-light'),
+                    (-500, 'bg-warning'),
+                    (-1, 'text-danger')],
     BEVERAGE=[
         dict(identifier='beer',
              label='beer',

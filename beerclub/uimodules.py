@@ -13,17 +13,17 @@ from . import utils
 class Money(tornado.web.UIModule):
     "HTML for a money value."
 
-    FORMAT = '<span class="text-monospace">%s<span class="%s" style="padding: 0.2em;">%s</span></span>'
+    FORMAT = '<span class="text-monospace %s" style="margin-left: %sch;">%s</span>'
 
     def render(self, money, currency=True, padding=5):
         if money is None: money = 0
         value = locale.currency(money, symbol=currency, grouping=True)
-        padding = '&nbsp;' * max(0, padding - len(str(int(money))))
-        for cutoff, style in settings['CREDIT_STYLES']:
+        padding = max(0, padding - len(str(int(money)))) + 0.2
+        for cutoff, klass in settings['CREDIT_CLASSES']:
             if money <= cutoff: break
         else:
-            style = ''
-        return self.FORMAT % (padding, style, value)
+            klass = ''
+        return self.FORMAT % (klass, padding, value)
 
 class Status(tornado.web.UIModule):
     "HTML for member status."
