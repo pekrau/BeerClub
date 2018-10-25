@@ -5,7 +5,7 @@
 {% block content %}
 <div class="card border-primary mt-3">
   <div class="card-header text-white bg-primary">
-    Sign in
+    Sign in if you are already a member.
   </div>
   <div class="card-body">
     <form action="{{ reverse_url('login') }}"
@@ -38,7 +38,7 @@
 
 <div class="card border-warning mt-3">
   <div class="card-header text-white bg-warning">
-    Reset password <small>you have forgotten it</small>
+    Reset password if you have forgotten it.
   </div>
   <div class="card-body">
     <form action="{{ reverse_url('reset') }}"
@@ -73,7 +73,7 @@
   
 <div class="card my-3">
   <div class="card-header text-white bg-secondary">
-    Register <small>to become a member</small>
+    Register to become a member.
   </div>
   <div class="card-body">
     <form action="{{ reverse_url('register') }}"

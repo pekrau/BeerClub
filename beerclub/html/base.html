@@ -19,8 +19,11 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-md {{ settings['DISPLAY_NAVBAR_THEME'] }}"
-         style="background-color: {{ settings['DISPLAY_NAVBAR_COLOUR'] }};">
+    <nav class="navbar navbar-expand-md {{ settings['DISPLAY_NAVBAR_THEME'] }} {{ settings['DISPLAY_NAVBAR_BG_COLOR'] or '' }}"
+         {% if settings['DISPLAY_NAVBAR_STYLE_COLOR'] %}
+         style="background-color: {{ settings['DISPLAY_NAVBAR_STYLE_COLOR'] }};"
+         {% end %}
+         >
       <a class="navbar-brand" href="{{ reverse_url('home') }}">
         <img src="{{ static_url('beer32.png') }}"
              alt="{{ settings['SITE_NAME'] }}"

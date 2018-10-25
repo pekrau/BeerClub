@@ -1,6 +1,8 @@
 {
   "SITE_NAME": "Beer Club",
   "ACCOUNT_EMAIL_AUTOENABLE": "*@inst.org",
+  "LOGGING_DEBUG": true,
+  "TORNADO_DEBUG": true,
   "COOKIE_SECRET": "secret long string of random characters",
   "PASSWORD_SALT": "secret long string of random characters",
   "CONTACT_EMAIL": "beerclub@inst.org",
