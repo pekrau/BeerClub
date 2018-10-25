@@ -161,7 +161,6 @@ class Members(RequestHandler):
 
     @tornado.web.authenticated
     def get(self):
-        import time
         self.check_admin()
         members = self.get_docs('member/email', key='',last=constants.CEILING)
         self.render('members.html', members=members)
