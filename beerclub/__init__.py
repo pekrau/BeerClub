@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '0.5'
+__version__ = '0.6'
 
 settings = dict(
     VERSION=__version__,
@@ -12,9 +12,9 @@ settings = dict(
     BASE_URL='http://localhost:8888',
     GITHUB_HREF="https://github.com/pekrau/BeerClub",
     ROOT_DIR=os.path.dirname(__file__),
-    LOGGING_DEBUG=True,
+    LOGGING_DEBUG=False,
     LOGGING_FORMAT='%(levelname)s [%(asctime)s] %(message)s',
-    TORNADO_DEBUG=True,
+    TORNADO_DEBUG=False,
     DATABASE_SERVER='http://localhost:5984/',
     DATABASE_NAME='beerclub',
     DATABASE_ACCOUNT=None,
@@ -31,7 +31,7 @@ settings = dict(
                PASSWORD=None,
                SENDER=None),
     DISPLAY_NAVBAR_THEME='navbar-light',
-    DISPLAY_NAVBAR_COLOUR= '#a9e15e',
+    DISPLAY_NAVBAR_COLOUR= None,
     DISPLAY_ACTIVITY_DAYS=6,
     DISPLAY_LEDGER_DAYS=7,
     CONTACT_EMAIL=None,
@@ -55,10 +55,6 @@ settings = dict(
              label='beer',
              price=20,
              description='One can or bottle of beer.'),
-        dict(identifier='soft',
-             label='soft drink',
-             price=10,
-             description='One can or bottle of soft drink.'),
     ],
     PAYMENT=[
         dict(identifier='cash',
@@ -67,22 +63,16 @@ settings = dict(
              style='success',
              action='I paid cash.',
              description='I paid cash for one %s.'),
-        dict(identifier='swish',
-             change=True,
-             label='Beer Club Swish',
-             style='info',
-             action='I paid to the Beer Club Swish account.',
-             description='I paid for one %s to the Beer Club Swish account.'),
         dict(identifier='credit',
              change=True,
              label='credit',
              style='warning',
              action='Put it on my credit.',
-             description='Put the amount for one %s on my tab.'),
+             description='Put the amount for one %s on my credit.'),
     ],
     REPAYMENT=[
-        dict(identifier='swish',
-             label='Verified Swish payment',
+        dict(identifier='cash',
+             label='Cash paid to the admin',
              default=True),
         dict(identifier='bank',
              label='Bank account transferral'),

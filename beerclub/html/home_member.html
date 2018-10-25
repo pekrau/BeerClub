@@ -9,7 +9,7 @@
 {% block content %}
 <div class="row">
   <div class="col-md">
-    {{ beverages_count }} beverages purchased today
+    Purchased <strong>{{ beverages_count }}</strong> beverages today.
  </div>
   <div class="col-md">
     Current balance: {% module Money(get_balance(current_user), padding=0) %}

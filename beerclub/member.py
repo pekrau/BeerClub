@@ -96,19 +96,19 @@ class Member(RequestHandler):
         except KeyError:
             self.see_other('home')
         else:
-            self.render('member.html', 
-                        member=member, 
-                        deletable=self.no_events(member))
+            deletable = self.no_events(member) and \
+                        member['role'] != constants.ADMIN
+            self.render('member.html', member=member, deletable=deletable)
 
     @tornado.web.authenticated
     def post(self, email):
-        "Delete this member; only if no events."
+        "Delete this member; only if no events and not admin."
         try:
             member = self.get_member(email, check=True)
         except KeyError:
             self.see_other('home')
             return
-        if self.no_events(member):
+        if self.no_events(member) and member['role'] != constants.ADMIN:
             self.db.delete(member)
         url = self.get_argument('next', None)
         if url:

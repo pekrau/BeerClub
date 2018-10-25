@@ -1,0 +1,42 @@
+{
+  "SITE_NAME": "Beer Club",
+  "ACCOUNT_EMAIL_AUTOENABLE": "*@inst.org",
+  "COOKIE_SECRET": "secret long string of random characters",
+  "PASSWORD_SALT": "secret long string of random characters",
+  "CONTACT_EMAIL": "beerclub@inst.org",
+  "EMAIL": {
+    "HOST": "localhost",
+    "SENDER": "Beer Club <beerclub@inst.org>"
+  },
+  "RULES_HTML": "<ol><li>You must be a registered member to buy beer.</li><li><strong>Every</strong> purchase must be recorded here.</li><li>If your balance is negative: Pay your debt.</li><li>If you are reminded to pay your debt, just do it.</li></ol>",
+  "PAYMENT_INFO_HTML": "<ul><li>Pay cash to the Beer Club administrator.</li><li>Pay to the Beer Club's bank account  <strong class=\"text-nowrap\">0123 456 789</strong>. Give your name as the message.</li></ul>",
+  "BEVERAGE": [
+    {"identifier": "beer",
+     "label": "beer",
+     "price": 20,
+     "description": "One can or bottle of beer."}
+  ],
+  "PAYMENT": [
+    {"identifier": "cash",
+     "change": false,
+     "label": "cash",
+     "style": "success",
+     "action": "I paid cash.",
+     "description": "I paid cash for one %s."},
+    {"identifier": "credit",
+     "change": true,
+     "label": "credit",
+     "style": "warning",
+     "action": "Put it on my credit.",
+     "description": "Put the amount for one %s on my credit."}
+  ],
+  "REPAYMENT": [
+    {"identifier": "bank",
+     "label": "Bank account transferral",
+     "default": true},
+    {"identifier": "correction",
+     "label": "Correction of an erroneous transaction"},
+    {"identifier": "transfer",
+     "label": "Transfer of credit from some other source"}
+  ]
+}
