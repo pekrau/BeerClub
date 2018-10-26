@@ -1,7 +1,6 @@
 "RequestHandler subclass."
 
 import base64
-import locale
 import logging
 import urllib
 from collections import OrderedDict as OD
@@ -34,7 +33,6 @@ class RequestHandler(tornado.web.RequestHandler):
         result = super(RequestHandler, self).get_template_namespace()
         result['constants'] = constants
         result['settings'] = settings
-        result['currency'] = locale.localeconv()['currency_symbol']
         result['is_admin'] = self.is_admin()
         result['error'] = self.get_cookie('error', '').replace('_', ' ')
         self.clear_cookie('error')

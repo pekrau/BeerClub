@@ -48,6 +48,7 @@ settings = dict(
     PRIVACY_STATEMENT="By registering, you agree to allow the personal data"
     " you provide to be handled by the {SITE_NAME} according to"
     " applicable laws. No data will be transferred to any external entity.",
+    CURRENCY='kr',
     MONEY_STEP='0.01',
     MEMBER_SWISH=True,   # Enable Swish phone number field for member.
     MEMBER_ADDRESS=True, # Enable address field for member.

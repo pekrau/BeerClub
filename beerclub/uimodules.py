@@ -1,6 +1,5 @@
 "User interface modules."
 
-import locale
 import logging
 
 import tornado.web
@@ -17,7 +16,9 @@ class Money(tornado.web.UIModule):
 
     def render(self, money, currency=True, padding=5):
         if money is None: money = 0
-        value = locale.currency(money, symbol=currency, grouping=True)
+        value = "{:.2f}".format(money)
+        if currency:
+            value += ' ' + settings['CURRENCY']
         padding = max(0, padding - len(str(int(money)))) + 0.2
         for cutoff, klass in settings['CREDIT_CLASSES']:
             if money <= cutoff: break
