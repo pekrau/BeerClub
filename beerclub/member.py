@@ -21,10 +21,10 @@ PENDING_TEXT = """A {site} member account {email} is pending.
 Inspect the member account at {url} and enable or disable.
 """
 
-RESET_SUBJECT = "Your {site} member account has been reset."
-RESET_TEXT = """Your {site} member account {email} has been reset.
+RESET_SUBJECT = "Your {site} member account password has been reset."
+RESET_TEXT = """Your {site} member account {email} password has been reset.
 
-To set its password, go to {url}. 
+To set a new password, go to {url}. 
 This unique link contains a code allowing you to set the password.
 
 Please also check and correct your settings.
@@ -231,7 +231,7 @@ class Reset(RequestHandler):
         try:
             member = self.get_member(self.get_argument('email'))
         except (tornado.web.MissingArgumentError, KeyError):
-            self.see_other('home') # Silent error.
+            self.see_other('home', error='No such member account.')
         else:
             if member.get('status') == constants.PENDING:
                 self.see_other('home', error='Cannot reset password.'
@@ -281,7 +281,7 @@ class Password(RequestHandler):
         password = self.get_argument('password', '')
         try:
             if len(password) < settings['MIN_PASSWORD_LENGTH']:
-                raise ValueError('password is too short')
+                raise ValueError('The password is too short.')
         except ValueError, msg:
             self.see_other('password',
                            email=self.get_argument('email') or '',
