@@ -8,10 +8,10 @@ __version__ = '0.8'
 
 settings = dict(
     VERSION=__version__,
+    ROOT_DIR=os.path.dirname(__file__),
     SITE_NAME='Beer Club',
     BASE_URL='http://localhost:8888',
     GITHUB_HREF="https://github.com/pekrau/BeerClub",
-    ROOT_DIR=os.path.dirname(__file__),
     LOGGING_DEBUG=False,
     TORNADO_DEBUG=False,
     LOGGING_FORMAT='%(levelname)s [%(asctime)s] %(message)s',

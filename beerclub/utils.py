@@ -6,6 +6,7 @@ import hashlib
 import json
 import locale
 import logging
+import os
 import smtplib
 import string
 import sys
@@ -24,7 +25,7 @@ from beerclub import settings
 
 def setup():
     "Setup: read settings, set logging."
-    with open('settings.json') as infile:
+    with open(os.path.join(settings['ROOT_DIR'], 'settings.json')) as infile:
         site = json.load(infile)
         settings.update(site)
     # Set up logging

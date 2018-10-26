@@ -138,6 +138,7 @@ class Account(RequestHandler):
                                last=[member['email'], to + constants.CEILING])
         self.render('account.html',
                     member=member,
+                    beverages_count=self.get_beverages_count(),
                     events=events, 
                     from_=from_,
                     to=to,

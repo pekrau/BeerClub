@@ -7,9 +7,14 @@
 {% block body_title %}Account <small>{{ member['email'] }}</small>{% end %}
 
 {% block content %}
-<h5 class="my-4">
-  Current balance: {% module Money(member['balance'], padding=0) %}
-</h5>
+<div class="row mb-3">
+  <div class="col-md">
+    Current balance: {% module Money(member['balance'], padding=0) %}
+  </div>
+  <div class="col-md">
+    Purchased <strong>{{ beverages_count }}</strong> beverages today.
+  </div>
+</div>
 
 {% include 'events_list.html' %}
 
