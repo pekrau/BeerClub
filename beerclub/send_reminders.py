@@ -4,47 +4,28 @@ from __future__ import print_function
 
 import time
 
-import couchdb
-
 from beerclub import settings
 from beerclub import utils
 
 
-INSIGNIFICANT_DEBT = -20
-BIG_DEBT           = -500
-
-PAUSE = 3.0
-
-SUBJECT_TEXT = "Your debt to the SciLifeLab Beer Club"
-
-SUBJECT_BIG_DEBT_TEXT = "Time to pay your SciLifeLab Beer Club debt"
-
-MESSAGE_TEXT = """Hello {},
-According to my notes, you owe the SciLifeLab Beer Club {} SEK."""
-
-BIG_DEBT_MESSAGE_TEXT = "This is a rather large sum, and it is time that you pay up."
-
-PAYMENT_TEXT = """Please pay the amount you owe to the Beer Club by:
-
-Alt 1) Swish 070-639 96 35 (Per Kraulis).
-
-Alt 2) SEB bank account 5694 06 421 88. Include your name in the message field!
-       This is an account dedicated to handling only Beer Club money.
-
-The SciLifeLab Beer Club site at https://beerclub.scilifelab.se/
-has all information, including the current balance of your member account.
-
-If you have paid yesterday or today, your account may not have been updated.
-If so, ignore this message.
-
-/Per Kraulis
-SciLifeLab Beer Club administrator
-"""
-
-
 def send_reminders(db):
     "Send reminder email to debt-laden members."
-    view = db.view(
+    assert settings['EMAIL']['SENDER']
+    assert settings['EMAIL_SUBJECT_TEXT']
+    assert settings['EMAIL_MESSAGE_TEXT']
+    view = db.view('event/credit', group_level=1)
+    emailserver = utils.EmailServer()
+    for row in view:
+        if row.value >= settings['EMAIL_INSIGNIFICANT_DEBT']: continue
+        member = utils.get_member(db, row.key)
+        name = u"{} {}".format(member['first_name'], member['last_name'])
+        message = settings['EMAIL_MESSAGE_TEXT'].format(name=name, 
+                                                        amount=abs(row.value))
+        emailserver.send(member['email'],
+                         settings['EMAIL_SUBJECT_TEXT'],
+                         message)
+        print(row.key, row.value)
+        time.sleep(settings['EMAIL_PAUSE'])
 
 
 if __name__ == "__main__":

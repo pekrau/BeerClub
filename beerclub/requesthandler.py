@@ -118,8 +118,7 @@ class RequestHandler(tornado.web.RequestHandler):
             member = self.current_user
         result = list(self.db.view('event/credit',
                                    key=member['email'],
-                                   group_level=1,
-                                   reduce=True))
+                                   group_level=1))
         if result:
             return result[0].value
         else:
@@ -131,8 +130,7 @@ class RequestHandler(tornado.web.RequestHandler):
             member = self.current_user
         result = list(self.db.view('event/beverages',
                                    key=[member['email'], date],
-                                   group_level=2,
-                                   reduce=True))
+                                   group_level=2))
         if result:
             return result[0].value
         else:

@@ -48,8 +48,6 @@ settings = dict(
     PRIVACY_STATEMENT="By registering, you agree to allow the personal data"
     " you provide to be handled by the {SITE_NAME} according to"
     " applicable laws. No data will be transferred to any external entity.",
-    CURRENCY='kr',
-    MONEY_STEP='0.01',
     MEMBER_SWISH=True,   # Enable Swish phone number field for member.
     MEMBER_ADDRESS=True, # Enable address field for member.
     CREDIT_CLASSES=[(-1000, 'bg-danger text-light'),
@@ -86,4 +84,10 @@ settings = dict(
         dict(identifier='transfer',
              label='Transfer of credit from some other source'),
     ],
+    CURRENCY='kr',
+    MONEY_STEP='0.01',
+    EMAIL_INSIGNIFICANT_DEBT=-20,
+    EMAIL_PAUSE=3.0,
+    EMAIL_SUBJECT_TEXT=None,
+    EMAIL_MESSAGE_TEXT=None,
 )

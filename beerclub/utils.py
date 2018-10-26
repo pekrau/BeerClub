@@ -1,5 +1,7 @@
 "Various supporting functions."
 
+from __future__ import print_function
+
 import datetime
 import email.mime.text
 import hashlib
@@ -233,7 +235,6 @@ class EmailServer(object):
             pass
         else:
             self.server.login(user, password)
-        self.email = settings.get('SITE_EMAIL') or settings['EMAIL']['SENDER']
 
     def __del__(self):
         "Close the connection to the email server."
@@ -246,7 +247,9 @@ class EmailServer(object):
         "Send an email."
         mail = email.mime.text.MIMEText(text, 'plain', 'utf-8')
         mail['Subject'] = subject
-        mail['From'] = self.email
+        mail['From'] = settings['EMAIL']['SENDER']
         mail['To'] = recipient
-        self.server.sendmail(self.email, [recipient], mail.as_string())
+        self.server.sendmail(settings['EMAIL']['SENDER'],
+                             [recipient],
+                             mail.as_string())
         logging.debug("Sent email to %s", recipient)
