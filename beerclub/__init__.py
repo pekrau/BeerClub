@@ -17,6 +17,7 @@ settings = dict(
     LOGGING_FORMAT='%(levelname)s [%(asctime)s] %(message)s',
     LOGGING_FILEPATH=None,
     LOGGING_FILEMODE=None,
+    TEST_MODE=False,
     DATABASE_SERVER='http://localhost:5984/',
     DATABASE_NAME='beerclub',
     DATABASE_ACCOUNT=None,

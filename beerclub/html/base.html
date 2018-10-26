@@ -87,6 +87,17 @@
     </nav>
 
     <div class="container">
+      {% if settings['TEST_MODE'] %}
+      <div class="row mt-2 mx-2">
+	<div class="col-md alert alert-danger" role="alert">
+	  <strong>
+            Test mode! This site has not been officially launched.
+            It contains no real data.
+          </strong>
+	</div>
+      </div>
+      {% end %} {# if TEST_MODE #}
+
       {% if error %}
       <div class="row mt-2 mx-2">
 	<div class="col-md alert alert-danger" role="alert">
