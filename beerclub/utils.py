@@ -140,6 +140,8 @@ def get_balances(db, members):
     lookup = {}
     for member in members:
         lookup[member['email']] = member
+        # Default balance is zero
+        member['balance'] = 0.0
     # Simple but effective: get all balances in one go.
     view = db.view('event/credit', group_level=1, reduce=True)
     for row in view:
