@@ -13,7 +13,7 @@ from .saver import Saver
 
 EMAIL_SENT = 'An email with instructions has been sent.'
 PENDING_MESSAGE = 'An administrator will inspect your registration.' \
-                  ' An email will be sent if the it is enabled.'
+                  ' An email will be sent if your member account is enabled.'
 
 PENDING_SUBJECT = "A {site} member account {email} is pending"
 PENDING_TEXT = """A {site} member account {email} is pending.
@@ -24,11 +24,10 @@ Inspect the member account at {url} and enable or disable.
 RESET_SUBJECT = "Your {site} member account has been reset."
 RESET_TEXT = """Your {site} member account {email} has been reset.
 
-To set its password, go to {url}. This link contains a
-one-time code allowing you to set the password.
+To set its password, go to {url}. 
+This unique link contains a code allowing you to set the password.
 
-Please check and correct your member settings:
-first name, last name, Swish phone number and address.
+Please also check and correct your settings.
 
 Yours,
 The {site} administrators
@@ -37,8 +36,8 @@ The {site} administrators
 ENABLED_SUBJECT = "Your {site} member account is enabled"
 ENABLED_TEXT = """Your {site} member account {email} has been enabled.
 
-You need to set the password for it. Go to {url}. This link contains a
-one-time code allowing you to set the password.
+You need to set the password for it. Go to {url}.
+This unique link contains a code allowing you to set the password.
 
 Yours,
 The {site} administrators
@@ -100,6 +99,7 @@ class Member(RequestHandler):
         except KeyError:
             self.see_other('home')
         else:
+            member['balance'] = self.get_balance(member)
             deletable = self.no_events(member) and \
                         member['role'] != constants.ADMIN
             self.render('member.html', member=member, deletable=deletable)
@@ -162,7 +162,8 @@ class Members(RequestHandler):
     @tornado.web.authenticated
     def get(self):
         self.check_admin()
-        members = self.get_docs('member/email', key='',last=constants.CEILING)
+        members = self.get_docs('member/email')
+        utils.get_balances(self.db, members)
         self.render('members.html', members=members)
 
 
@@ -207,7 +208,7 @@ class Login(RequestHandler):
             logging.info("Login auth: %s", member['email'])
             self.set_secure_cookie(constants.USER_COOKIE,
                                    member['email'],
-                                   expires_days=settings['LOGIN_MAX_AGE_DAYS'])
+                                   expires_days=settings['LOGIN_SESSION_DAYS'])
         self.see_other('home')
 
 
@@ -294,7 +295,7 @@ class Password(RequestHandler):
             saver['code'] = None
         self.set_secure_cookie(constants.USER_COOKIE,
                                member['email'],
-                               expires_days=settings['LOGIN_MAX_AGE_DAYS'])
+                               expires_days=settings['LOGIN_SESSION_DAYS'])
         self.see_other('home')
 
 

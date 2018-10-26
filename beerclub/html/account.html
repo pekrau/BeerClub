@@ -1,21 +1,21 @@
-{# Member accounts page. #}
+{# Member account page. #}
 
 {% extends 'base.html' %}
 
-{% block head_title %}Accounts {{ member['email'] }}{% end %}
+{% block head_title %}Account {{ member['email'] }}{% end %}
 
-{% block body_title %}Accounts <small>{{ member['email'] }}</small>{% end %}
+{% block body_title %}Account <small>{{ member['email'] }}</small>{% end %}
 
 {% block content %}
 <h5 class="my-4">
-  Current balance: {% module Money(get_balance(member), padding=0) %}
+  Current balance: {% module Money(member['balance'], padding=0) %}
 </h5>
 
 {% include 'events_list.html' %}
 
 <div class="row mt-4">
   <div class="col-md">
-    <form action="{{ reverse_url('accounts', member['email']) }}"
+    <form action="{{ reverse_url('account', member['email']) }}"
           class="form-inline"
           role="form"
           method="GET">

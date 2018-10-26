@@ -35,7 +35,6 @@ class RequestHandler(tornado.web.RequestHandler):
         result['constants'] = constants
         result['settings'] = settings
         result['currency'] = locale.localeconv()['currency_symbol']
-        result['get_balance'] = self.get_balance
         result['is_admin'] = self.is_admin()
         result['error'] = self.get_cookie('error', '').replace('_', ' ')
         self.clear_cookie('error')
@@ -161,7 +160,7 @@ class RequestHandler(tornado.web.RequestHandler):
         """
         email = self.get_secure_cookie(
             constants.USER_COOKIE,
-            max_age_days=settings['LOGIN_MAX_AGE_DAYS'])
+            max_age_days=settings['LOGIN_SESSION_DAYS'])
         if not email: raise ValueError
         try:
             member = self.get_member(email)

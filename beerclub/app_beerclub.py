@@ -27,7 +27,7 @@ from beerclub.event import (Event,
                             Purchase,
                             Repayment,
                             Expenditure,
-                            Accounts,
+                            Account,
                             Activity,
                             Ledger)
 
@@ -36,6 +36,7 @@ class Home(RequestHandler):
     "Home page; login or payment and member info."
     def get(self):
         if self.current_user:
+            self.current_user['balance'] = self.get_balance(self.current_user)
             self.render('home_member.html',
                         beverages_count=self.get_beverages_count(),
                         home_active=True)
@@ -55,7 +56,7 @@ def main():
         url(r'/members', Members, name='members'),
         url(r'/pending', Pending, name='pending'),
         url(r'/activity', Activity, name='activity'),
-        url(r'/accounts/([^/]+)', Accounts, name='accounts'),
+        url(r'/account/([^/]+)', Account, name='account'),
         url(r'/expenditure', Expenditure, name='expenditure'),
         url(r'/ledger', Ledger, name='ledger'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),

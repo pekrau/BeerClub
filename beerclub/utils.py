@@ -9,6 +9,7 @@ import logging
 import smtplib
 import string
 import sys
+import time
 import unicodedata
 import urlparse
 import uuid
@@ -121,6 +122,20 @@ def get_member(db, email):
         raise KeyError("document %s is not a member" % email)
     return doc
 
+def get_balances(db, members):
+    "Get and set the balances for all input members."
+    # Prepare lookup of all input members.
+    lookup = {}
+    for member in members:
+        lookup[member['email']] = member
+    # Simple but effective: get all balances in one go.
+    view = db.view('event/credit', group_level=1, reduce=True)
+    for row in view:
+        try:
+            lookup[row.key]['balance'] = row.value
+        except KeyError:
+            pass
+
 def get_iuid():
     "Return a unique instance identifier."
     return uuid.uuid4().hex
@@ -177,6 +192,8 @@ def normalize_swish(value):
     "Return normalized Swish phone number. Get rid of all non-digits."
     return ''.join([c for c in value if c in string.digits])
 
+def timeit(label):
+    logging.debug("%f %f %s", time.clock(), time.time(), label)
 
 class EmailServer(object):
     "A connection to an email server for sending emails."

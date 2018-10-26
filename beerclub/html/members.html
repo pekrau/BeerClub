@@ -36,7 +36,7 @@
           </td>
           <td>{{ member['first_name'] }}</td>
           <td>{{ member['last_name'] }}</td>
-          <td>{% module Money(get_balance(member), currency=False) %}</td>
+          <td>{% module Money(member['balance'], currency=False) %}</td>
           <td>{% module Role(member) %}</td>
           <td>{% module Status(member) %}</td>
           <td>{% module LastLogin(member) %}</td>

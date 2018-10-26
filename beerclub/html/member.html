@@ -23,7 +23,7 @@
   </div>
   {% end %}
   <div class="col-md-2">
-    <a href="{{ reverse_url('accounts', member['email']) }}"
+    <a href="{{ reverse_url('account', member['email']) }}"
        role="button" class="btn btn-secondary w-100">Accounts</a>
   </div>
   {% if is_admin %}
@@ -62,7 +62,7 @@
   <tbody>
     <tr>
       <th scope="row">Balance</th>
-      <td>{% module Money(get_balance(member), padding=0) %}</td>
+      <td>{% module Money(member['balance'], padding=0) %}</td>
     </tr>
     <tr>
       <th scope="row">Name</th>

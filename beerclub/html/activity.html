@@ -26,8 +26,9 @@ Active members
         <tr>
           <td>
             <a href="{{ reverse_url('repayment', member['email']) }}"
-               class="btn btn-sm btn-warning"
-               role="button" target="_blank">Repay</a>
+               target="_blank">
+              <span class="badge badge-warning">Repay</span>
+            </a>
           </td>
           <td>
             <a href="{{ reverse_url('member', member['email']) }}">
@@ -35,7 +36,7 @@ Active members
           </td>
           <td>{{ member['first_name'] }}</td>
           <td>{{ member['last_name'] }}</td>
-          <td>{% module Money(get_balance(member), currency=False) %}</td>
+          <td>{% module Money(member['balance'], currency=False) %}</td>
           <td>
             <span class="localtime small">{{ member['activity'] }}</span>
           </td>

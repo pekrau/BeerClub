@@ -114,8 +114,8 @@ class Expenditure(RequestHandler):
         self.see_other('ledger')
 
 
-class Accounts(RequestHandler):
-    "View event accounts for a member."
+class Account(RequestHandler):
+    "View events for a member account."
 
     @tornado.web.authenticated
     def get(self, email):
@@ -124,6 +124,7 @@ class Accounts(RequestHandler):
         except KeyError:
             self.see_other('home')
             return 
+        member['balance'] = self.get_balance(member)
         try:
             from_ = self.get_argument('from')
         except tornado.web.MissingArgumentError:
@@ -135,7 +136,7 @@ class Accounts(RequestHandler):
         events = self.get_docs('event/member',
                                key=[member['email'], from_],
                                last=[member['email'], to + constants.CEILING])
-        self.render('accounts.html',
+        self.render('account.html',
                     member=member,
                     events=events, 
                     from_=from_,
@@ -151,10 +152,10 @@ class Activity(RequestHandler):
     def get(self):
         self.check_admin()
         activity = dict()
-        first = utils.today(-settings['DISPLAY_ACTIVITY_DAYS'])
-        last = utils.today()
+        from_ = utils.today(-settings['DISPLAY_ACTIVITY_DAYS'])
+        to = utils.today()
         view = self.db.view('event/activity')
-        for row in view[first : last+constants.CEILING]:
+        for row in view[from_ : to+constants.CEILING]:
             try:
                 activity[row.value] = max(activity[row.value], row.key)
             except KeyError:
@@ -162,11 +163,17 @@ class Activity(RequestHandler):
         activity.pop(constants.BEERCLUB, None)
         activity = activity.items()
         activity.sort(key=lambda i: i[1])
+        # This is more efficient than calling for each member.
+        all_members = self.get_docs('member/email')
+        lookup = {}
+        for member in all_members:
+            lookup[member['email']] = member
         members = []
         for email, timestamp in activity:
-            member = self.get_member(email)
+            member = lookup[email]
             member['activity'] = timestamp
             members.append(member)
+        utils.get_balances(self.db, members)
         self.render('activity.html', members=members)
 
 

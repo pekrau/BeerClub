@@ -17,6 +17,7 @@ FIRST_NAME_COLUMN = 1
 ADDRESS_COLUMN = 3
 DEBT_COLUMN = 4
 ALT_EMAIL_COLUMN = 5
+ORD_MINUS_SIGN = 8722
 
 def load_csv(db, filepath):
     "Load the given CSV file."
@@ -31,19 +32,19 @@ def load_csv(db, filepath):
                 email = record[ALT_EMAIL_COLUMN].strip()
                 if not email: raise IndexError
             except IndexError:
-                fn = utils.to_ascii(first_name).lower()
-                ln = utils.to_ascii(last_name).lower()
-                email = "{}.{}@scilifelab.se".format(fn, ln)
+                email = "{}.{}@scilifelab.se".format(
+                    utils.to_ascii(first_name).lower(),
+                    utils.to_ascii(last_name).lower())
             try:
                 member = utils.get_member(db, email)
             except KeyError:
                 with MemberSaver(db=db) as saver:
-                    saver['email']   = email
-                    saver['role']    = constants.MEMBER
+                    saver['email']      = email
+                    saver['role']       = constants.MEMBER
                     saver['first_name'] = first_name
                     saver['last_name']  = last_name
-                    saver['swish']   = None
-                    saver['address'] = record[ADDRESS_COLUMN].strip() or None
+                    saver['swish']      = None
+                    saver['address']   = record[ADDRESS_COLUMN].strip() or None
                 member = saver.doc
                 print('created', member['email'])
             else:
@@ -53,13 +54,13 @@ def load_csv(db, filepath):
                 saver['action']  = constants.REPAYMENT
                 saver['payment'] = 'transfer'
                 value = record[DEBT_COLUMN].decode('utf8')
-                # Google, what have you done?
-                if ord(value[0]) == 8722:
+                # Google, what are you doing?
+                if ord(value[0]) == ORD_MINUS_SIGN:
                     value = - float(value[1:])
                 else:
                     value = float(value)
                 saver['credit'] = value
-                saver['date']    = utils.today()
+                saver['date']   = utils.today()
             print(value)
 
 

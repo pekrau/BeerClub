@@ -12,7 +12,7 @@
     Purchased <strong>{{ beverages_count }}</strong> beverages today.
  </div>
   <div class="col-md">
-    Current balance: {% module Money(get_balance(current_user), padding=0) %}
+    Current balance: {% module Money(current_user['balance'], padding=0) %}
   </div>
 </div>
 {% for beverage in settings['BEVERAGE'] %}

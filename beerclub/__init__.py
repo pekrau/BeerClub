@@ -22,7 +22,7 @@ settings = dict(
     COOKIE_SECRET=None, # Set to a secret long string of random characters.
     PASSWORD_SALT=None, # Set to a secret long string of random characters.
     MIN_PASSWORD_LENGTH=8,
-    LOGIN_MAX_AGE_DAYS=31,
+    LOGIN_SESSION_DAYS=31,
     MEMBER_EMAIL_AUTOENABLE=None,
     EMAIL=dict(HOST='localhost',
                PORT=None,
@@ -38,10 +38,9 @@ settings = dict(
     CONTACT_EMAIL=None,
     RULES_HTML="<ul><li>You must be a registered member to buy beer.</li></ul>",
     PAYMENT_INFO_HTML=None,
-    POLICY_STATEMENT="The {SITE_NAME} is a non-profit group providing beer"
-    " to its members. Volunteer members must purchase the beer and deliver"
-    " it to the {SITE_NAME}. They will be reimbursed by the {SITE_NAME}"
-    " administrator.",
+    POLICY_STATEMENT="The {SITE_NAME} is a non-profit group arranging pub"
+    " evenings for its members. Volunteer members must obtain the beer"
+    " from the shop, and will be reimbursed by the {SITE_NAME} administrator.",
     PRIVACY_STATEMENT="By registering, you agree to allow the personal data"
     " you provide to be handled by the {SITE_NAME} according to"
     " applicable laws. No data will be transferred to any external entity.",
