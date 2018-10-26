@@ -24,12 +24,9 @@ from beerclub import settings
 
 def setup():
     "Setup: read settings, set logging."
-    try:
-        with open('settings.json') as infile:
-            site = json.load(infile)
-            settings.update(site)
-    except IOError:
-        pass
+    with open('settings.json') as infile:
+        site = json.load(infile)
+        settings.update(site)
     if not settings['COOKIE_SECRET']:
         logging.error('variable COOKIE_SECRET not set')
         sys.exit(1)
