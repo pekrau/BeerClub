@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '0.7'
+__version__ = '0.8'
 
 settings = dict(
     VERSION=__version__,
@@ -13,8 +13,10 @@ settings = dict(
     GITHUB_HREF="https://github.com/pekrau/BeerClub",
     ROOT_DIR=os.path.dirname(__file__),
     LOGGING_DEBUG=False,
-    LOGGING_FORMAT='%(levelname)s [%(asctime)s] %(message)s',
     TORNADO_DEBUG=False,
+    LOGGING_FORMAT='%(levelname)s [%(asctime)s] %(message)s',
+    LOGGING_FILEPATH=None,
+    LOGGING_FILEMODE=None,
     DATABASE_SERVER='http://localhost:5984/',
     DATABASE_NAME='beerclub',
     DATABASE_ACCOUNT=None,

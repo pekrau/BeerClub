@@ -27,22 +27,6 @@ def setup():
     with open('settings.json') as infile:
         site = json.load(infile)
         settings.update(site)
-    if not settings['COOKIE_SECRET']:
-        logging.error('variable COOKIE_SECRET not set')
-        sys.exit(1)
-    if not settings['PASSWORD_SALT']:
-        logging.error('variable PASSWORD_SALT not set')
-        sys.exit(1)
-    if not settings['EMAIL']['HOST']:
-        logging.error("email host EMAIL['HOST'] not defined")
-        sys.exit(1)
-    if not settings.get('PORT'):
-        parts = urlparse.urlparse(settings['BASE_URL'])
-        settings['PORT'] = parts.port or 80
-    # Convert format specifiers in statements.
-    settings['POLICY_STATEMENT'] = settings['POLICY_STATEMENT'].format(**settings)
-    settings['PRIVACY_STATEMENT'] = settings['PRIVACY_STATEMENT'].format(**settings)
-    locale.setlocale(locale.LC_MONETARY, '')
     # Set up logging
     if settings.get('LOGGING_DEBUG'):
         kwargs = dict(level=logging.DEBUG)
@@ -52,10 +36,40 @@ def setup():
         kwargs['format'] = settings['LOGGING_FORMAT']
     except KeyError:
         pass
+    try:
+        filepath = settings['LOGGING_FILEPATH']
+        if not filepath: raise KeyError
+        kwargs['filename'] = filepath
+    except KeyError:
+        pass
+    try:
+        filemode = settings['LOGGING_FILEMODE']
+        if not filemode: raise KeyError
+        kwargs['filemode'] = filemode
+    except KeyError:
+        pass
     logging.basicConfig(**kwargs)
     logging.info("BeerClub version %s", beerclub.__version__)
     logging.info("ROOT_DIR: %s", settings['ROOT_DIR'])
     logging.info("logging debug: %s", settings['LOGGING_DEBUG'])
+    # Check required settings
+    if not settings['COOKIE_SECRET']:
+        logging.error('variable COOKIE_SECRET not set')
+        sys.exit(1)
+    if not settings['PASSWORD_SALT']:
+        logging.error('variable PASSWORD_SALT not set')
+        sys.exit(1)
+    if not settings['EMAIL']['HOST']:
+        logging.error("email host EMAIL['HOST'] not defined")
+        sys.exit(1)
+    # Compute settings
+    if not settings.get('PORT'):
+        parts = urlparse.urlparse(settings['BASE_URL'])
+        settings['PORT'] = parts.port or 80
+    # Convert format specifiers in statements.
+    settings['POLICY_STATEMENT'] = settings['POLICY_STATEMENT'].format(**settings)
+    settings['PRIVACY_STATEMENT'] = settings['PRIVACY_STATEMENT'].format(**settings)
+    locale.setlocale(locale.LC_MONETARY, '')
 
 def get_dbserver():
     "Get the server connection, with credentials if any."
