@@ -70,7 +70,10 @@ def setup():
     # Convert format specifiers in statements.
     settings['POLICY_STATEMENT'] = settings['POLICY_STATEMENT'].format(**settings)
     settings['PRIVACY_STATEMENT'] = settings['PRIVACY_STATEMENT'].format(**settings)
-    locale.setlocale(locale.LC_MONETARY, '')
+    if settings['LOCALE_MONETARY']:
+        locale.setlocale(locale.LC_MONETARY, settings['LOCALE_MONETARY'])
+    else:
+        locale.setlocale(locale.LC_MONETARY, '')
 
 def get_dbserver():
     "Get the server connection, with credentials if any."
