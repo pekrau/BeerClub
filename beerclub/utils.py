@@ -39,8 +39,9 @@ def setup():
     if not settings['EMAIL']['HOST']:
         logging.error("email host EMAIL['HOST'] not defined")
         sys.exit(1)
-    parts = urlparse.urlparse(settings['BASE_URL'])
-    settings['PORT'] = parts.port or 80
+    if not settings.get('PORT'):
+        parts = urlparse.urlparse(settings['BASE_URL'])
+        settings['PORT'] = parts.port or 80
     # Convert format specifiers in statements.
     settings['POLICY_STATEMENT'] = settings['POLICY_STATEMENT'].format(**settings)
     settings['PRIVACY_STATEMENT'] = settings['PRIVACY_STATEMENT'].format(**settings)
