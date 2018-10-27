@@ -11,27 +11,27 @@ EMAIL_PAUSE = 3.0
 EMAIL_SUBJECT_TEXT = "New SciLifeLab Beer Club system"
 EMAIL_MESSAGE_TEXT = """Hello {name},
 
-Today a new system for the Beer Club is launched.
+Today we are launching a new system for the SciLifeLab Beer Club:
 
-To purchase beers in the SciLifeLab Pub, one must have an account
-in the new system. If you receive this email, then you already
-have an account in it.
+https://beerclub.scilifelab.se/
+
+To purchase beers in the SciLifeLab Pub, one must have a member
+account in the new system. If you receive this email, then you
+already have an account.
 
 You will soon receive another email with info on how to set the
-password for your member account.
+password for your account.
 
 The old paper list system is hereby scrapped. Your credit balance
 has been transferred to the new system.
 
-*NOTE*: All purchases, without exception, even when you pay cash
-directly, must be recorded in the new system.
+*NOTE*: All purchases, without exception - even when you pay cash
+directly - must be recorded in the new system.
 
-The new system is web-based and has been designed to look and
-behave similar to a smartphone app.
+The new system is web-based and has been designed to behave well
+on a smartphone.
 
-https://beerclub.scilifelab.se/
-
-Any questions? Ask me.
+Any questions or comments? Email me.
 
 Yours sincerely,
 
