@@ -17,8 +17,8 @@
       .break { word-break: break-all; }
     </style>
   </head>
-  <body>
 
+  <body>
     <nav class="navbar navbar-expand-md {{ settings['DISPLAY_NAVBAR_THEME'] }} {{ settings['DISPLAY_NAVBAR_BG_COLOR'] or '' }}"
          {% if settings['DISPLAY_NAVBAR_STYLE_COLOR'] %}
          style="background-color: {{ settings['DISPLAY_NAVBAR_STYLE_COLOR'] }};"
@@ -26,7 +26,7 @@
          >
       <a class="navbar-brand" href="{{ reverse_url('home') }}">
         <img src="{{ static_url('beer32.png') }}"
-             alt="{{ settings['SITE_NAME'] }}"
+             alt="{{ settings['SITE_NAME'] }}" 
              title="{{ settings['SITE_NAME'] }}">
         {{ settings['SITE_NAME'] }}
       </a>
@@ -91,17 +91,13 @@
     </nav>
 
     <div class="container">
-      {% if settings['TEST_MODE'] %}
+      {% if settings['GLOBAL_ALERT'] %}
       <div class="row mt-2 mx-2">
 	<div class="col-md alert alert-danger" role="alert">
-	  <strong>
-            Test mode! This site has not been officially launched.
-            It contains no real data.
-          </strong>
+          {{ settings['GLOBAL_ALERT'] }}
 	</div>
       </div>
-      {% end %} {# if TEST_MODE #}
-
+      {% end %} {# if GLOBAL_ALERT #}
       {% if error %}
       <div class="row mt-2 mx-2">
 	<div class="col-md alert alert-danger" role="alert">
@@ -109,7 +105,6 @@
 	</div>
       </div>
       {% end %} {# if error #}
-
       {% if message %}
       <div class="row mt-2 mx-2">
 	<div class="col-md alert alert-warning" role="alert">
@@ -118,7 +113,6 @@
 	</div>
       </div>
       {% end %} {# if message #}
-
       <div class="row mt-3">
         <div class="col-md">
           <h3>{% block body_title %}{{ settings['SITE_NAME'] }}{% end %}</h3>
@@ -142,6 +136,8 @@
             <a target="_blank" href="{{ settings['GITHUB_HREF'] }}">BeerClub</a>
             version {{ settings['VERSION'] }}
           </small>
+        </div>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -162,7 +158,6 @@
     <script>
       $(function(){ $(".datepicker").datepicker({dateFormat: "yy-mm-dd"}); } );
     </script>
-
     {% block javascript %}
     {% end %}
   </body>

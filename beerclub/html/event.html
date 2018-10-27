@@ -12,8 +12,12 @@
     <tr>
       <th scope="row">Member</th>
       <td>
+        {% if event['member'] == constants.BEERCLUB %}
+        {{ event['member'] }}
+        {% else %}
         <a href="{{ reverse_url('member', event['member']) }}">
           {{ event['member'] }}</a>
+        {% end %}
       </td>
     </tr>
     <tr>
