@@ -95,7 +95,7 @@ class Repayment(RequestHandler):
 
         
 class Expenditure(RequestHandler):
-    "Expenditure that reduces the BeerClub master member."
+    "Expenditure that reduces the credit of the BeerClub master virtual member."
 
     @tornado.web.authenticated
     def get(self):

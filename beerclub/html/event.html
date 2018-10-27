@@ -20,32 +20,35 @@
       <th scope="row">Event</th>
       <td>{{ event['action'] }}</td>
     </tr>
-    {% if event['action'] == constants.EXPENDITURE %}
     <tr>
-      <th scope="row">Description</th>
-      <td>{{ event.get('description') or '-' }}</td>
+      <th scope="row">Payment</th>
+      <td>{{ event.get('payment') or '-' }}</td>
     </tr>
-    {% else %}
     <tr>
       <th scope="row">Beverage</th>
       <td>{{ event.get('beverage') or '-' }}</td>
     </tr>
     <tr>
       <th scope="row">Price</th>
-      <td>{% module Money(event.get('price'), padding=0) %}</td>
+      <td>
+        {% if event.get('price') is not None %}
+        {% module Money(event['price'], padding=0) %}
+        {% else %}
+        -
+        {% end %}
+      </td>
     </tr>
-    <tr>
-      <th scope="row">Payment</th>
-      <td>{{ event.get('payment') or '-' }}</td>
-    </tr>
-    {% end %}
     <tr>
       <th scope="row">Credit</th>
       <td>{% module Money(event['credit'], padding=0) %}</td>
     </tr>
     <tr>
+      <th scope="row">Description</th>
+      <td>{{ event.get('description') or '-' }}</td>
+    </tr>
+    <tr>
       <th scope="row">Actor</th>
-      <td>{{ event['log']['member'] }}</td>
+      <td>{{ event['log'].get('member') or '-' }}</td>
     </tr>
     <tr>
       <th scope="row">Timestamp</th>
@@ -53,11 +56,11 @@
     </tr>
     <tr>
       <th scope="row">User agent</th>
-      <td>{{ event['log']['user_agent'] }}</td>
+      <td>{{ event['log'].get('user_agent') or '-' }}</td>
     </tr>
     <tr>
       <th scope="row">Remote IP</th>
-      <td>{{ event['log']['remote_ip'] }}</td>
+      <td>{{ event['log'].get('remote_ip') or '-' }}</td>
     </tr>
   </tbody>
 </table>

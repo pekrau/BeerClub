@@ -26,11 +26,6 @@ DESIGNS = dict(
     ),
 
     event=dict(
-        action=dict(map=        # event/action
-"""function(doc) {
-  if (doc.beerclub_doctype !== 'event') return;
-  emit(doc.action, doc.member);
-}"""),
         credit=dict(reduce="_sum", # event/credit
                     map=
 """function(doc) {
