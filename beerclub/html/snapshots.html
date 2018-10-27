@@ -1,0 +1,65 @@
+{# Snapshots page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Snapshots{% end %}
+
+{% block body_title %}Snapshots{% end %}
+
+{% block content %}
+<div class="row mt-4">
+  <div class="col-md">
+    <table class="table table-sm" id="snapshots">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Balance ({{ settings['CURRENCY'] }})</th>
+          {% for status in constants.STATUSES %}
+          <th scope="col">{{ status }}</th>
+          {% end %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for snapshot in snapshots %}
+        <tr>
+          <td>{{ snapshot['date'] }}</td>
+          <td>{% module Money(snapshot['balance'], currency=False) %}</td>
+          {% for status in constants.STATUSES %}
+          <td>{{ snapshot['member_counts'][status] }}</td>
+          {% end %}
+        </tr>
+        {% end %} {# for snapshot in snapshots #}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="row mt-4">
+  <div class="col-md">
+    <form action="{{ reverse_url('snapshots') }}"
+          class="form-inline"
+          role="form"
+          method="GET">
+      <label for="from" class="my-1 mr-2">From</label>
+      <input type="text" name="from" id="from"
+             class="form-control datepicker my-1 mr-sm-2"
+             placeholder="From" value="{{ from_ or '' }}">
+      <label for="to" class="my-1 mr-2">to</label>
+      <input type="text" name="to" id="to"
+             class="form-control datepicker my-1 mr-sm-2"
+             placeholder="To" value="{{ to or '' }}">
+      <button type="submit" class="btn btn-primary btn my-1">View</button>
+    </form>
+  </div>
+</div>
+{% end %} {# block content #}
+
+{% block javascript %}
+<script>
+  $(function() {
+    $("#snapshots").DataTable( {
+      "pagingType": "full_numbers",
+      "order": [[ 0, "desc"]],
+    });
+  });
+</script>
+{% end %} {# block javascript #}

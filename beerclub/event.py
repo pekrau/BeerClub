@@ -146,36 +146,36 @@ class Account(RequestHandler):
                     show_member_col=self.is_admin())
 
 
-class Activity(RequestHandler):
+class Active(RequestHandler):
     "Members having made credit-affecting purchases recently."
 
     @tornado.web.authenticated
     def get(self):
         self.check_admin()
-        activity = dict()
+        active = dict()
         from_ = utils.today(-settings['DISPLAY_ACTIVITY_DAYS'])
         to = utils.today()
         view = self.db.view('event/activity')
         for row in view[from_ : to+constants.CEILING]:
             try:
-                activity[row.value] = max(activity[row.value], row.key)
+                active[row.value] = max(active[row.value], row.key)
             except KeyError:
-                activity[row.value] = row.key
-        activity.pop(constants.BEERCLUB, None)
-        activity = activity.items()
-        activity.sort(key=lambda i: i[1])
+                active[row.value] = row.key
+        active.pop(constants.BEERCLUB, None)
+        active = active.items()
+        active.sort(key=lambda i: i[1])
         # This is more efficient than calling for each member.
         all_members = self.get_docs('member/email')
         lookup = {}
         for member in all_members:
             lookup[member['email']] = member
         members = []
-        for email, timestamp in activity:
+        for email, timestamp in active:
             member = lookup[email]
             member['activity'] = timestamp
             members.append(member)
         utils.get_balances(self.db, members)
-        self.render('activity.html', members=members)
+        self.render('active.html', members=members)
 
 
 class Ledger(RequestHandler):
@@ -184,11 +184,6 @@ class Ledger(RequestHandler):
     @tornado.web.authenticated
     def get(self):
         "Display recent events."
-        result = list(self.db.view('event/ledger', group=False))
-        if result:
-            balance = result[0].value
-        else:
-            balance = 0
         try:
             from_ = self.get_argument('from')
         except tornado.web.MissingArgumentError:
@@ -201,7 +196,7 @@ class Ledger(RequestHandler):
                                key=from_,
                                last=to+constants.CEILING)
         self.render('ledger.html',
-                    balance=balance,
+                    balance=self.get_balance(),
                     events=events,
                     from_=from_,
                     to=to,

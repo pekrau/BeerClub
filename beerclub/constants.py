@@ -12,12 +12,14 @@ CEILING = 'ZZZZZZZZ'
 DOCTYPE  = 'beerclub_doctype'
 MEMBER   = 'member'
 EVENT    = 'event'
-ENTITIES = (MEMBER, EVENT)
+SNAPSHOT = 'snapshot'
+ENTITIES = (MEMBER, EVENT, SNAPSHOT)
 
 # Member status
 PENDING  = 'pending'
 ENABLED  = 'enabled'
 DISABLED = 'disabled'
+STATUSES = (PENDING, ENABLED, DISABLED)
 
 # Member roles
 ADMIN  = 'admin'

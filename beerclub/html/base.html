@@ -63,11 +63,14 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" 
-                 href="{{ reverse_url('activity')}}">Activity</a>
+                 href="{{ reverse_url('active')}}">Active</a>
               <a class="dropdown-item" 
                  href="{{ reverse_url('pending')}}">Pending</a>
               <a class="dropdown-item" 
                  href="{{ reverse_url('members')}}">Members</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" 
+                 href="{{ reverse_url('snapshots')}}">Snapshots</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" 
                  href="{{ reverse_url('expenditure')}}">Expenditure</a>

@@ -56,7 +56,15 @@ DESIGNS = dict(
   if (!doc.credit) return;
   emit(doc.log.timestamp, doc.member);
 }"""),
-    )
+    ),
+
+    snapshot=dict(
+        date=dict(map=
+"""function(doc) {
+  if (doc.beerclub_doctype !== 'snapshot') return;
+  emit(doc.date, doc.balance);
+}""")
+    ),
 )
 
 

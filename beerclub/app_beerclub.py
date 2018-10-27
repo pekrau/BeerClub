@@ -7,6 +7,7 @@ import os
 import tornado.web
 import tornado.ioloop
 
+from beerclub import constants
 from beerclub import settings
 from beerclub import uimodules
 from beerclub import utils
@@ -28,7 +29,7 @@ from beerclub.event import (Event,
                             Repayment,
                             Expenditure,
                             Account,
-                            Activity,
+                            Active,
                             Ledger)
 
 
@@ -43,6 +44,27 @@ class Home(RequestHandler):
         else:
             self.render('home_login.html', home_active=False)
 
+
+class Snapshots(RequestHandler):
+    "Display snapshots."
+    def get(self):
+        try:
+            from_ = self.get_argument('from')
+        except tornado.web.MissingArgumentError:
+            from_ = utils.today(-settings['DISPLAY_SNAPSHOT_DAYS'])
+        try:
+            to = self.get_argument('to')
+        except tornado.web.MissingArgumentError:
+            to = utils.today()
+        snapshots = self.get_docs('snapshot/date',
+                                  key=from_,
+                                  last=to+constants.CEILING)
+        self.render('snapshots.html',
+                    snapshots=snapshots,
+                    from_=from_,
+                    to=to)
+
+
 def main():
     url = tornado.web.url
     handlers = [
@@ -53,12 +75,13 @@ def main():
         url(r'/settings/([^/]+)', Settings, name='settings'),
         url(r'/enable/([^/]+)', Enable, name='enable'),
         url(r'/disable/([^/]+)', Disable, name='disable'),
-        url(r'/members', Members, name='members'),
+        url(r'/active', Active, name='active'),
         url(r'/pending', Pending, name='pending'),
-        url(r'/activity', Activity, name='activity'),
+        url(r'/members', Members, name='members'),
         url(r'/account/([^/]+)', Account, name='account'),
         url(r'/expenditure', Expenditure, name='expenditure'),
         url(r'/ledger', Ledger, name='ledger'),
+        url(r'/snapshots', Snapshots, name='snapshots'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),
         url(r'/logout', Logout, name='logout'),

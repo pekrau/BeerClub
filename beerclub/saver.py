@@ -9,11 +9,6 @@ from beerclub import constants
 from beerclub import utils
 
 
-class SaverError(Exception):
-    "Revision mismatch error."
-    pass
-
-
 class Saver(object):
     "Context manager saving the data for the document."
 
@@ -47,10 +42,7 @@ class Saver(object):
     def __exit__(self, type, value, tb):
         if type is not None: return False # No exceptions handled here.
         self.finalize()
-        try:
-            self.db.save(self.doc)
-        except couchdb.http.ResourceConflict:
-            raise SaverError
+        self.db.save(self.doc)
         self.post_process()
 
     def __setitem__(self, key, value):
@@ -98,19 +90,6 @@ class Saver(object):
     def setup(self):
         "Any additional setup. To be redefined."
         pass
-
-    def check_revision(self):
-        """If the document is not new, check that the form field
-        argument '_rev', if it exists, matches the document.
-        Raise Saverrror if incorrect.
-        """
-        old_rev = self.doc.get('_rev')
-        if not old_rev: return
-        if self.rqh is None: return
-        new_rev = self.rqh.get_argument('_rev', None)
-        if not new_rev: return
-        if old_rev != new_rev:
-            raise SaverError
 
     def finalize(self):
         "Set the log fields for the event."

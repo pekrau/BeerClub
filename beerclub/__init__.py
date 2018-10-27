@@ -39,6 +39,7 @@ settings = dict(
     DISPLAY_NAVBAR_STYLE_COLOR=None,
     DISPLAY_ACTIVITY_DAYS=6,
     DISPLAY_LEDGER_DAYS=7,
+    DISPLAY_SNAPSHOT_DAYS=31,
     CONTACT_EMAIL=None,
     RULES_HTML="<ul><li>You must be a registered member to buy beer.</li></ul>",
     PAYMENT_INFO_HTML=None,
