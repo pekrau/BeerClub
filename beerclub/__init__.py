@@ -86,7 +86,7 @@ settings = dict(
              label='Transfer of credit from some other source'),
     ],
     CURRENCY='kr',
-    MONEY_STEP='0.01',
+    MONEY_DECIMAL_PLACES=2,
     EMAIL_INSIGNIFICANT_DEBT=-20,
     EMAIL_PAUSE=3.0,
     EMAIL_SUBJECT_TEXT=None,

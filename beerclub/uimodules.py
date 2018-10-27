@@ -16,7 +16,8 @@ class Money(tornado.web.UIModule):
 
     def render(self, money, currency=True, padding=5):
         if money is None: money = 0
-        value = "{:.2f}".format(money)
+        fmt = "{:.%if}" % settings['MONEY_DECIMAL_PLACES']
+        value = fmt.format(money)
         if currency:
             value += ' ' + settings['CURRENCY']
         padding = max(0, padding - len(str(int(money)))) + 0.2
