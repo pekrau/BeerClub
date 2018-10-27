@@ -1,6 +1,6 @@
 {# List of events in table; to be included.
-Requires 'events' list and 'show_event_link' and 'show_member_col' flags.
-Also include 'events_list_javascript.html'.
+   Requires 'events' list and 'show_event_link' and 'show_member_col' flags.
+   Also include 'events_list_javascript.html'!
 #}
 
 <table class="table table-sm" id="events">
@@ -29,12 +29,16 @@ Also include 'events_list_javascript.html'.
       </td>
       {% if show_member_col %}
       <td class="break">
+        {% if event['member'] == constants.BEERCLUB %}
+        {{ event['member'] }}
+        {% else %}
         <a href="{{ reverse_url('member', event['member']) }}">
           {{ event['member'] }}</a>
+        {% end %}
       </td>
       {% end %}
       <td>
-        {{ event.get('payment') or '-' }} {{ event.get('beverage') or '-' }}
+        {{ event.get('beverage') or '' }} {{ event.get('payment') or '' }}
       </td>
       <td>{% module Money(event['credit'], currency=False) %}</td>
       <td class="localtime small break">{{ event['log']['timestamp'] }}</td>

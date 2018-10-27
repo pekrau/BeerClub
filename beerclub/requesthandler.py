@@ -218,7 +218,8 @@ class RequestHandler(tornado.web.RequestHandler):
 
     def create_snapshot(self, user):
         "Create snapshot if not done today."
-        date = utils.today()
+        # The snapshot is of the state of things the day before.
+        date = utils.today(-1)
         try:
             self.get_doc(date, 'snapshot/date')
         except KeyError:

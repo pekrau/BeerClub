@@ -56,9 +56,12 @@ class Snapshots(RequestHandler):
             to = self.get_argument('to')
         except tornado.web.MissingArgumentError:
             to = utils.today()
-        snapshots = self.get_docs('snapshot/date',
-                                  key=from_,
-                                  last=to+constants.CEILING)
+        if from_ > to:
+            snapshots = []
+        else:
+            snapshots = self.get_docs('snapshot/date',
+                                      key=from_,
+                                      last=to+constants.CEILING)
         self.render('snapshots.html',
                     snapshots=snapshots,
                     from_=from_,

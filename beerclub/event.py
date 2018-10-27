@@ -133,9 +133,12 @@ class Account(RequestHandler):
             to = self.get_argument('to')
         except tornado.web.MissingArgumentError:
             to = utils.today()
-        events = self.get_docs('event/member',
-                               key=[member['email'], from_],
-                               last=[member['email'], to + constants.CEILING])
+        if from_ > to:
+            events = []
+        else:
+            events = self.get_docs('event/member',
+                                   key=[member['email'], from_],
+                                   last=[member['email'], to+constants.CEILING])
         self.render('account.html',
                     member=member,
                     beverages_count=self.get_beverages_count(),
@@ -192,9 +195,12 @@ class Ledger(RequestHandler):
             to = self.get_argument('to')
         except tornado.web.MissingArgumentError:
             to = utils.today()
-        events = self.get_docs('event/ledger',
-                               key=from_,
-                               last=to+constants.CEILING)
+        if from_ > to:
+            events = []
+        else:
+            events = self.get_docs('event/ledger',
+                                   key=from_,
+                                   last=to+constants.CEILING)
         self.render('ledger.html',
                     balance=self.get_balance(),
                     events=events,

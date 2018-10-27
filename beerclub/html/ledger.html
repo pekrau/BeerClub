@@ -10,29 +10,13 @@
 <h5 class="my-3">Current balance: {% module Money(balance, padding=0) %}</h5>
 <div class="row mt-4">
   <div class="col-md">
-
     {% include 'events_list.html' %}
+  </div>
+</div>
 
-  </div>
-</div>
-<div class="row mt-4">
-  <div class="col-md">
-    <form action="{{ reverse_url('ledger') }}"
-          class="form-inline"
-          role="form"
-          method="GET">
-      <label for="from" class="my-1 mr-2">From</label>
-      <input type="text" name="from" id="from"
-             class="form-control datepicker my-1 mr-sm-2"
-             placeholder="From" value="{{ from_ or '' }}">
-      <label for="to" class="my-1 mr-2">to</label>
-      <input type="text" name="to" id="to"
-             class="form-control datepicker my-1 mr-sm-2"
-             placeholder="To" value="{{ to or '' }}">
-      <button type="submit" class="btn btn-primary btn my-1">View</button>
-    </form>
-  </div>
-</div>
+{% set action_url = reverse_url('ledger') %}
+{% include 'from_to_selection.html' %}
+
 {% end %} {# block content #}
 
 {% include 'events_list_javascript.html' %}

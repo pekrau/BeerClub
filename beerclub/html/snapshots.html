@@ -12,10 +12,10 @@
     <table class="table table-sm" id="snapshots">
       <thead>
         <tr>
-          <th scope="col">Date</th>
-          <th scope="col">Balance ({{ settings['CURRENCY'] }})</th>
+          <th scope="col" class="break">Date</th>
+          <th scope="col" class="break">Balance ({{ settings['CURRENCY'] }})</th>
           {% for status in constants.STATUSES %}
-          <th scope="col">{{ status }}</th>
+          <th scope="col" class="break"># {{ status }}</th>
           {% end %}
         </tr>
       </thead>
@@ -33,24 +33,10 @@
     </table>
   </div>
 </div>
-<div class="row mt-4">
-  <div class="col-md">
-    <form action="{{ reverse_url('snapshots') }}"
-          class="form-inline"
-          role="form"
-          method="GET">
-      <label for="from" class="my-1 mr-2">From</label>
-      <input type="text" name="from" id="from"
-             class="form-control datepicker my-1 mr-sm-2"
-             placeholder="From" value="{{ from_ or '' }}">
-      <label for="to" class="my-1 mr-2">to</label>
-      <input type="text" name="to" id="to"
-             class="form-control datepicker my-1 mr-sm-2"
-             placeholder="To" value="{{ to or '' }}">
-      <button type="submit" class="btn btn-primary btn my-1">View</button>
-    </form>
-  </div>
-</div>
+
+{% set action_url = reverse_url('snapshots') %}
+{% include 'from_to_selection.html' %}
+
 {% end %} {# block content #}
 
 {% block javascript %}
