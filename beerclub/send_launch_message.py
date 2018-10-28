@@ -16,11 +16,11 @@ Today we are launching a new system for the SciLifeLab Beer Club:
 https://beerclub.scilifelab.se/
 
 To purchase beers in the SciLifeLab Pub, one must have a member
-account in the new system. If you receive this email, then you
-already have an account.
+account in the new system. Everyone who receives this email
+has an account already.
 
-You will soon receive another email with info on how to set the
-password for your account.
+You will soon receive another email with information on how to
+set the password for your account.
 
 The old paper list system is hereby scrapped. Your credit balance
 has been transferred to the new system.

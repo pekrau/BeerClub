@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import time
 
+from beerclub import constants
 from beerclub import settings
 from beerclub import utils
 
@@ -18,6 +19,7 @@ def send_reminders(db):
     for row in view:
         if row.value >= settings['EMAIL_INSIGNIFICANT_DEBT']: continue
         member = utils.get_member(db, row.key)
+        if member['status'] != constants.ENABLED: continue
         name = u"{} {}".format(member['first_name'], member['last_name'])
         message = settings['EMAIL_MESSAGE_TEXT'].format(name=name, 
                                                         amount=abs(row.value))

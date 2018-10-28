@@ -25,6 +25,7 @@ RESET_SUBJECT = "Your {site} member account password has been reset."
 RESET_TEXT = """Your {site} member account {email} password has been reset.
 
 To set a new password, go to {url}. 
+
 This unique link contains a code allowing you to set the password.
 
 Please also check and correct your settings.
@@ -33,10 +34,11 @@ Yours,
 The {site} administrators
 """
 
-ENABLED_SUBJECT = "Your {site} member account is enabled"
+ENABLED_SUBJECT = "Your {site} member account has been enabled"
 ENABLED_TEXT = """Your {site} member account {email} has been enabled.
 
 You need to set the password for it. Go to {url}.
+
 This unique link contains a code allowing you to set the password.
 
 Yours,
