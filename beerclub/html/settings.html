@@ -27,21 +27,6 @@
           method="POST">
       {% module xsrf_form_html() %}
       <div class="row form-group">
-        <label for="email" class="col-md-2 col-form-label">Email</label>
-        <div class="col-md-10">
-          <input type="email" class="form-control-plaintext" id="email"
-                 aria-describedby="emailHelp" value="{{ member['email'] }}">
-          <small id="emailHelp" class="form-text text-muted">
-            Your email address. This is your member account identifier.
-            It cannot be changed.
-            <br>
-            If your email has changed, register a new member account,
-            and ask the {{ settings['SITE_NAME'] }} administrator to
-            transfer your credit.
-          </small>
-        </div>
-      </div>
-      <div class="row form-group">
         <label for="first_name" class="col-md-2 col-form-label">
           First name</label>
         <div class="col-md-10">
@@ -93,10 +78,10 @@
         </div>
       </div>
       {% end %}
+      {% if is_admin and current_user['email'] != member['email'] %}
       <div class="row form-group">
         <label for="address" class="col-md-2 col-form-label">Role</label>
         <div class="col-md-10">
-          {% if is_admin and current_user['email'] != member['email'] %}
           {% for role in constants.ROLES %}
           <div class="form-check">
             <input class="form-check-input" type="radio"
@@ -108,16 +93,9 @@
             </label>
           </div>
           {% end %}
-          {% else %}
-          <input type="role" class="form-control-plaintext" id="role"
-                 aria-describedby="roleHelp" value="{{ member['role'] }}">
-          <small id="roleHelp" class="form-text text-muted">
-            The role of your member account. Only the 
-            {{ settings['SITE_NAME'] }} administrator can change it.
-          </small>
-          {% end %}
         </div>
       </div>
+      {% end %}
       <div class="row form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">

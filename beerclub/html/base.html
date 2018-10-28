@@ -39,6 +39,9 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+          <li class="nav-item {% module NavitemActive('home') %}">
+            <a class="nav-link" href="{{ reverse_url('home') }}">Home</a>
+          </li>
           {% if current_user %}
           <li class="nav-item {% module NavitemActive('account') %}">
             <a class="nav-link" 
@@ -115,7 +118,7 @@
       {% end %} {# if message #}
       <div class="row mt-3">
         <div class="col-md">
-          <h3>{% block body_title %}{{ settings['SITE_NAME'] }}{% end %}</h3>
+          <h4>{% block body_title %}{{ settings['SITE_NAME'] }}{% end %}</h4>
           {% block content %}
           {% end %} {# block content #}
         </div>
