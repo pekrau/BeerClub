@@ -149,7 +149,7 @@ class Settings(RequestHandler):
                 saver.set_address()
                 saver.set_role()
         except ValueError as error:
-            self.set_error_flash(str(err))
+            self.set_error_flash(str(error))
             self.see_other('home')
             return
         if self.is_admin():
