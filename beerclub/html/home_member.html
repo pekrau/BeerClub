@@ -47,11 +47,8 @@
                          value="{{ payment['identifier'] }}">
                   <div class="modal-body">
                     <h6 id="{{ modid }}Label">
-                      {{ payment['description'] % beverage['label'] }}
+                      {% raw payment['description'] % beverage['label'] %}
                     </h6>
-                    <p>
-                      It costs {% module Money(beverage['price'], padding=0) %}.
-                    </p>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
