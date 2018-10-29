@@ -37,6 +37,7 @@ settings = dict(
     DISPLAY_NAVBAR_BG_COLOR='bg-dark',
     DISPLAY_NAVBAR_STYLE_COLOR=None,
     DISPLAY_ACTIVITY_DAYS=6,
+    DISPLAY_LEDGER_MEMBERS=False,
     DISPLAY_LEDGER_DAYS=7,
     DISPLAY_SNAPSHOT_DAYS=31,
     CONTACT_EMAIL=None,
@@ -51,8 +52,8 @@ settings = dict(
     " applicable laws. No data will be transferred to any external entity.",
     MEMBER_SWISH=True,   # Enable Swish phone number field for member.
     MEMBER_ADDRESS=True, # Enable address field for member.
-    CREDIT_CLASSES=[(-1000, 'bg-danger text-light'),
-                    (-500, 'bg-warning'),
+    CREDIT_CLASSES=[(-500, 'bg-danger text-light'),
+                    (-250, 'bg-warning'),
                     (-1, 'text-danger')],
     BEVERAGE=[
         dict(identifier='beer',

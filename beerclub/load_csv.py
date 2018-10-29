@@ -26,8 +26,8 @@ def load_csv(db, filepath):
         reader.next()           # Skip header rows
         reader.next()
         for record in reader:
-            first_name = record[FIRST_NAME_COLUMN].decode('utf8')
-            last_name = record[LAST_NAME_COLUMN].decode('utf8')
+            first_name = record[FIRST_NAME_COLUMN].decode('utf-8')
+            last_name = record[LAST_NAME_COLUMN].decode('utf-8')
             try:
                 email = record[ALT_EMAIL_COLUMN].strip()
                 if not email: raise IndexError
@@ -53,7 +53,7 @@ def load_csv(db, filepath):
                 saver['member']  = member['email']
                 saver['action']  = constants.REPAYMENT
                 saver['payment'] = 'transfer'
-                value = record[DEBT_COLUMN].decode('utf8')
+                value = record[DEBT_COLUMN].decode('utf-8')
                 # Google, what are you doing?
                 if ord(value[0]) == ORD_MINUS_SIGN:
                     value = - float(value[1:])
