@@ -53,9 +53,11 @@
                href="{{ reverse_url('settings', current_user['email']) }}">
               Settings</a>
           </li>
+          {% if is_admin or settings['DISPLAY_LEDGER_MEMBERS'] %}
           <li class="nav-item {% module NavitemActive('ledger') %}">
             <a class="nav-link" href="{{ reverse_url('ledger') }}">Ledger</a>
           </li>
+          {% end %}
           {% end %} {# if current_user #}
           {% if is_admin %}
           <li class="nav-item dropdown">
