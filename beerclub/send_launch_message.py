@@ -1,13 +1,11 @@
 "Send launch message email to all members; regardless of status."
 
-from __future__ import print_function
-
 import time
 
+from beerclub import settings
 from beerclub import utils
 
 
-EMAIL_PAUSE = 3.0
 EMAIL_SUBJECT_TEXT = "New SciLifeLab Beer Club system"
 EMAIL_MESSAGE_TEXT = """Hello {name},
 
@@ -50,7 +48,7 @@ def send_launch_message(db):
         emailserver.send(member['email'],
                          EMAIL_SUBJECT_TEXT,
                          message)
-        time.sleep(EMAIL_PAUSE)
+        time.sleep(settings['EMAIL_PAUSE'])
 
 
 if __name__ == "__main__":
