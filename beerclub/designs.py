@@ -23,6 +23,12 @@ DESIGNS = dict(
   if (doc.beerclub_doctype !== 'member') return;
   emit(doc.status, doc.email);
 }"""),
+        swish=dict(map=         # member/swish
+"""function(doc) {
+  if (doc.beerclub_doctype !== 'member') return;
+  if (!doc.swish) return;
+  emit(doc.swish, doc.email);
+}"""),
     ),
 
     event=dict(
