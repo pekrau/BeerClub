@@ -25,14 +25,14 @@ class EventSaver(Saver):
         else:
             raise ValueError('invalid action')
 
-    def set_purchase(self, **data):
+    def set_purchase(self, **kwargs):
         self['action'] = constants.PURCHASE
-        pid = data.get('purchase')
+        pid = kwargs.get('purchase')
         for purchase in settings['PURCHASE']:
             if pid == purchase['identifier']: break
         else:
             raise ValueError("no such purchase %s" % pid)
-        bid = data.get('beverage')
+        bid = kwargs.get('beverage')
         for beverage in settings['BEVERAGE']:
             if bid == beverage['identifier']: break
         else:
@@ -45,26 +45,26 @@ class EventSaver(Saver):
             self['credit'] = 0.0
         self.message = "You purchased one %s." % beverage['label']
 
-    def set_payment(self, **data):
+    def set_payment(self, **kwargs):
         self['action'] = constants.PAYMENT
-        pid = data.get('payment')
+        pid = kwargs.get('payment')
         for payment in settings['PAYMENT']:
             if pid == payment['identifier']: break
         else:
             raise ValueError("no such payment %s" % pid)
-        self['credit'] = self.get_amount(**data)
-        self['date'] = data.get('date', utils.today())
+        self['credit'] = self.get_amount(kwargs)
+        self['date'] = kwargs.get('date', utils.today())
         self['description'] = payment['identifier']
 
-    def set_expenditure(self, **data):
+    def set_expenditure(self, **kwargs):
         self['action'] = constants.EXPENDITURE
-        self['credit'] = - self.get_amount(**data)
-        self['date'] = data.get('date', utils.today())
-        self['description'] = data.get('description')
+        self['credit'] = - self.get_amount(kwargs)
+        self['date'] = kwargs.get('date', utils.today())
+        self['description'] = kwargs.get('description')
 
-    def get_amount(self, **data):
+    def get_amount(self, kwargs):
         try:
-            return float(data['amount'])
+            return float(kwargs['amount'])
         except (KeyError, ValueError, TypeError):
             return 0.0
 
