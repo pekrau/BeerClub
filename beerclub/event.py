@@ -54,7 +54,10 @@ class EventSaver(Saver):
             raise ValueError("no such payment %s" % pid)
         self['credit'] = self.get_amount(kwargs)
         self['date'] = kwargs.get('date', utils.today())
-        self['description'] = payment['identifier']
+        description = payment['identifier']
+        if kwargs.get('description'):
+            description += ': ' + kwargs.get('description')
+        self['description'] = description
 
     def set_expenditure(self, **kwargs):
         self['action'] = constants.EXPENDITURE
@@ -255,6 +258,22 @@ class Ledger(RequestHandler):
                     show_member_col=self.is_admin())
 
 
+class EventApiV1(ApiMixin, RequestHandler):
+    "Return event data."
+
+    @tornado.web.authenticated
+    def get(self, iuid):
+        self.check_admin()
+        event = self.get_doc(iuid)
+        if event.get(constants.DOCTYPE) != constants.EVENT:
+            raise tornado.web.HTTPError(404, reason='no such event')
+        data = dict(iuid=event['_id'])
+        for key in ['action', 'beverage', 'credit',
+                    'date', 'description', 'log']:
+            data[key] = event.get(key)
+        self.write(data)
+
+
 class MemberEventApiV1(ApiMixin, RequestHandler):
     "Add an event for the member."
 
@@ -271,4 +290,4 @@ class MemberEventApiV1(ApiMixin, RequestHandler):
                 saver.set(self.get_json_body())
         except ValueError as error:
             raise tornado.web.HTTPError(400, reason=str(error))
-        raise tornado.web.HTTPError(204)
+        self.write(dict(iuid=saver.doc['_id']))

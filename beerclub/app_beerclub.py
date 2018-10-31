@@ -23,7 +23,8 @@ from beerclub.member import (Member,
                              Password,
                              Register,
                              Enable,
-                             Disable)
+                             Disable,
+                             MemberApiV1)
 from beerclub.event import (Event,
                             Purchase,
                             Payment,
@@ -31,6 +32,7 @@ from beerclub.event import (Event,
                             Account,
                             Active,
                             Ledger,
+                            EventApiV1,
                             MemberEventApiV1)
 
 
@@ -92,7 +94,10 @@ def main():
         url(r'/reset', Reset, name='reset'),
         url(r'/password', Password, name='password'),
         url(r'/register', Register, name='register'),
-        url(r'/api/v1/event/([^/]+)', MemberEventApiV1, name='api_event'),
+        url(r'/api/v1/event/([0-9a-f]{32})', EventApiV1, name='api_event'),
+        url(r'/api/v1/member/([^/]+)', MemberApiV1, name='api_member'),
+        url(r'/api/v1/event/member/([^/]+)',
+            MemberEventApiV1, name='api_member_event'),
     ]
 
     application = tornado.web.Application(
