@@ -26,11 +26,12 @@ from beerclub.member import (Member,
                              Disable)
 from beerclub.event import (Event,
                             Purchase,
-                            Repayment,
+                            Payment,
                             Expenditure,
                             Account,
                             Active,
-                            Ledger)
+                            Ledger,
+                            MemberEventApiV1)
 
 
 class Home(RequestHandler):
@@ -39,7 +40,7 @@ class Home(RequestHandler):
         if self.current_user:
             self.current_user['balance'] = self.get_balance(self.current_user)
             self.render('home_member.html',
-                        beverages_count=self.get_beverages_count(),
+                        beverages_count=self.get_beverages_count(self.current_user),
                         home_active=True)
         else:
             self.render('home_login.html', home_active=False)
@@ -73,7 +74,7 @@ def main():
     handlers = [
         url(r'/', Home, name='home'),
         url(r'/purchase', Purchase, name='purchase'),
-        url(r'/repayment/([^/]+)', Repayment, name='repayment'),
+        url(r'/payment/([^/]+)', Payment, name='payment'),
         url(r'/member/([^/]+)', Member, name='member'),
         url(r'/settings/([^/]+)', Settings, name='settings'),
         url(r'/enable/([^/]+)', Enable, name='enable'),
@@ -91,6 +92,7 @@ def main():
         url(r'/reset', Reset, name='reset'),
         url(r'/password', Password, name='password'),
         url(r'/register', Register, name='register'),
+        url(r'/api/v1/event/([^/]+)', MemberEventApiV1, name='api_event'),
     ]
 
     application = tornado.web.Application(

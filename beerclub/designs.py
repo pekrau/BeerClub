@@ -29,6 +29,12 @@ DESIGNS = dict(
   if (!doc.swish) return;
   emit(doc.swish, doc.email);
 }"""),
+        api_key=dict(map=       # member/api_key
+"""function(doc) {
+  if (doc.beerclub_doctype !== 'member') return;
+  if (!doc.api_key) return;
+  emit(doc.api_key, doc.email);
+}"""),
     ),
 
     event=dict(
@@ -38,7 +44,7 @@ DESIGNS = dict(
   if (doc.beerclub_doctype !== 'event') return;
   emit(doc.member, doc.credit);
 }"""),
-        beverages=dict(reduce="_count", # event/beverages
+        beverage=dict(reduce="_count", # event/beverage
                        map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;

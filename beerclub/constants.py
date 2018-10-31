@@ -28,9 +28,10 @@ ROLES  = (ADMIN, MEMBER)
 
 # Event actions
 PURCHASE    = 'purchase'
-REPAYMENT   = 'repayment'
+PAYMENT     = 'payment'
 EXPENDITURE = 'expenditure'
 
 # Misc
 USER_COOKIE = 'beerclub_user'
 EMAIL_PATTERN = '*@*.*'
+API_KEY_HEADER = 'X-BeerClub-API-key'

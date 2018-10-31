@@ -12,11 +12,12 @@ from beerclub.member import MemberSaver
 from beerclub.event import EventSaver
 
 
-LAST_NAME_COLUMN = 0
+LAST_NAME_COLUMN  = 0
 FIRST_NAME_COLUMN = 1
-ADDRESS_COLUMN = 3
-DEBT_COLUMN = 4
-ALT_EMAIL_COLUMN = 5
+ADDRESS_COLUMN    = 3
+DEBT_COLUMN       = 4
+ALT_EMAIL_COLUMN  = 5
+
 ORD_MINUS_SIGN = 8722
 
 def load_csv(db, filepath):
@@ -50,18 +51,16 @@ def load_csv(db, filepath):
             else:
                 print('found', member['email'])
             with EventSaver(db=db) as saver:
-                saver['member']  = member['email']
-                saver['action']  = constants.REPAYMENT
-                saver['payment'] = 'transfer'
-                value = record[DEBT_COLUMN].decode('utf-8')
+                amount = record[DEBT_COLUMN].decode('utf-8')
                 # Google, what are you doing?
-                if ord(value[0]) == ORD_MINUS_SIGN:
-                    value = - float(value[1:])
+                if ord(amount[0]) == ORD_MINUS_SIGN:
+                    amount = - float(amount[1:])
                 else:
-                    value = float(value)
-                saver['credit'] = value
-                saver['date']   = utils.today()
-            print(value)
+                    amount = float(amount)
+                saver['member'] = member['email']
+                saver.set_payment(amount=amount,
+                                  payment='transfer')
+            print(amount)
 
 
 if __name__ == "__main__":

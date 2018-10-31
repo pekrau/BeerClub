@@ -4,7 +4,15 @@
 
 {% block head_title %}Account {{ member['email'] }}{% end %}
 
-{% block body_title %}Account <small>{{ member['email'] }}</small>{% end %}
+{% block body_title %}
+Account <small>
+{% if is_admin %}
+<a href="{{ reverse_url('member', member['email']) }}">{{ member['email'] }}</a>
+{% else %}
+{{ member['email'] }}
+{% end %}
+</small>
+{% end %}
 
 {% block content %}
 <div class="row mb-3">

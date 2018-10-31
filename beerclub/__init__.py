@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '0.9'
+__version__ = '1.0.0'
 
 settings = dict(
     VERSION=__version__,
@@ -60,7 +60,7 @@ settings = dict(
              price=20,
              description='One can or bottle of beer.'),
     ],
-    PAYMENT=[
+    PURCHASE=[
         dict(identifier='cash',
              change=False,
              label='cash',
@@ -74,16 +74,16 @@ settings = dict(
              action='Put it on my credit.',
              description='Put the amount for one %s on my credit.'),
     ],
-    REPAYMENT=[
+    PAYMENT=[
         dict(identifier='cash',
-             label='Cash paid to the admin',
+             label='Cash paid to the admin.',
              default=True),
         dict(identifier='bank',
-             label='Bank account transferral'),
+             label='Bank account transfer.'),
         dict(identifier='correction',
-             label='Correction of an erroneous transaction'),
+             label='Correction of an erroneous transaction.'),
         dict(identifier='transfer',
-             label='Transfer of credit from some other source'),
+             label='Transfer of credit from some other source.'),
     ],
     CURRENCY='kr',
     MONEY_DECIMAL_PLACES=2,

@@ -78,9 +78,26 @@
         </div>
       </div>
       {% end %}
+      {% if is_admin and member['role'] == constants.ADMIN %}
+      <div class="row form-group">
+        <label for="api_key" class="col-md-2 col-form-label">API key</label>
+        <div class="col-md-10">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                   name="api_key" id="api_key"  aria-describedby="api_keyHelp">
+            <label class="form-check-label" for="api_key">
+              Set new API key.
+            </label>
+          </div>
+          <small id="api_keyHelp" class="form-text text-muted">
+            Current: {{ member.get('api_key') or '-' }}
+          </small>
+        </div>
+      </div>
+      {% end %}
       {% if is_admin and current_user['email'] != member['email'] %}
       <div class="row form-group">
-        <label for="address" class="col-md-2 col-form-label">Role</label>
+        <label for="role" class="col-md-2 col-form-label">Role</label>
         <div class="col-md-10">
           {% for role in constants.ROLES %}
           <div class="form-check">

@@ -126,15 +126,20 @@ def get_docs(db, viewname, key=None, last=None, **kwargs):
 
 def get_member(db, email):
     """Get the member identified by the email address.
+    If Swish is enabled, then also check if 'email' is
+    a Swish number, which must match exactly.
     Raise KeyError if no such member.
     """
+    email = email.strip().lower()
     try:
-        doc = get_doc(db, email.strip().lower(), 'member/email')
+        return get_doc(db, email, 'member/email')
     except KeyError:
+        if settings['MEMBER_SWISH']:
+            try:
+                return get_doc(db, email, 'member/swish')
+            except KeyError:
+                pass
         raise KeyError("no such member %s" % email)
-    if doc[constants.DOCTYPE] != constants.MEMBER:
-        raise KeyError("document %s is not a member" % email)
-    return doc
 
 def get_balances(db, members):
     "Get and set the balances for all input members."

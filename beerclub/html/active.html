@@ -25,9 +25,9 @@ Active members
         {% for member in members %}
         <tr>
           <td>
-            <a href="{{ reverse_url('repayment', member['email']) }}"
+            <a href="{{ reverse_url('payment', member['email']) }}"
                target="_blank">
-              <span class="badge badge-warning">Repay</span>
+              <span class="badge badge-warning">Payment</span>
             </a>
           </td>
           <td>

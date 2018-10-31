@@ -1,4 +1,4 @@
-"Event: payment, etc."
+"Event: purchase, payment, etc."
 
 import logging
 
@@ -7,16 +7,70 @@ import tornado.web
 from . import constants
 from . import settings
 from . import utils
-from .requesthandler import RequestHandler
+from .requesthandler import RequestHandler, ApiMixin
 from .saver import Saver
 
 
 class EventSaver(Saver):
     doctype = constants.EVENT
 
+    def set(self, data):
+        action = data.get('action')
+        if action == constants.PURCHASE:
+            self.set_purchase(**data)
+        elif action == constants.PAYMENT:
+            self.set_payment(**data)
+        elif action == constants.EXPENDITURE:
+            self.set_expenditure(**data)
+        else:
+            raise ValueError('invalid action')
+
+    def set_purchase(self, **data):
+        self['action'] = constants.PURCHASE
+        pid = data.get('purchase')
+        for purchase in settings['PURCHASE']:
+            if pid == purchase['identifier']: break
+        else:
+            raise ValueError("no such purchase %s" % pid)
+        bid = data.get('beverage')
+        for beverage in settings['BEVERAGE']:
+            if bid == beverage['identifier']: break
+        else:
+            raise ValueError("no such beverage %s" % bid)
+        self['beverage']    = beverage['identifier']
+        self['description'] = purchase['identifier']
+        if purchase['change']:
+            self['credit'] = - beverage['price']
+        else:
+            self['credit'] = 0.0
+        self.message = "You purchased one %s." % beverage['label']
+
+    def set_payment(self, **data):
+        self['action'] = constants.PAYMENT
+        pid = data.get('payment')
+        for payment in settings['PAYMENT']:
+            if pid == payment['identifier']: break
+        else:
+            raise ValueError("no such payment %s" % pid)
+        self['credit'] = self.get_amount(**data)
+        self['date'] = data.get('date', utils.today())
+        self['description'] = payment['identifier']
+
+    def set_expenditure(self, **data):
+        self['action'] = constants.EXPENDITURE
+        self['credit'] = - self.get_amount(**data)
+        self['date'] = data.get('date', utils.today())
+        self['description'] = data.get('description')
+
+    def get_amount(self, **data):
+        try:
+            return float(data['amount'])
+        except (KeyError, ValueError, TypeError):
+            return 0.0
+
 
 class Event(RequestHandler):
-    "View an event; payment or other."
+    "View an event; purchase, payment, etc."
 
     @tornado.web.authenticated
     def get(self, iuid):
@@ -35,32 +89,20 @@ class Purchase(RequestHandler):
 
     @tornado.web.authenticated
     def post(self):
-        bid =self.get_argument('beverage')
-        for beverage in settings['BEVERAGE']:
-            if bid == beverage['identifier']: break
+        try:
+            with EventSaver(rqh=self) as saver:
+                saver['member']   = self.current_user['email']
+                saver.set_purchase(purchase=self.get_argument('purchase',None),
+                                   beverage=self.get_argument('beverage',None))
+        except ValueError as error:
+            self.set_error_flash(str(error))
         else:
-            raise KeyError("no such beverage %s" % bid)
-        pid =self.get_argument('payment')
-        for payment in settings['PAYMENT']:
-            if pid == payment['identifier']: break
-        else:
-            raise KeyError("no such payment %s" % pid)
-        with EventSaver(rqh=self) as saver:
-            saver['member']   = self.current_user['email']
-            saver['action']   = constants.PURCHASE
-            saver['beverage'] = beverage['identifier']
-            saver['price']    = beverage['price']
-            saver['payment']  = payment['identifier']
-            if payment['change']:
-                saver['credit'] = - beverage['price']
-            else:
-                saver['credit'] = 0
-        self.set_message_flash("Your purchased one %s." % beverage['label'])
+            self.set_message_flash(saver.message)
         self.see_other('home')
 
 
-class Repayment(RequestHandler):
-    "Repayment to increase the credit of a member."
+class Payment(RequestHandler):
+    "Payment to increase the credit of a member."
 
     @tornado.web.authenticated
     def get(self, email):
@@ -70,7 +112,7 @@ class Repayment(RequestHandler):
         except KeyError:
             self.see_other('home')
         else:
-            self.render('repayment.html', member=member)
+            self.render('payment.html', member=member)
 
     @tornado.web.authenticated
     def post(self, email):
@@ -80,18 +122,15 @@ class Repayment(RequestHandler):
         except KeyError:
             self.see_other('home')
             return
-        pid =self.get_argument('payment')
-        for payment in settings['REPAYMENT']:
-            if pid == payment['identifier']: break
-        else:
-            raise KeyError("no such repayment %s" % pid)
-        with EventSaver(rqh=self) as saver:
-            saver['member']  = member['email']
-            saver['action']  = constants.REPAYMENT
-            saver['payment'] = payment['identifier']
-            saver['credit']  = float(self.get_argument('amount'))
-            saver['date']    = self.get_argument('date', utils.today())
-        self.see_other('members')
+        try:
+            with EventSaver(rqh=self) as saver:
+                saver['member'] = member['email']
+                saver.set_payment(payment=self.get_argument('payment', None),
+                                  amount=self.get_argument('amount', None),
+                                  date=self.get_argument('date',utils.today()))
+        except ValueError as error:
+            self.set_error_flash(str(error))
+        self.see_other('account', member['email'])
 
         
 class Expenditure(RequestHandler):
@@ -105,13 +144,18 @@ class Expenditure(RequestHandler):
     @tornado.web.authenticated
     def post(self):
         self.check_admin()
-        with EventSaver(rqh=self) as saver:
-            saver['member'] = constants.BEERCLUB
-            saver['action'] = constants.EXPENDITURE
-            saver['credit'] = - float(self.get_argument('amount'))
-            saver['date']   = self.get_argument('date', utils.today())
-            saver['description'] = self.get_argument('description', None)
-        self.see_other('ledger')
+        try:
+            with EventSaver(rqh=self) as saver:
+                saver['member'] = constants.BEERCLUB
+                saver.set_expenditure(
+                    amount=self.get_argument('amount', None),
+                    description=self.get_argument('description', None),
+                    date=self.get_argument('date', utils.today()))
+        except ValueError as error:
+            self.set_error_flash(str(error))
+            self.see_other('expenditure')
+        else:
+            self.see_other('ledger')
 
 
 class Account(RequestHandler):
@@ -141,12 +185,13 @@ class Account(RequestHandler):
                                    last=[member['email'], to+constants.CEILING])
         self.render('account.html',
                     member=member,
-                    beverages_count=self.get_beverages_count(),
+                    beverages_count=self.get_beverages_count(member),
                     events=events, 
                     from_=from_,
                     to=to,
                     show_event_links=self.is_admin(),
-                    show_member_col=self.is_admin())
+                    show_member_col=self.is_admin() and 
+                        member['email'] != self.current_user['email'])
 
 
 class Active(RequestHandler):
@@ -208,3 +253,22 @@ class Ledger(RequestHandler):
                     to=to,
                     show_event_links=self.is_admin(),
                     show_member_col=self.is_admin())
+
+
+class MemberEventApiV1(ApiMixin, RequestHandler):
+    "Add an event for the member."
+
+    @tornado.web.authenticated
+    def post(self, email):
+        self.check_admin()
+        try:
+            member = self.get_member(email)
+        except KeyError:
+            raise tornado.web.HTTPError(404, reason='no such member')
+        try:
+            with EventSaver(rqh=self) as saver:
+                saver['member'] = member['email']
+                saver.set(self.get_json_body())
+        except ValueError as error:
+            raise tornado.web.HTTPError(400, reason=str(error))
+        raise tornado.web.HTTPError(204)

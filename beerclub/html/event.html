@@ -15,7 +15,7 @@
         {% if event['member'] == constants.BEERCLUB %}
         {{ event['member'] }}
         {% else %}
-        <a href="{{ reverse_url('member', event['member']) }}">
+        <a href="{{ reverse_url('account', event['member']) }}">
           {{ event['member'] }}</a>
         {% end %}
       </td>
@@ -25,26 +25,12 @@
       <td>{{ event['action'] }}</td>
     </tr>
     <tr>
-      <th scope="row">Payment</th>
-      <td>{{ event.get('payment') or '-' }}</td>
+      <th scope="row">Credit</th>
+      <td>{% module Money(event['credit'], padding=0) %}</td>
     </tr>
     <tr>
       <th scope="row">Beverage</th>
       <td>{{ event.get('beverage') or '-' }}</td>
-    </tr>
-    <tr>
-      <th scope="row">Price</th>
-      <td>
-        {% if event.get('price') is not None %}
-        {% module Money(event['price'], padding=0) %}
-        {% else %}
-        -
-        {% end %}
-      </td>
-    </tr>
-    <tr>
-      <th scope="row">Credit</th>
-      <td>{% module Money(event['credit'], padding=0) %}</td>
     </tr>
     <tr>
       <th scope="row">Description</th>

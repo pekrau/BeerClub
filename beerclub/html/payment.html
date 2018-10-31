@@ -1,10 +1,10 @@
-{# Repayment page. #}
+{# Payment page. #}
 
 {% extends 'base.html' %}
 
-{% block head_title %}Repayment from {{ member['email'] }}{% end %}
+{% block head_title %}Payment from {{ member['email'] }}{% end %}
 
-{% block body_title %}Repayment from {{ member['email'] }}{% end %}
+{% block body_title %}Payment from {{ member['email'] }}{% end %}
 
 {% block content %}
 <div class="row">
@@ -17,7 +17,7 @@
 </div>
 <div class="card mt-2">
   <div class="card-body">
-    <form action="{{ reverse_url('repayment', member['email']) }}"
+    <form action="{{ reverse_url('payment', member['email']) }}"
           role="form"
           method="POST">
       {% module xsrf_form_html() %}
@@ -31,7 +31,7 @@
       <div class="row form-group">
         <label for="payment" class="col-md-2 col-form-label">Payment</label>
         <div class="col-md-10">
-          {% for payment in settings['REPAYMENT'] %}
+          {% for payment in settings['PAYMENT'] %}
           {% if payment.get('hidden') %}
           {% continue %}
           {% end %}
@@ -67,14 +67,14 @@
                  aria-describedby="dateHelp"
                  value="{% module Date() %}">
           <small id="dateHelp" class="form-text text-muted">
-            The date of the repayment.
+            The date of the payment.
           </small>
         </div>
       </div>
       <div class="row form-group">
         <div class="col-md-2"></div>
         <div class="col-md-10">
-          <button type="submit" class="btn btn-warning">Repay</button>
+          <button type="submit" class="btn btn-warning">Payment</button>
         </div>
       </div>
     </form>

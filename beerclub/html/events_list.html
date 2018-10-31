@@ -8,9 +8,9 @@
     <tr>
       <th scope="col" class="break">Event</th>
       {% if show_member_col %}
-      <th scope="col" class="break">Member</th>
+      <th scope="col">Member</th>
       {% end %}
-      <th scope="col" class="break">Specification</th>
+      <th scope="col" class="break">Description</th>
       <th scope="col" class="break">Credit  ({{ settings['CURRENCY'] }})</th>
       <th scope="col"></th>
     </tr>
@@ -28,7 +28,7 @@
         {% end %}
       </td>
       {% if show_member_col %}
-      <td class="break">
+      <td>
         {% if event['member'] == constants.BEERCLUB %}
         {{ event['member'] }}
         {% else %}
@@ -38,7 +38,8 @@
       </td>
       {% end %}
       <td>
-        {{ event.get('beverage') or '' }} {{ event.get('payment') or '' }}
+        {{ event.get('beverage') or '' }}
+        {{ event.get('description') or '' }}
       </td>
       <td>{% module Money(event['credit'], currency=False) %}</td>
       <td class="localtime small break">{{ event['log']['timestamp'] }}</td>

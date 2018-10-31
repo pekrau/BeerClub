@@ -28,8 +28,8 @@
   </div>
   {% if is_admin %}
   <div class="col-md-2">
-    <a href="{{ reverse_url('repayment', member['email']) }}"
-       role="button" class="btn btn-warning w-100">Repay</a>
+    <a href="{{ reverse_url('payment', member['email']) }}"
+       role="button" class="btn btn-warning w-100">Payment</a>
   </div>
   {% end %} {# if is_admin #}
   <div class="col-md-2">
@@ -84,6 +84,12 @@
       <th scope="row">Status</th>
       <td>{% module Status(member) %}</td>
     </tr>
+    {% if member['role'] == constants.ADMIN %}
+    <tr>
+      <th scope="row">API key</th>
+      <td>{{ member.get('api_key') or '-' }}</td>
+    </tr>
+    {% end %}
     <tr>
       <th scope="row">Role</th>
       <td>{% module Role(member) %}</td>

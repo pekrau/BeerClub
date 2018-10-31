@@ -72,12 +72,22 @@ class MemberSaver(Saver):
     def set_address(self):
         self['address'] = self.rqh.get_argument('address', None) or None
 
+    def set_api_key(self):
+        if not self.rqh.is_admin(): return
+        if self['role'] != constants.ADMIN: return
+        try:
+            if self.rqh.get_argument('api_key', False):
+                self['api_key'] = utils.get_iuid()
+        except (tornado.web.MissingArgumentError, ValueError):
+            pass
+
     def set_role(self):
         if not self.rqh.is_admin(): return
         if self.rqh.current_user['email'] != self['email']: return
         try:
             role = self.rqh.get_argument('role')
             if role not in constants.ROLES: raise ValueError
+            self['role'] = role
         except (tornado.web.MissingArgumentError, ValueError):
             pass
 
@@ -147,6 +157,7 @@ class Settings(RequestHandler):
                 saver.set_name()
                 saver.set_swish()
                 saver.set_address()
+                saver.set_api_key()
                 saver.set_role()
         except ValueError as error:
             self.set_error_flash(str(error))

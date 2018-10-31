@@ -1,4 +1,4 @@
-{# Home page when logged in; payment actions. #}
+{# Home page when logged in; purchase actions. #}
 
 {% extends 'home_base.html' %}
 
@@ -24,13 +24,13 @@
         <p>Price: {% module Money(beverage['price'], padding=0) %}</p>
       </div>
       <div class="col-md">
-        {% for payment in settings['PAYMENT'] %}
-        {% set modid = beverage['identifier'] + '_' + payment['identifier'] %}
+        {% for purchase in settings['PURCHASE'] %}
+        {% set modid = beverage['identifier'] + '_' + purchase['identifier'] %}
         <div class="mb-3">
           <button type="button"
-                  class="btn btn-{{ payment['style'] }} w-100 shadow"
+                  class="btn btn-{{ purchase['style'] }} w-100 shadow"
                   data-toggle="modal" data-target="#{{ modid }}Modal">
-            {{ payment['action'] }}
+            {{ purchase['action'] }}
           </button>
           <div class="modal fade" id="{{ modid }}Modal"
                tabindex="-1" role="dialog"
@@ -43,11 +43,11 @@
                   {% module xsrf_form_html() %}
                   <input type="hidden" name="beverage" 
                          value="{{ beverage['identifier']}}">
-                  <input type="hidden" name="payment"
-                         value="{{ payment['identifier'] }}">
+                  <input type="hidden" name="purchase"
+                         value="{{ purchase['identifier'] }}">
                   <div class="modal-body">
                     <h6 id="{{ modid }}Label">
-                      {% raw payment['description'] % beverage['label'] %}
+                      {% raw purchase['description'] % beverage['label'] %}
                     </h6>
                   </div>
                   <div class="modal-footer">
