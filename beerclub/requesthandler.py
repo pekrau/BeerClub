@@ -172,7 +172,7 @@ class RequestHandler(tornado.web.RequestHandler):
         try:
             member = self.get_member(email)
         except KeyError:
-            return None
+            raise ValueError
         # Disabled; must not be allowed to login.
         if member.get('disabled'):
             logging.info("Session auth: DISABLED %s", member['email'])
