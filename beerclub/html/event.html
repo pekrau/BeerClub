@@ -58,4 +58,19 @@
     </tr>
   </tbody>
 </table>
+{% if is_admin %}
+<div class="row mt-4">
+  <div class="col-md-2">
+    <form action="{{ reverse_url('event', event['_id']) }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <input type="hidden" name="_http_method" value="DELETE">
+      <button type="submit" class="btn btn-danger w-100"
+              onclick="return confirm('Really delete this event?');">
+        Delete</button>
+    </form>
+  </div>
+</div>
+{% end %}
 {% end %} {# block content #}

@@ -125,7 +125,8 @@ class Member(RequestHandler):
         except KeyError:
             self.see_other('home')
             return
-        if self.no_events(member) and member['role'] != constants.ADMIN:
+        if self.get_argument('_http_method', None) == 'DELETE' and \
+           self.no_events(member) and member['role'] != constants.ADMIN:
             self.db.delete(member)
         url = self.get_argument('next', None)
         if url:

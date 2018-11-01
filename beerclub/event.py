@@ -65,7 +65,7 @@ class EventSaver(Saver):
 
 
 class Event(RequestHandler):
-    "View an event; purchase, payment, etc."
+    "View an event; purchase, payment, etc. Admin may delete it."
 
     @tornado.web.authenticated
     def get(self, iuid):
@@ -77,6 +77,15 @@ class Event(RequestHandler):
             self.see_other('home')
             return
         self.render('event.html', event=event)
+
+    @tornado.web.authenticated
+    def post(self, iuid):
+        "Delete the event."
+        self.check_admin()
+        event = self.get_doc(iuid)
+        if self.get_argument('_http_method', None) == 'DELETE':
+            self.db.delete(event)
+        self.see_other('account', event['member'])
 
 
 class Purchase(RequestHandler):
