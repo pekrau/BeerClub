@@ -32,7 +32,11 @@ from beerclub.event import (Event,
                             Account,
                             Active,
                             Ledger,
+<<<<<<< HEAD
+                            Payments,
+=======
                             EventApiV1,
+>>>>>>> 9588b1f92aa5656b4427548453eff039c2c3c9be
                             MemberEventApiV1)
 
 
@@ -87,6 +91,7 @@ def main():
         url(r'/account/([^/]+)', Account, name='account'),
         url(r'/expenditure', Expenditure, name='expenditure'),
         url(r'/ledger', Ledger, name='ledger'),
+        url(r'/payments', Payments, name='payments'),
         url(r'/snapshots', Snapshots, name='snapshots'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),

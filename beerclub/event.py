@@ -20,8 +20,6 @@ class EventSaver(Saver):
             self.set_purchase(**data)
         elif action == constants.PAYMENT:
             self.set_payment(**data)
-        elif action == constants.EXPENDITURE:
-            self.set_expenditure(**data)
         else:
             raise ValueError('invalid action')
 
@@ -47,10 +45,24 @@ class EventSaver(Saver):
 
     def set_payment(self, **kwargs):
         self['action'] = constants.PAYMENT
+        try:
+            amount = float(kwargs['amount'])
+        except (KeyError, ValueError, TypeError):
+            amount = 0.0
         pid = kwargs.get('payment')
-        for payment in settings['PAYMENT']:
-            if pid == payment['identifier']: break
+        if pid == constants.EXPENDITURE:
+            self['description'] = "%s: %s" % (constants.EXPENDITURE,
+                                              kwargs.get('description'))
+            self['credit'] = - amount
         else:
+<<<<<<< HEAD
+            for payment in settings['PAYMENT']:
+                if pid == payment['identifier']: break
+            else:
+                raise ValueError("no such payment %s" % pid)
+            self['description'] = payment['identifier']
+            self['credit'] = amount
+=======
             raise ValueError("no such payment %s" % pid)
         self['credit'] = self.get_amount(kwargs)
         self['date'] = kwargs.get('date', utils.today())
@@ -62,14 +74,8 @@ class EventSaver(Saver):
     def set_expenditure(self, **kwargs):
         self['action'] = constants.EXPENDITURE
         self['credit'] = - self.get_amount(kwargs)
+>>>>>>> 9588b1f92aa5656b4427548453eff039c2c3c9be
         self['date'] = kwargs.get('date', utils.today())
-        self['description'] = kwargs.get('description')
-
-    def get_amount(self, kwargs):
-        try:
-            return float(kwargs['amount'])
-        except (KeyError, ValueError, TypeError):
-            return 0.0
 
 
 class Event(RequestHandler):
@@ -150,15 +156,14 @@ class Expenditure(RequestHandler):
         try:
             with EventSaver(rqh=self) as saver:
                 saver['member'] = constants.BEERCLUB
-                saver.set_expenditure(
+                saver.set_payment(
+                    payment=constants.EXPENDITURE,
                     amount=self.get_argument('amount', None),
                     description=self.get_argument('description', None),
                     date=self.get_argument('date', utils.today()))
         except ValueError as error:
             self.set_error_flash(str(error))
-            self.see_other('expenditure')
-        else:
-            self.see_other('ledger')
+        self.see_other('ledger')
 
 
 class Account(RequestHandler):
@@ -191,10 +196,7 @@ class Account(RequestHandler):
                     beverages_count=self.get_beverages_count(member),
                     events=events, 
                     from_=from_,
-                    to=to,
-                    show_event_links=self.is_admin(),
-                    show_member_col=self.is_admin() and 
-                        member['email'] != self.current_user['email'])
+                    to=to)
 
 
 class Active(RequestHandler):
@@ -253,9 +255,34 @@ class Ledger(RequestHandler):
                     balance=self.get_balance(),
                     events=events,
                     from_=from_,
-                    to=to,
-                    show_event_links=self.is_admin(),
-                    show_member_col=self.is_admin())
+                    to=to)
+
+
+class Payments(RequestHandler):
+    "Page for listing recent payment events, and the Beer Club balance."
+
+    @tornado.web.authenticated
+    def get(self):
+        "Display recent payment events."
+        try:
+            from_ = self.get_argument('from')
+        except tornado.web.MissingArgumentError:
+            from_ = utils.today(-settings['DISPLAY_PAYMENT_DAYS'])
+        try:
+            to = self.get_argument('to')
+        except tornado.web.MissingArgumentError:
+            to = utils.today()
+        if from_ > to:
+            events = []
+        else:
+            events = self.get_docs('event/payment',
+                                   key=from_,
+                                   last=to+constants.CEILING)
+        self.render('payments.html',
+                    balance=self.get_balance(),
+                    events=events,
+                    from_=from_,
+                    to=to)
 
 
 class EventApiV1(ApiMixin, RequestHandler):
