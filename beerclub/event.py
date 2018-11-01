@@ -149,7 +149,7 @@ class Expenditure(RequestHandler):
                     date=self.get_argument('date', utils.today()))
         except ValueError as error:
             self.set_error_flash(str(error))
-        self.see_other('ledger')
+        self.see_other('payments')
 
 
 class Account(RequestHandler):
