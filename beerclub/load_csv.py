@@ -30,7 +30,7 @@ def load_csv(db, filepath):
             first_name = record[FIRST_NAME_COLUMN].decode('utf-8')
             last_name = record[LAST_NAME_COLUMN].decode('utf-8')
             try:
-                email = record[ALT_EMAIL_COLUMN].strip()
+                email = record[ALT_EMAIL_COLUMN].strip().lower()
                 if not email: raise IndexError
             except IndexError:
                 email = "{}.{}@scilifelab.se".format(
