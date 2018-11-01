@@ -29,6 +29,10 @@
       <td>{% module Money(event['credit'], padding=0) %}</td>
     </tr>
     <tr>
+      <th scope="row">Date</th>
+      <td>{{ event.get('date') or '-' }}</td>
+    </tr>
+    <tr>
       <th scope="row">Beverage</th>
       <td>{{ event.get('beverage') or '-' }}</td>
     </tr>

@@ -8,7 +8,7 @@ import tornado.web
 from . import constants
 from . import settings
 from . import utils
-from .requesthandler import RequestHandler
+from .requesthandler import RequestHandler, ApiMixin
 from .saver import Saver
 
 EMAIL_SENT = 'An email with instructions has been sent.'
@@ -413,3 +413,23 @@ class Disable(RequestHandler):
             saver['password'] = None
             saver['code']     = None
         self.see_other('member', member['email'])
+
+
+class MemberApiV1(ApiMixin, RequestHandler):
+    "Get member data."
+
+    @tornado.web.authenticated
+    def get(self, email):
+        self.check_admin()
+        try:
+            member = self.get_member(email)
+        except KeyError:
+            raise tornado.web.HTTPError(404, reason='no such member')
+        data = {}
+        for key in ['email', 'first_name', 'last_name', 'role', 'status']:
+            data[key] = member.get(key)
+        if settings['MEMBER_SWISH']:
+            data['swish'] = member.get('swish')
+        if settings['MEMBER_ADDRESS']:
+            data['address'] = member.get('address')
+        self.write(data)
