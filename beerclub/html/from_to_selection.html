@@ -1,10 +1,8 @@
-{# Select date range from/to. To be included.
-   Requires 'action_url', 'from_' and 'to' to be set.
-#}
+{# Select date range from/to. To be included. #}
 
 <div class="row mt-3">
   <div class="col-md">
-    <form action="{{ action_url }}"
+    <form action="{{ request.uri }}"
           class="form-inline"
           role="form"
           method="GET">

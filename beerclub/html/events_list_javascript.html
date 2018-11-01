@@ -1,14 +1,9 @@
-{# Javascript for list of events in table; to be included.
-   Requires 'show_event_link' and 'show_member_col' flags.
-#}
-
-{% block javascript %}
+{# Javascript for DataTables of events. To be included. #}
 <script>
   $(function() {
     $("#events").DataTable( {
       "pagingType": "full_numbers",
-      "order": [[ {{ show_member_col and 4 or 3 }}, "desc"]],
+      "order": [[ {{ is_admin and 4 or 3 }}, "desc"]],
     });
   });
 </script>
-{% end %} {# block javascript #}

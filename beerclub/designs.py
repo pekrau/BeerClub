@@ -68,8 +68,14 @@ DESIGNS = dict(
   if (!doc.credit) return;
   emit(doc.log.timestamp, doc.member);
 }"""),
+        payment=dict(reduce="_sum", # event/payment
+                     map=
+"""function(doc) {
+  if (doc.beerclub_doctype !== 'event') return;
+  if (doc.action !== 'payment') return;
+  emit(doc.date, doc.credit);
+}"""),
     ),
-
     snapshot=dict(
         date=dict(map=
 """function(doc) {

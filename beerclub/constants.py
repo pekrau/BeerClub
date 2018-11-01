@@ -27,8 +27,10 @@ MEMBER = 'member'
 ROLES  = (ADMIN, MEMBER)
 
 # Event actions
-PURCHASE    = 'purchase'
-PAYMENT     = 'payment'
+PURCHASE = 'purchase'
+PAYMENT  = 'payment'
+
+# Payment identifier (hardwired)
 EXPENDITURE = 'expenditure'
 
 # Misc

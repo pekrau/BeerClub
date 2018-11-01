@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 settings = dict(
     VERSION=__version__,
@@ -38,6 +38,7 @@ settings = dict(
     DISPLAY_NAVBAR_STYLE_COLOR=None,
     DISPLAY_ACTIVITY_DAYS=6,
     DISPLAY_LEDGER_DAYS=7,
+    DISPLAY_PAYMENT_DAYS=7,
     DISPLAY_SNAPSHOT_DAYS=31,
     CONTACT_EMAIL=None,
     GLOBAL_ALERT=None,

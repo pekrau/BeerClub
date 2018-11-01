@@ -1,13 +1,10 @@
-{# List of events in table; to be included.
-   Requires 'events' list and 'show_event_link' and 'show_member_col' flags.
-   Also include 'events_list_javascript.html'!
-#}
+{# List of events in table; to be included. #}
 
 <table class="table table-sm" id="events">
   <thead>
     <tr>
       <th scope="col" class="break">Event</th>
-      {% if show_member_col %}
+      {% if is_admin %}
       <th scope="col">Member</th>
       {% end %}
       <th scope="col" class="break">Description</th>
@@ -20,14 +17,14 @@
     {% for event in events %}
     <tr class="{% module Step(event['log']['date'], ['table-active', 'table-light'], store) %}">
       <td class="break">
-        {% if show_event_links %}
+        {% if is_admin %}
         <a href="{{ reverse_url('event', event['_id']) }}">
           {{ event['action'] }}</a>
         {% else %}
         {{ event['action'] }}
         {% end %}
       </td>
-      {% if show_member_col %}
+      {% if is_admin %}
       <td>
         {% if event['member'] == constants.BEERCLUB %}
         {{ event['member'] }}
@@ -47,3 +44,21 @@
     {% end %} {# for event in events #}
   </tbody>
 </table>
+<div class="row mt-3">
+  <div class="col-md">
+    <form action="{{ request.uri }}"
+          class="form-inline"
+          role="form"
+          method="GET">
+      <label for="from" class="my-1 mr-2">From</label>
+      <input type="text" name="from" id="from" size="10"
+             class="form-control datepicker my-1 mr-sm-2"
+             placeholder="From" value="{{ from_ or '' }}">
+      <label for="to" class="my-1 mr-2">to</label>
+      <input type="text" name="to" id="to" size="10"
+             class="form-control datepicker my-1 mr-sm-2"
+             placeholder="To" value="{{ to or '' }}">
+      <button type="submit" class="btn btn-secondary btn my-1">Reload</button>
+    </form>
+  </div>
+</div>

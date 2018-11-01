@@ -26,9 +26,8 @@ Account <small>
 
 {% include 'events_list.html' %}
 
-{% set action_url = reverse_url('account', member['email']) %}
-{% include 'from_to_selection.html' %}
-
 {% end %} {# block content #}
 
+{% block javascript %}
 {% include 'events_list_javascript.html' %}
+{% end %}

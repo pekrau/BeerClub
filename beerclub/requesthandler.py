@@ -121,9 +121,9 @@ class RequestHandler(tornado.web.RequestHandler):
         return member
 
     def get_balance(self, member=None):
-        "Get the current balance for the member, or overall balance."
+        "Get the current balance for the member, or Beer Club account balance."
         if member is None:
-            result = list(self.db.view('event/ledger', group=False))
+            result = list(self.db.view('event/payment', group=False))
         else:
             result = list(self.db.view('event/credit',
                                        key=member['email'],
