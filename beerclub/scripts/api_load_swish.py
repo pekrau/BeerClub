@@ -31,6 +31,7 @@ def load_swish(settings, csvfilename):
         for i in range(N_HEADER_ROWS):
             row = reader.next()
         rows = list(reader)
+    headers = {'X-BeerClub-API-key': settings['API_KEY']}
     members = []
     bail = False
     for row in rows:
@@ -50,8 +51,7 @@ def load_swish(settings, csvfilename):
                 break
         # print(date, amount, swish)
         url = settings['BASE_URL'] + 'member/' + swish
-        response = requests.get(url, headers={'X-BeerClub-API-key':
-                                              settings['API_KEY']})
+        response = requests.get(url, headers=headers)
         if response.status_code == 200:
             member = response.json()
             member['event'] = event
@@ -61,14 +61,12 @@ def load_swish(settings, csvfilename):
             bail = True
     if bail: return
     for member in members:
-        url = base_url + 'event/member/' + member['email']
-        response = requests.post(url, headers={'X-BeerClub-API-key': api_key},
-                                 json=member['event'])
+        url = settings['BASE_URL'] + 'event/member/' + member['email']
+        response = requests.post(url, headers=headers, json=member['event'])
         if response.status_code == 200:
-            print(member['email'])
+            print(member['email'], member['amount'])
         else:
-            print('Error:', member['email'], str(response))
-
+            raise ValueError("%s %s" % (member['email'], response))
 
 if __name__ == '__main__':
     import sys
