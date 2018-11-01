@@ -6,8 +6,8 @@ from beerclub import settings
 from beerclub import utils
 
 
-EMAIL_SUBJECT_TEXT = "New SciLifeLab Beer Club system"
-EMAIL_MESSAGE_TEXT = """Hello {name},
+EMAIL_SUBJECT_TEXT = u"New SciLifeLab Beer Club system"
+EMAIL_MESSAGE_TEXT = u"""Hello {name},
 
 Today we are launching a new system for the SciLifeLab Beer Club:
 
@@ -40,8 +40,10 @@ SciLifeLab Beer Club administrator
 def send_launch_message(db):
     "Send launch message to all members."
     view = db.view('member/email')
+    first = 'a'
+    last = 'ZZZZZZZZ'
     emailserver = utils.EmailServer()
-    for row in view:
+    for row in view[first : last]:
         member = utils.get_member(db, row.key)
         name = u"{} {}".format(member['first_name'], member['last_name'])
         message = EMAIL_MESSAGE_TEXT.format(name=name)

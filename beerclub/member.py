@@ -118,7 +118,8 @@ class Member(RequestHandler):
 
     @tornado.web.authenticated
     def post(self, email):
-        "Delete this member; only if no events and not admin."
+        "Delete this member; only if has no events and is not admin."
+        self.check_admin()
         try:
             member = self.get_member(email, check=True)
         except KeyError:
