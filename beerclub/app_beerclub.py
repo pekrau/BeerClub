@@ -32,11 +32,8 @@ from beerclub.event import (Event,
                             Account,
                             Active,
                             Ledger,
-<<<<<<< HEAD
                             Payments,
-=======
                             EventApiV1,
->>>>>>> 9588b1f92aa5656b4427548453eff039c2c3c9be
                             MemberEventApiV1)
 
 

@@ -55,26 +55,12 @@ class EventSaver(Saver):
                                               kwargs.get('description'))
             self['credit'] = - amount
         else:
-<<<<<<< HEAD
             for payment in settings['PAYMENT']:
                 if pid == payment['identifier']: break
             else:
                 raise ValueError("no such payment %s" % pid)
             self['description'] = payment['identifier']
             self['credit'] = amount
-=======
-            raise ValueError("no such payment %s" % pid)
-        self['credit'] = self.get_amount(kwargs)
-        self['date'] = kwargs.get('date', utils.today())
-        description = payment['identifier']
-        if kwargs.get('description'):
-            description += ': ' + kwargs.get('description')
-        self['description'] = description
-
-    def set_expenditure(self, **kwargs):
-        self['action'] = constants.EXPENDITURE
-        self['credit'] = - self.get_amount(kwargs)
->>>>>>> 9588b1f92aa5656b4427548453eff039c2c3c9be
         self['date'] = kwargs.get('date', utils.today())
 
 
