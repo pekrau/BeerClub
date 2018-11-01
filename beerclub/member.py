@@ -188,6 +188,7 @@ class Pending(RequestHandler):
     def get(self):
         self.check_admin()
         members = self.get_docs('member/status', key=constants.PENDING)
+        members.sort(key=lambda m: m['email'])
         self.render('pending.html', members=members)
 
 
