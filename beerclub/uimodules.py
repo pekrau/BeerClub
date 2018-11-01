@@ -35,8 +35,10 @@ class Status(tornado.web.UIModule):
             return '<strong class="text-danger">disabled</strong>'
         elif member['status'] == constants.PENDING:
             return '<strong class="text-warning">pending</strong>'
+        elif member['status'] == constants.ARCHIVED:
+            return '<strong class="text-secondary">archived</strong>'
         else: 
-            return member['status']
+            return '<strong class="text-success">%s</strong>' %member['status']
 
 class Role(tornado.web.UIModule):
     "HTML for member role."
