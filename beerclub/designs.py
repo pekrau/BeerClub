@@ -65,7 +65,8 @@ DESIGNS = dict(
         activity=dict(map=      # event/activity
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
-  if (!doc.credit) return;
+  if (doc.action !== 'purchase') return;
+  if (doc.credit === 0.0) return;
   emit(doc.log.timestamp, doc.member);
 }"""),
         payment=dict(reduce="_sum", # event/payment

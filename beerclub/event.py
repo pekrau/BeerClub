@@ -194,36 +194,36 @@ class Account(RequestHandler):
                     to=to)
 
 
-class Active(RequestHandler):
+class Activity(RequestHandler):
     "Members having made credit-affecting purchases recently."
 
     @tornado.web.authenticated
     def get(self):
         self.check_admin()
-        active = dict()
+        activity = dict()
         from_ = utils.today(-settings['DISPLAY_ACTIVITY_DAYS'])
         to = utils.today()
         view = self.db.view('event/activity')
         for row in view[from_ : to+constants.CEILING]:
             try:
-                active[row.value] = max(active[row.value], row.key)
+                activity[row.value] = max(activity[row.value], row.key)
             except KeyError:
-                active[row.value] = row.key
-        active.pop(constants.BEERCLUB, None)
-        active = active.items()
-        active.sort(key=lambda i: i[1])
+                activity[row.value] = row.key
+        activity.pop(constants.BEERCLUB, None)
+        activity = activity.items()
+        activity.sort(key=lambda i: i[1])
         # This is more efficient than calling for each member.
         all_members = self.get_docs('member/email')
         lookup = {}
         for member in all_members:
             lookup[member['email']] = member
         members = []
-        for email, timestamp in active:
+        for email, timestamp in activity:
             member = lookup[email]
             member['activity'] = timestamp
             members.append(member)
         utils.get_balances(self.db, members)
-        self.render('active.html', members=members)
+        self.render('activity.html', members=members)
 
 
 class Ledger(RequestHandler):
