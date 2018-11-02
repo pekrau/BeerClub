@@ -29,7 +29,7 @@
         {% if event['member'] == constants.BEERCLUB %}
         {{ event['member'] }}
         {% else %}
-        <a href="{{ reverse_url('member', event['member']) }}">
+        <a href="{{ reverse_url('account', event['member']) }}">
           {{ event['member'] }}</a>
         {% end %}
       </td>

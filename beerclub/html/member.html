@@ -8,35 +8,22 @@
 
 {% block content %}
 <div class="row">
-  {% if deletable %}
-  <div class="col-md-2">
-    <form action="{{ reverse_url('member', member['email']) }}"
-          role="form"
-          method="POST">
-      {% module xsrf_form_html() %}
-      <input type="hidden" name="_http_method" value="DELETE">
-      <button type="submit" class="btn btn-danger w-100"
-              onclick="return confirm('Really delete this member?');">
-        Delete</button>
-    </form>
-  </div>
-  {% end %}
   <div class="col-md-2">
     <a href="{{ reverse_url('account', member['email']) }}"
        role="button" class="btn btn-info w-100">Account</a>
   </div>
   {% if is_admin %}
+  {% if member['status'] == constants.ENABLED %}
   <div class="col-md-2">
     <a href="{{ reverse_url('payment', member['email']) }}"
        role="button" class="btn btn-warning w-100">Payment</a>
   </div>
-  {% end %} {# if is_admin #}
+  {% end %}
   <div class="col-md-2">
     <a href="{{ reverse_url('settings', member['email']) }}"
        role="button" class="btn btn-primary w-100">Settings</a>
   </div>
-  {% if is_admin and member['email'] != current_user['email'] %}
-  {% if member['status'] != constants.DISABLED %}
+  {% if member['status'] != constants.DISABLED and member['email'] != current_user['email']%}
   <div class="col-md-2">
     <form action="{{ reverse_url('disable', member['email']) }}"
           role="form"
@@ -66,7 +53,20 @@
     </form>
   </div>
   {% end %}
-  {% end %} {# if is_admin and ... #}
+  {% if deletable %}
+  <div class="col-md-2">
+    <form action="{{ reverse_url('member', member['email']) }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <input type="hidden" name="_http_method" value="DELETE">
+      <button type="submit" class="btn btn-danger w-100"
+              onclick="return confirm('Really delete this member?');">
+        Delete</button>
+    </form>
+  </div>
+  {% end %}
+  {% end %} {# if is_admin #}
 </div>
 <table class="table mt-4">
   <tbody>

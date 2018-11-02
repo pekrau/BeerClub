@@ -22,6 +22,12 @@ Account <small>
   <div class="col-md">
     Purchased <strong>{{ beverages_count }}</strong> beverages today.
   </div>
+  {% if is_admin %}
+  <div class="col-md">
+    <a href="{{ reverse_url('payment', member['email']) }}"
+       role="button" class="btn btn-warning">Payment</a>
+  </div>
+  {% end %}
 </div>
 
 {% include 'events_list.html' %}
