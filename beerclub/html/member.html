@@ -43,16 +43,6 @@
     </form>
   </div>
   {% end %}
-  {% if member['status'] != constants.ARCHIVED %}
-  <div class="col-md-2">
-    <form action="{{ reverse_url('archive', member['email']) }}"
-          role="form"
-          method="POST">
-      {% module xsrf_form_html() %}
-      <button type="submit" class="btn btn-secondary w-100">Archive</button>
-    </form>
-  </div>
-  {% end %}
   {% if deletable %}
   <div class="col-md-2">
     <form action="{{ reverse_url('member', member['email']) }}"

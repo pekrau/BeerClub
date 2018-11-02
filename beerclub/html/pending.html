@@ -13,7 +13,6 @@
       <thead>
         <th scope="col"></th>
         <th scope="col"></th>
-        <th scope="col"></th>
         <th scope="col">Member</th>
         <th scope="col">First name</th>
         <th scope="col">Last name</th>
@@ -45,16 +44,6 @@
               <input type="hidden"
                      name="next" value="{{ reverse_url('pending') }}">
               <button type="submit" class="btn btn-danger btn-sm">Disable</button>
-            </form>
-          </td>
-          <td>
-            <form action="{{ reverse_url('archive', member['email']) }}"
-                  role="form"
-                  method="POST">
-              {% module xsrf_form_html() %}
-              <input type="hidden"
-                     name="next" value="{{ reverse_url('pending') }}">
-              <button type="submit" class="btn btn-secondary btn-sm">Archive</button>
             </form>
           </td>
           <td>

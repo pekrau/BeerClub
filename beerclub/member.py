@@ -422,25 +422,6 @@ class Disable(RequestHandler):
             self.see_other('member', member['email'])
 
 
-class Archive(RequestHandler):
-    "Archive a member account."
-
-    @tornado.web.authenticated
-    def post(self, email):
-        self.check_admin()
-        member = self.get_member(email)
-        with MemberSaver(doc=member, rqh=self) as saver:
-            saver['status']   = constants.ARCHIVED
-            saver['login']    = None
-            saver['password'] = None
-            saver['code']     = None
-        url = self.get_argument('next', None)
-        if url:
-            self.redirect(url)
-        else:
-            self.see_other('member', member['email'])
-
-
 class MemberApiV1(ApiMixin, RequestHandler):
     "Get member data."
 
