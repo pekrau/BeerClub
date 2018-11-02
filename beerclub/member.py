@@ -65,6 +65,12 @@ class MemberSaver(Saver):
             swish = self.rqh.get_argument('swish')
             if swish:
                 swish = utils.normalize_swish(swish)
+                try:
+                    self.rqh.get_member(swish)
+                except KeyError:
+                    pass
+                else:
+                    raise ValueError('Swish number is already in use.')
             self['swish'] = swish or None
         except tornado.web.MissingArgumentError:
             self['swish'] = None
@@ -163,7 +169,7 @@ class Settings(RequestHandler):
                 saver.set_role()
         except ValueError as error:
             self.set_error_flash(str(error))
-            self.see_other('home')
+            self.see_other('settings', member['email'])
             return
         if self.is_admin():
             self.see_other('member', member['email'])
@@ -322,31 +328,35 @@ class Register(RequestHandler):
         try:
             with MemberSaver(rqh=self) as saver:
                 try:
-                    email = self.get_argument('email')
-                except tornado.web.MissingArgumentError:
-                    raise ValueError('No email provided.')
+                    email = self.get_argument('email').lower()
+                    if not email: raise ValueError
+                except (tornado.web.MissingArgumentError, ValueError):
+                    raise ValueError('No email address provided.')
                 if not fnmatch.fnmatch(email, constants.EMAIL_PATTERN):
-                    raise ValueError('Invalid email provided.')
+                    raise ValueError('Invalid email address provided.')
                 try:
                     member = self.get_doc(email, 'member/email')
                 except KeyError:
                     pass
                 else:
-                    raise ValueError('Member account exists; use Reset.')
+                    raise ValueError('Member account exists!'
+                                     ' Please use Reset password.')
                 saver['email']   = email
                 saver.set_name()
                 saver.set_swish()
                 saver.set_address()
-                # Set the very first member account to be admin.
+                # Set the very first member account to be admin and enabled.
                 count = len(self.get_docs('member/email', key='',
                                           last=constants.CEILING, limit=2))
                 if count == 0:
                     saver['role'] = constants.ADMIN
+                    saver['status'] = constants.ENABLED
+                    saver['code'] = code = utils.get_iuid()
                 else:
                     saver['role'] = constants.MEMBER
                 ptn = settings['MEMBER_EMAIL_AUTOENABLE']
-                # First member account, or pattern match, enabled directly.
-                if count == 0 or (ptn and fnmatch.fnmatch(saver['email'], ptn)):
+                # Enable directly if pattern match.
+                if ptn and fnmatch.fnmatch(saver['email'], ptn):
                     saver['status'] = constants.ENABLED
                     saver['code'] = code = utils.get_iuid()
         except ValueError as error:
