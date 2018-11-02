@@ -28,6 +28,7 @@ MEMBER = 'member'
 ROLES  = (ADMIN, MEMBER)
 
 # Event actions
+TRANSFER = 'transfer'
 PURCHASE = 'purchase'
 PAYMENT  = 'payment'
 

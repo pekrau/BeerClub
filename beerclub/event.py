@@ -175,7 +175,7 @@ class Account(RequestHandler):
         try:
             from_ = self.get_argument('from')
         except tornado.web.MissingArgumentError:
-            from_ = utils.today(-settings['DISPLAY_LEDGER_DAYS'])
+            from_ = utils.today(-settings['DISPLAY_ACCOUNT_DAYS'])
         try:
             to = self.get_argument('to')
         except tornado.web.MissingArgumentError:
