@@ -13,7 +13,12 @@
       <thead>
         <tr>
           <th scope="col" class="break">Date</th>
-          <th scope="col" class="break">Balance ({{ settings['CURRENCY'] }})</th>
+          <th scope="col" class="break">
+            Beer Club balance ({{ settings['CURRENCY'] }})</th>
+          <th scope="col" class="break">
+            Members balance ({{ settings['CURRENCY'] }})</th>
+          <th scope="col" class="break">
+            Surplus ({{ settings['CURRENCY'] }})</th>
           {% for status in constants.STATUSES %}
           <th scope="col" class="break"># {{ status }}</th>
           {% end %}
@@ -23,7 +28,9 @@
         {% for snapshot in snapshots %}
         <tr>
           <td>{{ snapshot['date'] }}</td>
-          <td>{% module Money(snapshot['balance'], currency=False) %}</td>
+          <td>{% module Money(snapshot['beerclub_balance'], currency=False) %}</td>
+          <td>{% module Money(snapshot['members_balance'], currency=False) %}</td>
+          <td>{% module Money(snapshot['beerclub_balance'] - snapshot['members_balance'], currency=False) %}</td>
           {% for status in constants.STATUSES %}
           <td>{{ snapshot['member_counts'][status] }}</td>
           {% end %}

@@ -7,7 +7,6 @@
 {% block body_title %}Payments to {{ settings['SITE_NAME'] }}{% end %}
 
 {% block content %}
-<h5 class="my-3">Current balance: {% module Money(balance, padding=0) %}</h5>
 <div class="row mt-4">
   <div class="col-md">
     {% include 'events_list.html' %}

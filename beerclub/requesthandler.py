@@ -121,9 +121,9 @@ class RequestHandler(tornado.web.RequestHandler):
         return member
 
     def get_balance(self, member=None):
-        "Get the current balance for the member, or Beer Club account balance."
+        "Get the current balance for the member, or the sum of all members."
         if member is None:
-            result = list(self.db.view('event/payment', group=False))
+            result = list(self.db.view('event/credit', group=False))
         else:
             result = list(self.db.view('event/credit',
                                        key=member['email'],
@@ -133,7 +133,15 @@ class RequestHandler(tornado.web.RequestHandler):
         else:
             return 0
 
-    def get_beverages_count(self, member, date=utils.today()):
+    def get_beerclub_balance(self):
+        "Get the current balance for the Beer Club account (i.e. payments)."
+        result = list(self.db.view('event/payment', group=False))
+        if result:
+            return result[0].value
+        else:
+            return 0
+
+    def get_count(self, member, date=utils.today()):
         "Get the number of beverages purchased on the given date."
         result = list(self.db.view('event/beverage',
                                    key=[member['email'], date],
@@ -250,7 +258,8 @@ class RequestHandler(tornado.web.RequestHandler):
             # Explicit member is required to avoid infinite recursion.
             with SnapshotSaver(rqh=self, member=user) as saver:
                 saver['date'] = date
-                saver['balance'] = self.get_balance()
+                saver['beerclub_balance'] = self.get_beerclub_balance()
+                saver['members_balance'] = self.get_balance()
                 counts = dict([(s, 0) for s in constants.STATUSES])
                 for row in self.db.view('member/status'):
                     counts[row.key] += 1

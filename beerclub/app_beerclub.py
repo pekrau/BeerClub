@@ -41,9 +41,9 @@ class Home(RequestHandler):
     "Home page; login or payment and member info."
     def get(self):
         if self.current_user:
-            self.render('home_member.html',
-                        balance=self.get_balance(self.current_user),
-                        count=self.get_beverages_count(self.current_user))
+            self.current_user['balance'] = self.get_balance(self.current_user)
+            self.current_user['count'] = self.get_count(self.current_user)
+            self.render('home_member.html')
         else:
             self.render('home_login.html')
 

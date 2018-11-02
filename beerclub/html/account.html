@@ -20,7 +20,7 @@ Account <small>
     Current balance: {% module Money(member['balance'], padding=0) %}
   </div>
   <div class="col-md">
-    Purchased <strong>{{ beverages_count }}</strong> beverages today.
+    Purchased <strong>{{ member['count'] }}</strong> beverages today.
   </div>
   {% if is_admin %}
   <div class="col-md">

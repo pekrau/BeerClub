@@ -172,6 +172,7 @@ class Account(RequestHandler):
             self.see_other('home')
             return 
         member['balance'] = self.get_balance(member)
+        member['count'] = self.get_count(member)
         try:
             from_ = self.get_argument('from')
         except tornado.web.MissingArgumentError:
@@ -187,11 +188,7 @@ class Account(RequestHandler):
                                    key=[member['email'], from_],
                                    last=[member['email'], to+constants.CEILING])
         self.render('account.html',
-                    member=member,
-                    beverages_count=self.get_beverages_count(member),
-                    events=events, 
-                    from_=from_,
-                    to=to)
+                    member=member, events=events, from_=from_, to=to)
 
 
 class Activity(RequestHandler):
@@ -247,7 +244,8 @@ class Ledger(RequestHandler):
                                    key=from_,
                                    last=to+constants.CEILING)
         self.render('ledger.html',
-                    balance=self.get_balance(),
+                    beerclub_balance=self.get_beerclub_balance(),
+                    members_balance=self.get_balance(),
                     events=events,
                     from_=from_,
                     to=to)
@@ -273,11 +271,7 @@ class Payments(RequestHandler):
             events = self.get_docs('event/payment',
                                    key=from_,
                                    last=to+constants.CEILING)
-        self.render('payments.html',
-                    balance=self.get_balance(),
-                    events=events,
-                    from_=from_,
-                    to=to)
+        self.render('payments.html', events=events, from_=from_, to=to)
 
 
 class EventApiV1(ApiMixin, RequestHandler):
