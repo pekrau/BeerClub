@@ -17,8 +17,12 @@
         <th scope="col">Member</th>
         <th scope="col">First name</th>
         <th scope="col">Last name</th>
-        <th scope="col">Phone</th>
+        {% if settings['MEMBER_SWISH'] %}
+        <th scope="col">Swish</th>
+        {% end %}
+        {% if settings['MEMBER_ADDRESS'] %}
         <th scope="col">Address</th>
+        {% end %}
       </thead>
       <tbody>
         {% for member in members %}
@@ -59,8 +63,12 @@
           </td>
           <td>{{ member['first_name'] }}</td>
           <td>{{ member['last_name'] }}</td>
-          <td>{{ member.get('phone') or '-' }}</td>
+          {% if settings['MEMBER_SWISH'] %}
+          <td>{{ member.get('swish') or '-' }}</td>
+          {% end %}
+          {% if settings['MEMBER_ADDRESS'] %}
           <td>{{ member.get('address') or '-' }}</td>
+          {% end %}
         </tr>
         {% end %}
       </tbody>
