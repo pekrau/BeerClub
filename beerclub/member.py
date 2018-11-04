@@ -5,11 +5,11 @@ import fnmatch
 
 import tornado.web
 
-from . import constants
-from . import settings
-from . import utils
-from .requesthandler import RequestHandler, ApiMixin
-from .saver import Saver
+from beerclub import constants
+from beerclub import settings
+from beerclub import utils
+from beerclub.requesthandler import RequestHandler, ApiMixin
+from beerclub.saver import Saver
 
 EMAIL_SENT = 'An email with instructions has been sent.'
 PENDING_MESSAGE = 'An administrator will inspect your registration.' \

@@ -1,4 +1,4 @@
-"Send reminder email to debt-laden members."
+"Send reminder email to debt-laden enabled members."
 
 from __future__ import print_function
 
