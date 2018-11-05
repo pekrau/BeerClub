@@ -81,7 +81,7 @@ DESIGNS = dict(
         date=dict(map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'snapshot') return;
-  emit(doc.date, doc.balance);
+  emit(doc.date, doc.beerclub_balance);
 }""")
     ),
 )
