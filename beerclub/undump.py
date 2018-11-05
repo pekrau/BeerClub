@@ -10,7 +10,6 @@ from __future__ import print_function
 
 import argparse
 import json
-import logging
 import os
 import tarfile
 import time
@@ -45,10 +44,11 @@ def undump(db, filepath):
                 attachments[key] = dict(filename=attname,
                                         content_type=attinfo['content_type'])
         if count_items % 100 == 0:
-            logging.info("%s items loaded...", count_items)
+            print(count_items, 'items loaded...')
     infile.close()
-    logging.info("undumped %s items and %s files from %s",
-                 count_items, count_files, filepath)
+    # This will be executed on the command line, so output to console, not log.
+    print('undumped', count_items, 'items and', 
+          count_files, 'files from', filepath)
 
 
 if __name__ == '__main__':

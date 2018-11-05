@@ -4,8 +4,6 @@ By default, the dump file will be called 'dump_{ISO date}.tar.gz'
 using today's date.
 """
 
-from __future__ import print_function
-
 import argparse
 import cStringIO
 import json
@@ -51,8 +49,6 @@ def dump(db, filepath):
             info.size = len(data)
             outfile.addfile(info, cStringIO.StringIO(data))
             count_files += 1
-        if count_items % 100 == 0:
-            logging.info("%s items dumped...", count_items)
     outfile.close()
     logging.info("dumped %s items and %s files to %s",
                  count_items, count_files, filepath)
