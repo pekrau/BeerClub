@@ -7,6 +7,7 @@ from beerclub import utils
 
 
 def correct_snapshots(db):
+    transfer = 0.0
     credits = {}
     payments = {}
     snapshots = dict([(s['date'], s)
@@ -15,11 +16,14 @@ def correct_snapshots(db):
         credits[date] = 0.0
         payments[date] = 0.0
     for event in utils.get_docs(db, 'event/credit'):
+        if event['action'] == constants.TRANSFER:
+            transfer += event['credit']
         key = event['log']['timestamp'][:10]
         try:
             credits[key] += event['credit']
         except KeyError:
             credits[key] = event['credit']
+    print('transfer', transfer)
     for event in utils.get_docs(db, 'event/payment'):
         if event['action'] == constants.PAYMENT:
             try:
