@@ -69,14 +69,18 @@ class Event(RequestHandler):
 
     @tornado.web.authenticated
     def get(self, iuid):
-        event = self.get_doc(iuid)
-        # View access privilege
-        if not (self.is_admin() or
-                event['member'] == self.current_user['email']):
-            self.set_error_flash('You may not view the event data.')
-            self.see_other('home')
-            return
-        self.render('event.html', event=event)
+        try:
+            event = self.get_doc(iuid)
+        except KeyError:
+            self.set_error_flash('No such event.')
+            self.see_other('account', self.current_user['email'])
+        else:
+            # Check view access privilege
+            if self.is_admin() or event['member']==self.current_user['email']:
+                self.render('event.html', event=event)
+            else:
+                self.set_error_flash('You may not view the event data.')
+                self.see_other('home')
 
     @tornado.web.authenticated
     def post(self, iuid):
