@@ -42,6 +42,7 @@ DESIGNS = dict(
                     map=
 """function(doc) {
   if (doc.beerclub_doctype !== 'event') return;
+  if (doc.member === 'beerclub') return;
   emit(doc.member, doc.credit);
 }"""),
         beverage=dict(reduce="_count", # event/beverage
