@@ -27,6 +27,10 @@ Account <small>
     <a href="{{ reverse_url('payment', member['email']) }}"
        role="button" class="btn btn-warning">Payment</a>
   </div>
+  <div class="col-md">
+    <a href="{{ reverse_url('purchase_member', member['email']) }}"
+       role="button" class="btn btn-secondary">Purchase</a>
+  </div>
   {% end %}
 </div>
 
