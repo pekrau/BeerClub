@@ -2,10 +2,10 @@
 
 {% extends 'base.html' %}
 
-{% block head_title %}Purchase by {{ member['email'] }}{% end %}
+{% block head_title %}Purchase on behalf of {{ member['email'] }}{% end %}
 
 {% block body_title %}
-Purchase by 
+Purchase on behalf of
 <a href="{{ reverse_url('member', member['email']) }}">
   {{ member['email'] }}</a>
 {% end %}
@@ -22,23 +22,30 @@ Purchase by
 {% for beverage in settings['BEVERAGE'] %}
 <div class="card mt-2">
   <div class="card-body">
-    {% for purchase in settings['PURCHASE'] %}
-    <div class="mb-3">
-      <form action="{{ reverse_url('purchase_member', member['email']) }}"
-            role="form"
-            method="POST">
-        {% module xsrf_form_html() %}
-        <input type="hidden" name="beverage" 
-               value="{{ beverage['identifier']}}">
-        <input type="hidden" name="purchase"
-               value="{{ purchase['identifier'] }}">
-        <button type="submit"
-                class="btn btn-{{ purchase['style'] }} w-100 shadow">
-          {{ purchase['action'] }}
-        </button>
-      </form>
+    <div class="row">
+      <div class="col-md">
+        <h5>Buying one {{ beverage['label'] }}...</h5>
+      </div>
+      <div class="col-md">
+        {% for purchase in settings['PURCHASE'] %}
+        <div class="mb-3">
+          <form action="{{ reverse_url('purchase_member', member['email']) }}"
+                role="form"
+                method="POST">
+            {% module xsrf_form_html() %}
+            <input type="hidden" name="beverage" 
+                   value="{{ beverage['identifier']}}">
+            <input type="hidden" name="purchase"
+                   value="{{ purchase['identifier'] }}">
+            <button type="submit"
+                    class="btn btn-{{ purchase['style'] }} w-100 shadow">
+              {{ purchase['action'] }}
+            </button>
+          </form>
+        </div>
+        {% end %}
+      </div>
     </div>
-    {% end %}
   </div>
 </div>
 {% end %}
