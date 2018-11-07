@@ -33,6 +33,7 @@ from beerclub.event import (Event,
                             Ledger,
                             LedgerCsv,
                             Payments,
+                            PaymentsCsv,
                             EventApiV1,
                             MemberEventApiV1)
 
@@ -54,6 +55,7 @@ def main():
         url(r'/ledger', Ledger, name='ledger'),
         url(r'/ledger.csv', LedgerCsv, name='ledger_csv'),
         url(r'/payments', Payments, name='payments'),
+        url(r'/payments.csv', PaymentsCsv, name='payments_csv'),
         url(r'/snapshots', Snapshots, name='snapshots'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),

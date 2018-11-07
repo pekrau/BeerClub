@@ -14,6 +14,18 @@
 </div>
 {% end %} {# block content #}
 
+{% block actions %}
+<div class="md-2">
+  <form action="{{ reverse_url('payments_csv') }}"
+        role="form"
+        method="GET">
+    <input type="hidden" name="from" value="{{ from_ or '' }}">
+    <input type="hidden" name="to" value="{{ to or '' }}">
+    <button type="submit" class="btn btn-dark btn my-1">CSV file</button>
+  </form>
+</div>
+{% end %}
+
 {% block javascript %}
 {% include 'events_list_javascript.html' %}
 {% end %}

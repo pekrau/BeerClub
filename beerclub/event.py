@@ -324,6 +324,36 @@ class Payments(RequestHandler):
         self.render('payments.html', events=events, from_=from_, to=to)
 
 
+class PaymentsCsv(Payments):
+    "CSV output of payment data."
+
+    def render(self, template, events, from_, to, **kwargs):
+        csvbuffer = StringIO()
+        writer = csv.writer(csvbuffer)
+        row = ['Action',
+               'Id',
+               'Member',
+               'Description',
+               'Credit',
+               'Date',
+               'Actor',
+               'Timestamp']
+        writer.writerow(row)
+        for event in events:
+            writer.writerow([event['action'],
+                             event['_id'],
+                             event['member'],
+                             event.get('description') or '',
+                             event['credit'],
+                             event.get('date') or '',
+                             event['log'].get('member') or '',
+                             event['log']['timestamp']])
+        self.write(csvbuffer.getvalue())
+        self.set_header('Content-Type', constants.CSV_MIME)
+        self.set_header('Content-Disposition', 
+                        'attachment; filename="payments.csv')
+
+
 class EventApiV1(ApiMixin, RequestHandler):
     "Return event data."
 
