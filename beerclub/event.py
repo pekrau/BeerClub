@@ -1,6 +1,8 @@
 "Event: purchase, payment, etc."
 
+import csv
 import logging
+from cStringIO import StringIO
 
 import tornado.web
 
@@ -253,6 +255,38 @@ class Ledger(RequestHandler):
                     events=events,
                     from_=from_,
                     to=to)
+
+
+class LedgerCsv(Ledger):
+    "CSV output of ledger data."
+
+    def render(self, template, events, from_, to, **kwargs):
+        csvbuffer = StringIO()
+        writer = csv.writer(csvbuffer)
+        row = ['Action',
+               'Id',
+               'Member',
+               'Beverage',
+               'Description',
+               'Credit',
+               'Date',
+               'Actor',
+               'Timestamp']
+        writer.writerow(row)
+        for event in events:
+            writer.writerow([event['action'],
+                             event['_id'],
+                             event['member'],
+                             event.get('beverage') or '',
+                             event.get('description') or '',
+                             event['credit'],
+                             event.get('date') or '',
+                             event['log'].get('member') or '',
+                             event['log']['timestamp']])
+        self.write(csvbuffer.getvalue())
+        self.set_header('Content-Type', constants.CSV_MIME)
+        self.set_header('Content-Disposition', 
+                        'attachment; filename="ledger.csv')
 
 
 class Payments(RequestHandler):
