@@ -133,11 +133,23 @@ class Payment(RequestHandler):
             self.see_other('home')
             return
         try:
+            try:
+                amount = float(self.get_argument('amount', None))
+            except (KeyError, ValueError, TypeError):
+                amount = 0.0
             with EventSaver(rqh=self) as saver:
                 saver['member'] = member['email']
                 saver.set_payment(payment=self.get_argument('payment', None),
-                                  amount=self.get_argument('amount', None),
+                                  amount=amount,
                                   date=self.get_argument('date',utils.today()))
+            lazy = self.get_argument('swish_lazy', False)
+            if lazy and lazy.lower() == 'true':
+                with EventSaver(rqh=self) as saver:
+                    saver['action']      = constants.PURCHASE
+                    saver['member']      = member['email']
+                    saver['beverage']    = 'unknown beverage'
+                    saver['description'] = 'Swish lazy'
+                    saver['credit']      = - amount
         except ValueError as error:
             self.set_error_flash(str(error))
         self.see_other('account', member['email'])

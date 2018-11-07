@@ -49,6 +49,20 @@
         </div>
       </div>
       <div class="row form-group">
+        <label for="payment" class="col-md-2 col-form-label">Swish lazy</label>
+        <div class="col-md-10">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                   name="swish_lazy" id="swish_lazy"
+                   {{ member.get('swish_lazy') and 'checked' }}
+                   value="true">
+            <label class="form-check-label" for="swish_lazy">
+              Swish payment is lazy; implies a purchase.
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group">
         <label for="amount" class="col-md-2 col-form-label">Amount</label>
         <div class="col-md-4">
           <input type="number" step="{{ settings['MONEY_DECIMAL_STEP'] }}"

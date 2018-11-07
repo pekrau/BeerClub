@@ -66,14 +66,17 @@ class MemberSaver(Saver):
             if swish:
                 swish = utils.normalize_swish(swish)
                 try:
-                    self.rqh.get_member(swish)
+                    other = self.rqh.get_member(swish)
                 except KeyError:
                     pass
                 else:
-                    raise ValueError('Swish number is already in use.')
+                    if other['email'] != self.doc['email']:
+                        raise ValueError('Swish number is already in use.')
             self['swish'] = swish or None
         except tornado.web.MissingArgumentError:
             self['swish'] = None
+        lazy = self.rqh.get_argument('swish_lazy', False)
+        self['swish_lazy'] = lazy and lazy.lower() == 'true'
 
     def set_address(self):
         self['address'] = self.rqh.get_argument('address', None) or None

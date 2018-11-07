@@ -73,6 +73,10 @@
       <th scope="row">Swish</th>
       <td>{{ member.get('swish') or '-' }}</td>
     </tr>
+    <tr>
+      <th scope="row">Swish lazy</th>
+      <td>{{ member.get('swish_lazy') or False }}</td>
+    </tr>
     {% end %}
     {% if settings['MEMBER_ADDRESS'] %}
     <tr>
