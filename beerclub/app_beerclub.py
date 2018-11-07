@@ -42,6 +42,7 @@ def main():
     handlers = [
         url(r'/', Home, name='home'),
         url(r'/purchase', Purchase, name='purchase'),
+        url(r'/purchase/([^/]+)', Purchase, name='purchase_member'),
         url(r'/payment/([^/]+)', Payment, name='payment'),
         url(r'/member/([^/]+)', Member, name='member'),
         url(r'/settings/([^/]+)', Settings, name='settings'),

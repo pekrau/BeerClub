@@ -18,6 +18,10 @@
     <a href="{{ reverse_url('payment', member['email']) }}"
        role="button" class="btn btn-warning w-100">Payment</a>
   </div>
+  <div class="col-md-2">
+    <a href="{{ reverse_url('purchase_member', member['email']) }}"
+       role="button" class="btn btn-secondary w-100">Purchase</a>
+  </div>
   {% end %}
   <div class="col-md-2">
     <a href="{{ reverse_url('settings', member['email']) }}"

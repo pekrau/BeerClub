@@ -95,13 +95,37 @@ class Event(RequestHandler):
 
 
 class Purchase(RequestHandler):
-    "Buying one beverage. Always by the currently logged in member."
+    "Buying one beverage."
 
     @tornado.web.authenticated
-    def post(self):
+    def get(self, email=None):
+        "This page for admin to record purchases on behalf of a member."
+        self.check_admin()
+        if email is None:
+            member = self.current_user
+        else:
+            try:
+                member = self.get_member(email, check=True)
+            except KeyError as error:
+                self.set_error_flash(str(error))
+                self.see_other('home')
+                return
+        self.render('purchase.html', member=member)
+
+    @tornado.web.authenticated
+    def post(self, email=None):
+        if email is None:
+            member = self.current_user
+        else:
+            try:
+                member = self.get_member(email, check=True)
+            except KeyError as error:
+                self.set_error_flash(str(error))
+                self.see_other('home')
+                return
         try:
             with EventSaver(rqh=self) as saver:
-                saver['member']   = self.current_user['email']
+                saver['member'] = member['email']
                 saver.set_purchase(purchase=self.get_argument('purchase',None),
                                    beverage=self.get_argument('beverage',None))
         except ValueError as error:
@@ -119,7 +143,8 @@ class Payment(RequestHandler):
         self.check_admin()
         try:
             member = self.get_member(email, check=True)
-        except KeyError:
+        except KeyError as error:
+            self.set_error_flash(str(error))
             self.see_other('home')
         else:
             self.render('payment.html', member=member)
@@ -129,7 +154,8 @@ class Payment(RequestHandler):
         self.check_admin()
         try:
             member = self.get_member(email, check=True)
-        except KeyError:
+        except KeyError as error:
+            self.set_error_flash(str(error))
             self.see_other('home')
             return
         try:
@@ -330,8 +356,7 @@ class PaymentsCsv(Payments):
     def render(self, template, events, from_, to, **kwargs):
         csvbuffer = StringIO()
         writer = csv.writer(csvbuffer)
-        row = ['Action',
-               'Id',
+        row = ['Id',
                'Member',
                'Description',
                'Credit',
@@ -340,8 +365,7 @@ class PaymentsCsv(Payments):
                'Timestamp']
         writer.writerow(row)
         for event in events:
-            writer.writerow([event['action'],
-                             event['_id'],
+            writer.writerow([event['_id'],
                              event['member'],
                              event.get('description') or '',
                              event['credit'],
