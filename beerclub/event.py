@@ -132,7 +132,10 @@ class Purchase(RequestHandler):
             self.set_error_flash(str(error))
         else:
             self.set_message_flash(saver.message)
-        self.see_other('home')
+        if email is None:
+            self.see_other('home')
+        else:
+            self.see_other('account', member['email'])
 
 
 class Payment(RequestHandler):
