@@ -67,6 +67,16 @@ def load_swish(settings, csvfilename):
             print(member['email'], member['amount'])
         else:
             raise ValueError("%s %s" % (member['email'], response))
+        if member.get('swish_lazy'):
+            member['event']['action'] = 'purchase'
+            member['event']['beverage'] = 'unknown beverage'
+            member['event']['description'] = 'Swish lazy'
+            member['event']['credit'] = - member['event']['credit']
+            response = requests.post(url, headers=headers,json=member['event'])
+            if response.status_code == 200:
+                print('Swish lazy')
+            else:
+                raise ValueError("%s %s" % (member['email'], response))
 
 if __name__ == '__main__':
     import sys

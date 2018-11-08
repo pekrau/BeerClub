@@ -450,6 +450,7 @@ class MemberApiV1(ApiMixin, RequestHandler):
             data[key] = member.get(key)
         if settings['MEMBER_SWISH']:
             data['swish'] = member.get('swish')
+            data['swish_lazy'] = member.get('swish_lazy')
         if settings['MEMBER_ADDRESS']:
             data['address'] = member.get('address')
         self.write(data)

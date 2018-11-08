@@ -50,18 +50,18 @@ def load_csv(db, filepath):
                 print('created', member['email'])
             else:
                 print('found', member['email'])
+            amount = record[DEBT_COLUMN].decode('utf-8')
+            # Google, what are you doing?
+            if ord(amount[0]) == ORD_MINUS_SIGN:
+                amount = - float(amount[1:])
+            else:
+                amount = float(amount)
             with EventSaver(db=db) as saver:
-                saver['action'] = constants.TRANSFER
-                saver['member'] = member['email']
-                amount = record[DEBT_COLUMN].decode('utf-8')
-                # Google, what are you doing?
-                if ord(amount[0]) == ORD_MINUS_SIGN:
-                    amount = - float(amount[1:])
-                else:
-                    amount = float(amount)
-                saver['credit'] = amount
+                saver['action']      = constants.TRANSFER
+                saver['member']      = member['email']
+                saver['credit']      = amount
                 saver['description'] = 'from previous system'
-                saver['date'] = utils.today()
+                saver['date']        = utils.today()
             print(amount)
 
 
