@@ -32,20 +32,26 @@
         <label for="payment" class="col-md-2 col-form-label">Payment</label>
         <div class="col-md-10">
           {% for payment in settings['PAYMENT'] %}
-          {% if payment.get('hidden') %}
-          {% continue %}
-          {% end %}
           <div class="form-check">
             <input class="form-check-input" type="radio"
                    name="payment" id="payment_{{ payment['identifier'] }}"
                    {{ payment.get('default') and 'checked' or '' }}
                    value="{{ payment['identifier'] }}">
             <label class="form-check-label"
-                   for="type_{{ payment['identifier'] }}">
+                   for="payment_{{ payment['identifier'] }}">
               {{ payment['label'] }}
             </label>
           </div>
           {% end %}
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="payment" id="payment_{{ constants.CORRECTION }}"
+                   value="{{ constants.CORRECTION }}">
+            <label class="form-check-label"
+                   for="payment_{{ constants.CORRECTION }}">
+              Manual correction
+            </label>
+          </div>
         </div>
       </div>
       <div class="row form-group">

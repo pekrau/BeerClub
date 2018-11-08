@@ -22,6 +22,8 @@ class EventSaver(Saver):
             self.set_purchase(**data)
         elif action == constants.PAYMENT:
             self.set_payment(**data)
+        elif action == constants.TRANSFER:
+            self.set_transfer(**data)
         else:
             raise ValueError('invalid action')
 
@@ -50,7 +52,7 @@ class EventSaver(Saver):
         try:
             amount = float(kwargs['amount'])
         except (KeyError, ValueError, TypeError):
-            amount = 0.0
+            raise ValueError('invalid amount')
         pid = kwargs.get('payment')
         if pid == constants.EXPENDITURE:
             self['description'] = "%s: %s" % (constants.EXPENDITURE,
@@ -63,7 +65,17 @@ class EventSaver(Saver):
                 raise ValueError("no such payment %s" % pid)
             self['description'] = payment['identifier']
             self['credit'] = amount
-        self['date'] = kwargs.get('date', utils.today())
+        self['date'] = kwargs.get('date') or utils.today()
+
+    def set_transfer(self, **kwargs):
+        self['action'] = constants.TRANSFER
+        try:
+            amount = float(kwargs['amount'])
+        except (KeyError, ValueError, TypeError):
+            raise ValueError('invalid amount')
+        self['credit'] = amount
+        self['description'] = kwargs.get('description')
+        self['date'] = kwargs.get('date') or utils.today()
 
 
 class Event(RequestHandler):
@@ -139,7 +151,7 @@ class Purchase(RequestHandler):
 
 
 class Payment(RequestHandler):
-    "Payment to increase the credit of a member."
+    "Payment to increase the credit of a member, or correction."
 
     @tornado.web.authenticated
     def get(self, email):
@@ -168,9 +180,14 @@ class Payment(RequestHandler):
                 amount = 0.0
             with EventSaver(rqh=self) as saver:
                 saver['member'] = member['email']
-                saver.set_payment(payment=self.get_argument('payment', None),
-                                  amount=amount,
-                                  date=self.get_argument('date',utils.today()))
+                payment = self.get_argument('payment', None)
+                if payment == constants.CORRECTION:
+                    saver.set_transfer(amount=amount,
+                                       description='manual correction')
+                else:
+                    saver.set_payment(payment=payment,
+                                      amount=amount,
+                                      date=self.get_argument('date', None))
             lazy = self.get_argument('swish_lazy', False)
             if lazy and lazy.lower() == 'true':
                 with EventSaver(rqh=self) as saver:

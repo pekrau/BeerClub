@@ -35,6 +35,7 @@ PAYMENT  = 'payment'
 EXPENDITURE = 'expenditure'
 
 # Misc
+CORRECTION = '__correction__'
 USER_COOKIE = 'beerclub_user'
 EMAIL_PATTERN = '*@*.*'
 API_KEY_HEADER = 'X-BeerClub-API-key'
