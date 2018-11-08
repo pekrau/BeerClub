@@ -2,3 +2,4 @@ dumps
 *.json
 *.pyc
 *~
+data
