@@ -143,9 +143,11 @@ class RequestHandler(tornado.web.RequestHandler):
 
     def get_count(self, member, date=utils.today()):
         "Get the number of beverages purchased on the given date."
+        logging.debug('get_count date %s', date)
         result = list(self.db.view('event/beverage',
                                    key=[member['email'], date],
                                    group_level=2))
+        logging.debug('result %s', result)
         if result:
             return result[0].value
         else:
