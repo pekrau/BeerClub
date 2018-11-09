@@ -18,6 +18,19 @@ class Money(tornado.web.UIModule):
         if money is None: money = 0
         fmt = "{:.%if}" % settings['MONEY_DECIMAL_PLACES']
         value = fmt.format(money)
+        minus = value[:1] == '-'
+        if minus:
+            value = value[1:]
+        iv, dv = value.split('.')
+        if settings['MONEY_THOUSAND_DELIMITER']:
+            ivl = []
+            while len(iv):
+                ivl.append(iv[-3:])
+                iv = iv[:-3]
+            iv = settings['MONEY_THOUSAND_DELIMITER'].join(reversed(ivl))
+        value = iv + settings['MONEY_DECIMAL_POINT'] + dv
+        if minus:
+            value = '-' + value
         if currency:
             value += ' ' + settings['CURRENCY']
         padding = max(0, padding - len(str(int(money)))) + 0.2
