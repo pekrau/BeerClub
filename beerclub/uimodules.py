@@ -12,7 +12,7 @@ from . import utils
 class Money(tornado.web.UIModule):
     "HTML for a money value."
 
-    FORMAT = '<span class="text-monospace %s" style="margin-left: %sch;">%s</span>'
+    FORMAT = '<span class="text-monospace text-nowrap %s" style="margin-left: %sch;">%s</span>'
 
     def render(self, money, currency=True, padding=5):
         if money is None: money = 0
