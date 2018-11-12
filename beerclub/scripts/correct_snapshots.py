@@ -1,4 +1,4 @@
-"Correct transfer events from action 'payment' to 'transfer'."
+"Correct anspshots retroactively."
 
 from __future__ import print_function
 
