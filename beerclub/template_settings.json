@@ -41,7 +41,5 @@
      "label": "Correction of an erroneous transaction."},
     {"identifier": "transfer",
      "label": "Transfer of credit from some other source."}
-  ],
-  "DEBT_EMAIL_SUBJECT_TEXT": "Your debt to the Beer Club",
-  "DEBT_EMAIL_MESSAGE_TEXT": "Hello {name},\n\nAccording to my notes, you owe the Beer Club {amount} SEK.\nPlease pay the amount to the Lehman Brothers bank account 123 456 7890.\nInclude your name in the message field!\n\nThe account is dedicated to handling only Beer Club money.\n\nf you have paid yesterday or today, your account may not have been updated.\nIf so, ignore this message.\n\nYours sincerely,\n\nThe Beer Club administrator\n"
+  ]
 }
