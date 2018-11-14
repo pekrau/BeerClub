@@ -223,7 +223,7 @@ class MembersCsv(Members):
                 row.extend([member.get('swish') or '',
                             member.get('swish_lazy') or ''])
             if settings['MEMBER_ADDRESS']:
-                row.append(member.get('address') or '')
+                row.append(utils.to_utf8(member.get('address')) or '')
             writer.writerow(row)
         self.write(csvbuffer.getvalue())
         self.set_header('Content-Type', constants.CSV_MIME)
