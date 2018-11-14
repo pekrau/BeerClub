@@ -48,6 +48,16 @@
 </div>
 {% end %} {# block content #}
 
+{% block actions %}
+<div class="md-2">
+  <form action="{{ reverse_url('members_csv') }}"
+        role="form"
+        method="GET">
+    <button type="submit" class="btn btn-dark btn my-1">CSV file</button>
+  </form>
+</div>
+{% end %}
+
 {% block javascript %}
 <script>
   $(function() {

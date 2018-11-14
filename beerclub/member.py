@@ -1,7 +1,9 @@
 "Member account handling; member of Beer Club."
 
+import csv
 import logging
 import fnmatch
+from cStringIO import StringIO
 
 import tornado.web
 
@@ -189,6 +191,44 @@ class Members(RequestHandler):
         members = self.get_docs('member/email')
         utils.get_balances(self.db, members)
         self.render('members.html', members=members)
+
+
+class MembersCsv(Members):
+    "CSV output of members accounts."
+
+    def render(self, template, members):
+        csvbuffer = StringIO()
+        writer = csv.writer(csvbuffer)
+        row = ['Member',
+               'First name',
+               'Last name',
+               'Balance',
+               'Role',
+               'Status',
+               'Last login']
+        if settings['MEMBER_SWISH']:
+            row.extend(['Swish', 'Swish lazy'])
+        if settings['MEMBER_ADDRESS']:
+            row.append('Address')
+        writer.writerow(row)
+        for member in members:
+            row = [member['email'],
+                   utils.to_utf8(member['first_name']),
+                   utils.to_utf8(member['last_name']),
+                   member['balance'],
+                   member['role'],
+                   member['status'],
+                   member.get('last_login') or '']
+            if settings['MEMBER_SWISH']:
+                row.extend([member.get('swish') or '',
+                            member.get('swish_lazy') or ''])
+            if settings['MEMBER_ADDRESS']:
+                row.append(member.get('address') or '')
+            writer.writerow(row)
+        self.write(csvbuffer.getvalue())
+        self.set_header('Content-Type', constants.CSV_MIME)
+        self.set_header('Content-Disposition', 
+                        'attachment; filename="members.csv')
 
 
 class Pending(RequestHandler):
