@@ -228,7 +228,7 @@ class MembersCsv(Members):
         self.write(csvbuffer.getvalue())
         self.set_header('Content-Type', constants.CSV_MIME)
         self.set_header('Content-Disposition', 
-                        'attachment; filename="members.csv')
+                        'attachment; filename="members.csv"')
 
 
 class Pending(RequestHandler):

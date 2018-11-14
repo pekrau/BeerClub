@@ -11,7 +11,9 @@ from beerclub import settings
 from beerclub import uimodules
 from beerclub import utils
 from beerclub.home import (Home,
-                           Snapshots)
+                           Snapshots,
+                           SnapshotsCsv,
+                           Dashboard)
 from beerclub.member import (Member,
                              Settings,
                              Members,
@@ -60,6 +62,8 @@ def main():
         url(r'/payments', Payments, name='payments'),
         url(r'/payments.csv', PaymentsCsv, name='payments_csv'),
         url(r'/snapshots', Snapshots, name='snapshots'),
+        url(r'/snapshots.csv', SnapshotsCsv, name='snapshots_csv'),
+        url(r'/dashboard', Dashboard, name='dashboard'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),
         url(r'/logout', Logout, name='logout'),

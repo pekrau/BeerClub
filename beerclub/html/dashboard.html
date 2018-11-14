@@ -1,0 +1,40 @@
+{# Dashboard page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Dashboard{% end %}
+
+{% block body_title %}Dashboard{% end %}
+
+{% block content %}
+<div class="row mt-4">
+  <div class="col-md">
+    <div id="balance"></div>
+  </div>
+</div>
+{% end %} {# block content #}
+
+{% block javascript %}
+<script src="https://cdn.jsdelivr.net/npm/vega@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script>
+<style media="screen">
+  /* Add space between Vega-Embed links  */
+  .vega-actions a {
+  margin-right: 5px;
+}
+</style>
+<script type="text/javascript">
+    var balanceSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v2.0.json",
+      "description": "A simple bar chart with embedded data.",
+      "data": { "url": "/snapshots.csv"},
+      "mark": "line",
+      "encoding": {
+        "x": {"field": "Date", "type": "temporal"},
+        "y": {"field": "BeerClub", "type": "quantitative"}
+      }
+    }
+    vegaEmbed("#balance", balanceSpec, {"actions": false});
+</script>
+{% end %} {# block javascript #}

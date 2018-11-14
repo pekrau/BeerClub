@@ -1,5 +1,8 @@
 "Home page, and misc others."
 
+import csv
+from cStringIO import StringIO
+
 import tornado.web
 
 from beerclub import constants
@@ -21,9 +24,11 @@ class Home(RequestHandler):
 
 
 class Snapshots(RequestHandler):
-    "Display snapshots."
+    "Display snapshots table."
 
+    @tornado.web.authenticated
     def get(self):
+        self.check_admin()
         try:
             from_ = self.get_argument('from')
         except tornado.web.MissingArgumentError:
@@ -42,3 +47,39 @@ class Snapshots(RequestHandler):
                     snapshots=snapshots,
                     from_=from_,
                     to=to)
+
+
+class SnapshotsCsv(Snapshots):
+    "Output CSV for snapshots data."
+
+    def render(self, template, snapshots, from_, to):
+        csvbuffer = StringIO()
+        writer = csv.writer(csvbuffer)
+        row = ['Date',
+               'BeerClub',
+               'members',
+               'surplus']
+        row.extend(constants.STATUSES)
+        writer.writerow(row)
+        for snapshot in snapshots:
+            row = [snapshot['date'],
+                   snapshot['beerclub_balance'],
+                   snapshot['members_balance'],
+                   snapshot['beerclub_balance'] - snapshot['members_balance']]
+            for status in constants.STATUSES:
+                row.append(snapshot['member_counts'][status])
+            writer.writerow(row)
+        self.write(csvbuffer.getvalue())
+        self.set_header('Content-Type', constants.CSV_MIME)
+        filename = "snapshots_%s_%s.csv" % (from_, to)
+        self.set_header('Content-Disposition', 
+                        'attachment; filename="%s"' % filename)
+
+
+class Dashboard(RequestHandler):
+    "Dashboard display of various interesting data."
+
+    @tornado.web.authenticated
+    def get(self):
+        self.check_admin()
+        self.render('dashboard.html')
