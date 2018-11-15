@@ -146,6 +146,7 @@ class RequestHandler(tornado.web.RequestHandler):
         result = list(self.db.view('event/beverage',
                                    key=[member['email'], date],
                                    group_level=2))
+        logging.debug(">>> get_count %s %s %s", member['email'], date, result)
         if result:
             return result[0].value
         else:
