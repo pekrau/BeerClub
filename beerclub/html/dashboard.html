@@ -27,13 +27,35 @@
 <script type="text/javascript">
     var balanceSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v2.0.json",
-      "description": "A simple bar chart with embedded data.",
+      "description": "Development of balance over time.",
+      "title": "Overall balance",
+      "width": 1000,
       "data": { "url": "/snapshots.csv"},
-      "mark": "line",
-      "encoding": {
-        "x": {"field": "Date", "type": "temporal"},
-        "y": {"field": "BeerClub", "type": "quantitative"}
-      }
+      "layer": [
+        {
+         "mark": "line",
+         "encoding": {
+           "x": {"field": "Date", "type": "temporal"},
+           "y": {"field": "BeerClub", "type": "quantitative"}
+          }
+        },
+        {
+         "mark": "line",
+         "encoding": {
+         "color": {"value": "firebrick"},
+           "x": {"field": "Date", "type": "temporal"},
+           "y": {"field": "members", "type": "quantitative"}
+          }
+        },
+        {
+         "mark": "line",
+         "encoding": {
+         "color": {"value": "green"},
+           "x": {"field": "Date", "type": "temporal"},
+           "y": {"field": "surplus", "type": "quantitative"}
+          }
+        }
+      ]
     }
     vegaEmbed("#balance", balanceSpec, {"actions": false});
 </script>
