@@ -83,3 +83,28 @@ class Dashboard(RequestHandler):
     def get(self):
         self.check_admin()
         self.render('dashboard.html')
+
+
+class BalanceCsv(Snapshots):
+    "Output CSV for snapshots balance data."
+
+    def render(self, template, snapshots, from_, to):
+        csvbuffer = StringIO()
+        writer = csv.writer(csvbuffer)
+        row = ['date',
+               'amount',
+               'type']
+        row.extend(constants.STATUSES)
+        writer.writerow(row)
+        for snapshot in snapshots:
+            row = [snapshot['date'], snapshot['beerclub_balance'], 'beerclub']
+            writer.writerow(row)
+            row[1] = snapshot['members_balance']
+            row[2] = 'members'
+            writer.writerow(row)
+            row[1] = snapshot['beerclub_balance'] - snapshot['members_balance']
+            row[2] = 'surplus'
+            writer.writerow(row)
+        self.write(csvbuffer.getvalue())
+        self.set_header('Content-Type', constants.CSV_MIME)
+

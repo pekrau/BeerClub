@@ -13,7 +13,8 @@ from beerclub import utils
 from beerclub.home import (Home,
                            Snapshots,
                            SnapshotsCsv,
-                           Dashboard)
+                           Dashboard,
+                           BalanceCsv)
 from beerclub.member import (Member,
                              Settings,
                              Members,
@@ -64,6 +65,7 @@ def main():
         url(r'/snapshots', Snapshots, name='snapshots'),
         url(r'/snapshots.csv', SnapshotsCsv, name='snapshots_csv'),
         url(r'/dashboard', Dashboard, name='dashboard'),
+        url(r'/balance.csv', BalanceCsv, name='balance_csv'),
         url(r'/event/([0-9a-f]{32})', Event, name='event'),
         url(r'/login', Login, name='login'),
         url(r'/logout', Logout, name='logout'),

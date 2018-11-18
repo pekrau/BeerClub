@@ -18,45 +18,19 @@
 <script src="https://cdn.jsdelivr.net/npm/vega@3"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script>
-<style media="screen">
-  /* Add space between Vega-Embed links  */
-  .vega-actions a {
-  margin-right: 5px;
-}
-</style>
 <script type="text/javascript">
     var balanceSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v2.0.json",
       "description": "Development of balance over time.",
       "title": "Overall balance",
-      "width": 1000,
-      "data": { "url": "/snapshots.csv"},
-      "layer": [
-        {
-         "mark": "line",
-         "encoding": {
-           "color": {"value": "green"},
-           "x": {"field": "Date", "type": "temporal"},
-           "y": {"field": "surplus", "type": "quantitative"}
-          }
-        },
-        {
-         "mark": "line",
-         "encoding": {
-           "color": {"value": "firebrick"},
-           "x": {"field": "Date", "type": "temporal"},
-           "y": {"field": "members", "type": "quantitative"}
-          }
-        },
-        {
-         "mark": "line",
-         "encoding": {
-           "color": {"value": "steelblue"},
-           "x": {"field": "Date", "type": "temporal"},
-           "y": {"field": "BeerClub", "type": "quantitative"}
-          }
-        }
-      ]
+      "width": 750,
+      "data": { "url": "/balance.csv"},
+      "mark": "line",
+      "encoding": {
+        "x": {"field": "date", "type": "temporal", "timeUnit": "monthdate"},
+        "y": {"field": "amount", "type": "quantitative"},
+        "color": {"field": "type", "type": "nominal"}
+      }
     }
     vegaEmbed("#balance", balanceSpec, {"actions": false});
 </script>
