@@ -248,7 +248,7 @@ class Login(RequestHandler):
     def post(self):
         "Login to a member account. Set a secure cookie."
         try:
-            email = self.get_argument('email')
+            email = self.get_argument('email').lower()
             password = self.get_argument('password')
         except tornado.web.MissingArgumentError:
             self.set_error_flash('Missing email or password argument.')
