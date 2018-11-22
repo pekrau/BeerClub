@@ -38,14 +38,23 @@ class EventSaver(Saver):
         for beverage in settings['BEVERAGE']:
             if bid == beverage['identifier']: break
         else:
-            raise ValueError("no such beverage %s" % bid)
-        self['beverage']    = beverage['identifier']
-        self['description'] = purchase['identifier']
-        if purchase['change']:
-            self['credit'] = - beverage['price']
-        else:
-            self['credit'] = 0.0
-        self.message = "You purchased one %s." % beverage['label']
+            beverage = None
+        if beverage:
+            self['beverage']    = beverage['identifier']
+            self['description'] = purchase['identifier']
+            if purchase['change']:
+                self['credit'] = - beverage['price']
+            else:
+                self['credit'] = 0.0
+            self.message = "You purchased one %s." % beverage['label']
+        else:                   # Special case 'Swish lazy' by standalone script
+            self['beverage'] = kwargs.get('beverage', 'unknown beverage')
+            self['description'] = kwargs.get('description', '')
+            if purchase['change'] and kwargs.get('amount'):
+                self['credit'] = - kwargs.get('amount')
+            else:
+                self['credit'] = 0.0
+            self.message = 'You purchased an unknown beverage.'
 
     def set_payment(self, **kwargs):
         self['action'] = constants.PAYMENT
@@ -429,5 +438,6 @@ class MemberEventApiV1(ApiMixin, RequestHandler):
                 saver['member'] = member['email']
                 saver.set(self.get_json_body())
         except ValueError as error:
+            logging.debug(">>> %s", error)
             raise tornado.web.HTTPError(400, reason=str(error))
         self.write(dict(iuid=saver.doc['_id']))

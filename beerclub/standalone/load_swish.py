@@ -12,8 +12,11 @@ the API key to use and the Swish number prefix replacements.
 from __future__ import print_function
 
 import csv
+import time
 
 import requests
+
+PAUSE = 1.0
 
 # These are specific to the CSV from the SEB Excel file.
 N_HEADER_ROWS  = 5
@@ -67,6 +70,7 @@ def load_swish(settings, csvfilepath, doit=False):
         print('Updating database...')
     for member in members:
         url = settings['BASE_URL'] + 'event/member/' + member['email']
+        time.sleep(PAUSE)
         response = requests.post(url, headers=headers, json=member['event'])
         if response.status_code == 200:
             print(member['email'], member['event']['amount'])
@@ -74,9 +78,10 @@ def load_swish(settings, csvfilepath, doit=False):
             raise ValueError("%s %s" % (member['email'], response))
         if member.get('swish_lazy'):
             member['event']['action'] = 'purchase'
-            member['event']['beverage'] = 'unknown beverage'
+            member['event']['purchase'] = 'credit'
             member['event']['description'] = 'Swish lazy'
-            member['event']['amount'] = - member['event']['amount']
+            member['event']['amount'] = member['event']['amount']
+            time.sleep(PAUSE)
             response = requests.post(url, headers=headers,json=member['event'])
             if response.status_code == 200:
                 print('Swish lazy')
