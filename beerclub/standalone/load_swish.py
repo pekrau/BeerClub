@@ -95,11 +95,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Load Swish payments from CSV from SEB Excel')
     parser.add_argument('-s', '--settings',
-                        action='store', dest='settings',default='settings.json',
-                        metavar='FILE', help='filename of settings JSON file')
+                        action='store', dest='settings', metavar='FILE',
+                        default='swish_settings.json',
+                        help='filename of settings JSON file')
     parser.add_argument('-c', '--csv',
-                        action='store', dest='csvfilepath',  default=None, 
-                        metavar='FILE', help='filename of CSV file')
+                        action='store', dest='csvfilepath', metavar='FILE',
+                        default=None, help='filename of CSV file')
     parser.add_argument('--doit', action='store_const', dest='doit',
                         const=True, default=False,
                         help='actually perform the load; else dry-run')

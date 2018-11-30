@@ -1,0 +1,99 @@
+{# Form part of register page. #}
+
+<form action="{{ reverse_url('register') }}"
+      role="form"
+      method="POST">
+  {% module xsrf_form_html() %}
+  <div class="row form-group">
+    <label for="emailRegister" class="col-md-2 col-form-label">Email</label>
+    <div class="col-md-10">
+      <input type="email" class="form-control" required
+             name="email" id="emailRegister"
+             aria-describedby="emailRegisterHelp">
+      <small id="emailRegisterHelp" class="form-text text-muted">
+        Your email address. This is your member account identifier.
+        <strong class="text-danger">Required.</strong>
+        <br>
+        {% if settings['MEMBER_EMAIL_AUTOENABLE'] %}
+        If it matches the pattern
+        <code>{{ settings['MEMBER_EMAIL_AUTOENABLE'] }}</code>
+        your member account will be enabled directly.
+        <br>
+        Otherwise, the {{ settings['SITE_NAME'] }} administrator
+        will enable your member account after inspection.
+        {% else %}
+        The {{ settings['SITE_NAME'] }} administrator will enable
+        your member account after inspection.
+        {% end %}
+      </small>
+    </div>
+  </div>
+  <div class="row form-group">
+    <label for="first_name" class="col-md-2 col-form-label">
+      First name</label>
+    <div class="col-md-10">
+      <input type="text" class="form-control" required
+             name="first_name" id="first_name"
+             aria-describedby="first_nameHelp">
+      <small id="first_nameHelp" class="form-text text-muted">
+        Your given name.
+        <strong class="text-danger">Required.</strong>
+      </small>
+    </div>
+  </div>
+  <div class="row form-group">
+    <label for="last_name" class="col-md-2 col-form-label">Last name</label>
+    <div class="col-md-10">
+      <input type="text" class="form-control" required
+             name="last_name" id="last_name"
+             aria-describedby="last_nameHelp">
+      <small id="last_nameHelp" class="form-text text-muted">
+        Your family name.
+        <strong class="text-danger">Required.</strong>
+      </small>
+    </div>
+  </div>
+  {% if settings['MEMBER_SWISH'] %}
+  <div class="row form-group">
+    <label for="swish" class="col-md-2 col-form-label">Swish</label>
+    <div class="col-md-10">
+      <input type="text" class="form-control"
+             name="swish" id="swish"
+             aria-describedby="swishHelp">
+      <small id="swishHelp" class="form-text text-muted">
+        Your Swish phone number.
+      </small>
+    </div>
+  </div>
+  {% end %}
+  {% if settings['MEMBER_ADDRESS'] %}
+  <div class="row form-group">
+    <label for="address" class="col-md-2 col-form-label">Address</label>
+    <div class="col-md-10">
+      <input type="text" class="form-control"
+             name="address" id="address"
+             aria-describedby="addressHelp">
+      <small id="addressHelp" class="form-text text-muted">
+        Your address (floor, building, affiliation, etc).
+      </small>
+    </div>
+  </div>
+  {% end %}
+  <div class="row form-group">
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+      <button type="submit" class="btn btn-secondary"
+              aria-describedby="registerHelp">Register</button>
+      <small id="registerHelp" class="form-text text-muted">
+        <p>
+          By registering, you promise to follow the rules for the {{
+          settings['SITE_NAME'] }}. See below.
+        </p>
+        <p>
+          When your member account has been enabled, you will receive
+          an email with a unique link to set your password.
+        </p>
+      </small>
+    </div>
+  </div>
+</form>

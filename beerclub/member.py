@@ -367,6 +367,12 @@ class Password(RequestHandler):
 class Register(RequestHandler):
     "Register a member account."
 
+    @tornado.web.authenticated
+    def get(self):
+        "Register a member. Only admin should be able to register someone else."
+        self.check_admin()
+        self.render('register.html')
+
     def post(self):
         try:
             with MemberSaver(rqh=self) as saver:
@@ -388,7 +394,8 @@ class Register(RequestHandler):
                 saver.set_name()
                 saver.set_swish()
                 saver.set_address()
-                # Set the very first member account to be admin and enabled.
+                # Set the very first member account in the database
+                # to be admin and enabled.
                 count = len(self.get_docs('member/email', key='',
                                           last=constants.CEILING, limit=2))
                 if count == 0:
@@ -424,7 +431,10 @@ class Register(RequestHandler):
             for admin in self.get_docs('member/role', key=constants.ADMIN):
                 email_server.send(admin['email'], subject, text)
             self.set_message_flash(PENDING_MESSAGE)
-        self.see_other('home')
+        if self.is_admin():
+            self.see_other('member', member['email'])
+        else:
+            self.see_other('home')
 
 
 class Enable(RequestHandler):
