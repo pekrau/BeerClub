@@ -27,7 +27,7 @@ NAME_COLUMN    = 6
 MESSAGE_COLUMN = 11
 
 
-def load_swish(settings, csvfilepath, doit=False):
+def load_swish(settings, csvfilepath, execute=False):
     with open(csvfilepath, 'rb') as infile:
         reader = csv.reader(infile)
         # Skip past header records
@@ -63,7 +63,7 @@ def load_swish(settings, csvfilepath, doit=False):
             bail = True
     if bail: return
     print('Everything OK.')
-    if not doit:
+    if not execute:
         print('Dry-run; no actions.')
         return
     else:
@@ -101,10 +101,10 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--csv',
                         action='store', dest='csvfilepath', metavar='FILE',
                         default=None, help='filename of CSV file')
-    parser.add_argument('--doit', action='store_const', dest='doit',
+    parser.add_argument('-x', action='store_const', dest='execute',
                         const=True, default=False,
                         help='actually perform the load; else dry-run')
     args = parser.parse_args()
     with open(args.settings, 'rb') as infile:
         settings = json.load(infile)
-    load_swish(settings, args.csvfilepath, args.doit)
+    load_swish(settings, args.csvfilepath, args.execute)
