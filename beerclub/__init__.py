@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '1.6.1'
+__version__ = '1.6.2'
 
 settings = dict(
     VERSION=__version__,
@@ -17,7 +17,6 @@ settings = dict(
     LOGGING_FORMAT='%(levelname)s [%(asctime)s] %(message)s',
     LOGGING_FILEPATH=None,
     LOGGING_FILEMODE=None,
-    LOCALE_MONETARY=None,
     DATABASE_SERVER='http://localhost:5984/',
     DATABASE_NAME='beerclub',
     DATABASE_ACCOUNT=None,
@@ -33,6 +32,7 @@ settings = dict(
                USER=None,
                PASSWORD=None,
                SENDER=None),
+    CONTACT_EMAIL=None,
     DISPLAY_NAVBAR_THEME='navbar-dark',
     DISPLAY_NAVBAR_BG_COLOR='bg-dark',
     DISPLAY_NAVBAR_STYLE_COLOR=None,
@@ -41,7 +41,6 @@ settings = dict(
     DISPLAY_ACCOUNT_DAYS=7,
     DISPLAY_PAYMENT_DAYS=7,
     DISPLAY_SNAPSHOT_DAYS=45,
-    CONTACT_EMAIL=None,
     GLOBAL_ALERT=None,
     RULES_HTML="<ul><li>You must be a registered member to buy beer.</li></ul>",
     PAYMENT_INFO_HTML=None,

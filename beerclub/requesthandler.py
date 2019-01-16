@@ -24,12 +24,8 @@ class RequestHandler(tornado.web.RequestHandler):
 
     def prepare(self):
         "Get the database connection."
-        server = couchdb.Server(settings['DATABASE_SERVER'])
-        if settings.get('DATABASE_ACCOUNT') and settings.get('DATABASE_PASSWORD'):
-            server.resource.credentials = (settings.get('DATABASE_ACCOUNT'),
-                                           settings.get('DATABASE_PASSWORD'))
         try:
-            self.db = server[settings['DATABASE_NAME']]
+            self.db = utils.get_dbserver()[settings['DATABASE_NAME']]
         except couchdb.http.ResourceNotFound:
             raise KeyError("CouchDB database '%s' does not exist." % 
                            settings['DATABASE_NAME'])
