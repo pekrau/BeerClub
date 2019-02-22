@@ -97,7 +97,7 @@ def initialize(db=None):
     designs.load_design_documents(db)
 
 def get_doc(db, key, viewname=None):
-    """Get the document with the given i, or from the given view.
+    """Get the document with the given id, or from the given view.
     Raise KeyError if not found.
     """
     if viewname is None:

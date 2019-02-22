@@ -67,6 +67,9 @@ class EventSaver(Saver):
             self['description'] = "%s: %s" % (constants.EXPENDITURE,
                                               kwargs.get('description'))
             self['credit'] = - amount
+        elif pid == constants.CASH:
+            self['description'] = 'cash transfer'
+            self['credit'] = amount
         else:
             for payment in settings['PAYMENT']:
                 if pid == payment['identifier']: break
@@ -228,6 +231,31 @@ class Expenditure(RequestHandler):
                     payment=constants.EXPENDITURE,
                     amount=self.get_argument('amount', None),
                     description=self.get_argument('description', None),
+                    date=self.get_argument('date', utils.today()))
+        except ValueError as error:
+            self.set_error_flash(str(error))
+        self.see_other('payments')
+
+
+class Cash(RequestHandler):
+    """Cash transfer from cash box via some admin.
+    Increases the credit of the BeerClub master virtual member.
+    """
+
+    @tornado.web.authenticated
+    def get(self):
+        self.check_admin()
+        self.render('cash.html')
+
+    @tornado.web.authenticated
+    def post(self):
+        self.check_admin()
+        try:
+            with EventSaver(rqh=self) as saver:
+                saver['member'] = constants.BEERCLUB
+                saver.set_payment(
+                    payment=constants.CASH,
+                    amount=self.get_argument('amount', None),
                     date=self.get_argument('date', utils.today()))
         except ValueError as error:
             self.set_error_flash(str(error))
@@ -438,6 +466,5 @@ class MemberEventApiV1(ApiMixin, RequestHandler):
                 saver['member'] = member['email']
                 saver.set(self.get_json_body())
         except ValueError as error:
-            logging.debug(">>> %s", error)
             raise tornado.web.HTTPError(400, reason=str(error))
         self.write(dict(iuid=saver.doc['_id']))

@@ -30,6 +30,7 @@ ROLES  = (ADMIN, MEMBER)
 TRANSFER = 'transfer'
 PURCHASE = 'purchase'
 PAYMENT  = 'payment'
+CASH     = 'cash'
 
 # Payment identifier (hardwired)
 EXPENDITURE = 'expenditure'
