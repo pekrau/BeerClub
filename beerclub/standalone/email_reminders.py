@@ -22,12 +22,13 @@ def email_reminders(settings, csvfile, execute=True):
     assert settings['EMAIL'].get('SENDER')
     assert settings.get('DEBT_EMAIL_SUBJECT_TEXT')
     assert settings.get('DEBT_EMAIL_MESSAGE_TEXT')
+    insignificant = settings.get('DEBT_INSIGNIFICANT') or 0
     emailserver = EmailServer(settings)
     reader = csv.reader(csvfile)
     reader.next()               # Skip past header.
     for row in reader:
         balance = float(row[BALANCE])
-        if balance >= settings['DEBT_INSIGNIFICANT']: continue
+        if balance >= insignificant : continue
         if row[STATUS] != 'enabled': continue
         name = u"{} {}".format(row[FIRST_NAME].decode('utf8'),
                                row[LAST_NAME].decode('utf8'))
