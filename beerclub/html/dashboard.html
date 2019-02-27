@@ -12,6 +12,7 @@
     <div id="balance"></div>
   </div>
 </div>
+{% include 'from_to_selection.html' %}
 {% end %} {# block content #}
 
 {% block javascript %}
@@ -24,7 +25,8 @@
       "description": "Development of balance over time.",
       "title": "Overall balance",
       "width": 600,
-      "data": { "url": "/balance.csv"},
+      "data": {"url": "/balance.csv?from={{ from_ }}&to={{ to }}&new=2",
+               "format": {"type": "csv"}},
       "mark": "line",
       "encoding": {
         "x": {"field": "date", "type": "temporal", "timeUnit": "yearmonthdate"},
@@ -35,3 +37,6 @@
     vegaEmbed("#balance", balanceSpec, {"actions": false});
 </script>
 {% end %} {# block javascript #}
+{#
+      "data": { "url": "/balance.csv"},
+ #}

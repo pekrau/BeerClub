@@ -2,6 +2,7 @@
 
 import csv
 from cStringIO import StringIO
+import logging
 
 import tornado.web
 
@@ -38,11 +39,10 @@ class Snapshots(RequestHandler):
         except tornado.web.MissingArgumentError:
             to = utils.today()
         if from_ > to:
-            snapshots = []
-        else:
-            snapshots = self.get_docs('snapshot/date',
-                                      key=from_,
-                                      last=to+constants.CEILING)
+            to = from_
+        snapshots = self.get_docs('snapshot/date',
+                                  key=from_,
+                                  last=to+constants.CEILING)
         self.render('snapshots.html',
                     snapshots=snapshots,
                     from_=from_,
@@ -82,7 +82,17 @@ class Dashboard(RequestHandler):
     @tornado.web.authenticated
     def get(self):
         self.check_admin()
-        self.render('dashboard.html')
+        try:
+            from_ = self.get_argument('from')
+        except tornado.web.MissingArgumentError:
+            from_ = utils.today(-settings['DISPLAY_SNAPSHOT_DAYS'])
+        try:
+            to = self.get_argument('to')
+        except tornado.web.MissingArgumentError:
+            to = utils.today()
+        if from_ > to:
+            to = from_
+        self.render('dashboard.html', from_=from_, to=to)
 
 
 class BalanceCsv(Snapshots):
@@ -105,6 +115,7 @@ class BalanceCsv(Snapshots):
             row[1] = snapshot['beerclub_balance'] - snapshot['members_balance']
             row[2] = 'surplus'
             writer.writerow(row)
+            logging.debug(snapshot['date'])
         self.write(csvbuffer.getvalue())
         self.set_header('Content-Type', constants.CSV_MIME)
 
