@@ -3,20 +3,20 @@
 <table class="table table-sm" id="events">
   <thead>
     <tr>
-      <th scope="col" class="break">Event</th>
+      <th scope="col">Event</th>
       {% if is_admin %}
       <th scope="col">Member</th>
       {% end %}
-      <th scope="col" width="30%" class="break">Description</th>
-      <th scope="col" class="break">Credit  ({{ settings['CURRENCY'] }})</th>
-      <th scope="col"></th>
+      <th scope="col">Description</th>
+      <th scope="col">Credit ({{ settings['CURRENCY'] }})</th>
+      <th scope="col">Timestamp</th>
     </tr>
   </thead>
   <tbody>
     {% set store = {} %}
     {% for event in events %}
     <tr class="{% module Step(event['log']['date'], ['table-active', 'table-light'], store) %}">
-      <td class="break">
+      <td>
         {% if is_admin %}
         <a href="{{ reverse_url('event', event['_id']) }}">
           {{ event['action'] }}</a>
@@ -34,12 +34,12 @@
         {% end %}
       </td>
       {% end %}
-      <td>
+      <td width="40%">
         {{ event.get('beverage') or '' }}
         {{ event.get('description') or '' }}
       </td>
       <td>{% module Money(event['credit'], currency=False) %}</td>
-      <td class="localtime small break">{{ event['log']['timestamp'] }}</td>
+      <td class="localtime small text-nowrap">{{ event['log']['timestamp'] }}</td>
     </tr>
     {% end %} {# for event in events #}
   </tbody>

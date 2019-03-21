@@ -12,15 +12,15 @@
     <table class="table table-sm" id="snapshots">
       <thead>
         <tr>
-          <th scope="col" class="break">Date</th>
-          <th scope="col" class="break">
+          <th scope="col">Date</th>
+          <th scope="col">
             Beer Club balance ({{ settings['CURRENCY'] }})</th>
-          <th scope="col" class="break">
+          <th scope="col">
             Members balance ({{ settings['CURRENCY'] }})</th>
-          <th scope="col" class="break">
+          <th scope="col">
             Surplus ({{ settings['CURRENCY'] }})</th>
           {% for status in constants.STATUSES %}
-          <th scope="col" class="break"># {{ status }}</th>
+          <th scope="col"># {{ status }}</th>
           {% end %}
         </tr>
       </thead>
