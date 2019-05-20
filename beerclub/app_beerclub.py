@@ -78,6 +78,8 @@ def main():
         url(r'/api/v1/member/([^/]+)', MemberApiV1, name='api_member'),
         url(r'/api/v1/event/member/([^/]+)',
             MemberEventApiV1, name='api_member_event'),
+        url(r'/([^/]+)', tornado.web.StaticFileHandler,
+            {'path': os.path.join(settings['ROOT_DIR'], 'static')}),
     ]
 
     application = tornado.web.Application(

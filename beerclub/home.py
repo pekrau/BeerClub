@@ -115,7 +115,5 @@ class BalanceCsv(Snapshots):
             row[1] = snapshot['beerclub_balance'] - snapshot['members_balance']
             row[2] = 'surplus'
             writer.writerow(row)
-            logging.debug(snapshot['date'])
         self.write(csvbuffer.getvalue())
         self.set_header('Content-Type', constants.CSV_MIME)
-
