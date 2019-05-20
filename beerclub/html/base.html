@@ -4,17 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block head_title %}{{ settings['SITE_NAME'] }}{% end %}</title>
-    <link rel="shortcut icon" type="image/png" href="{{ static_url('beer32.png') }}">
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ static_url('apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ static_url('apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ static_url('apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ static_url('apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ static_url('apple-touch-icon-60x60.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ static_url('apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ static_url('apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ static_url('apple-touch-icon-152x152.png') }}" />
+    <link rel="icon" type="image/png" href="{{ static_url('favicon-196x196.png') }}" sizes="196x196" />
+    <link rel="icon" type="image/png" href="{{ static_url('favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="shortcut icon" type="image/png" href="{{ static_url('favicon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ static_url('favicon-16x16.png') }}" sizes="16x16" />
+    <link rel="icon" type="image/png" href="{{ static_url('favicon-128.png') }}" sizes="128x128" />
+    <meta name="application-name" content="Beer Club"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="{{ static_url('mstile-144x144.png') }}" />
+    <meta name="msapplication-square70x70logo" content="{{ static_url('mstile-70x70.png') }}" />
+    <meta name="msapplication-square150x150logo" content="{{ static_url('mstile-150x150.png') }}" />
+    <meta name="msapplication-wide310x150logo" content="{{ static_url('mstile-310x150.png') }}" />
+    <meta name="msapplication-square310x310logo" content="{{ static_url('mstile-310x310.png') }}" />
+    <link rel="manifest" href="{{ static_url('site.webmanifest') }}">
+    <meta name="theme-color" content="#FFFFFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link href="{{ static_url('splashscreens/iphone5_splash.png') }}" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/iphone6_splash.png') }}" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/iphoneplus_splash.png') }}" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/iphonex_splash.png') }}" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/iphonexr_splash.png') }}" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/iphonexsmax_splash.png') }}" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/ipad_splash.png') }}" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/ipadpro1_splash.png') }}" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/ipadpro3_splash.png') }}" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="{{ static_url('splashscreens/ipadpro2_splash.png') }}" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+
     <link rel="stylesheet"
           href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous">
     <link rel="stylesheet"
           href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
     <style>
       .break { word-break: break-all; }
+      .navbar-brand img { width: 32px; }
     </style>
   </head>
 
@@ -25,8 +61,8 @@
          {% end %}
          >
       <a class="navbar-brand" href="{{ reverse_url('home') }}">
-        <img src="{{ static_url('beer32.png') }}"
-             alt="{{ settings['SITE_NAME'] }}" 
+        <img src="{{ static_url('favicon-196x196.png') }}"
+             alt="{{ settings['SITE_NAME'] }}"
              title="{{ settings['SITE_NAME'] }}">
         {{ settings['SITE_NAME'] }}
       </a>
@@ -44,7 +80,7 @@
           </li>
           {% if current_user %}
           <li class="nav-item {% module NavitemActive('account') %}">
-            <a class="nav-link" 
+            <a class="nav-link"
                href="{{ reverse_url('account', current_user['email']) }}">
               Account</a>
           </li>
@@ -62,28 +98,28 @@
               Admin
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" 
+              <a class="dropdown-item"
                  href="{{ reverse_url('dashboard')}}">Dashboard</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" 
+              <a class="dropdown-item"
                  href="{{ reverse_url('activity')}}">Activity</a>
-              <a class="dropdown-item" 
+              <a class="dropdown-item"
                  href="{{ reverse_url('pending')}}">Pending</a>
-              <a class="dropdown-item" 
+              <a class="dropdown-item"
                  href="{{ reverse_url('register')}}">Register</a>
-              <a class="dropdown-item" 
+              <a class="dropdown-item"
                  href="{{ reverse_url('members')}}">Members</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item"
                  href="{{ reverse_url('ledger') }}">Ledger</a>
               <a class="dropdown-item"
                  href="{{ reverse_url('payments') }}">Payments</a>
-              <a class="dropdown-item" 
+              <a class="dropdown-item"
                  href="{{ reverse_url('snapshots')}}">Snapshots</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" 
+              <a class="dropdown-item"
                  href="{{ reverse_url('expenditure')}}">Expenditure</a>
-              <a class="dropdown-item" 
+              <a class="dropdown-item"
                  href="{{ reverse_url('cash')}}">Cash</a>
           </li>
           {% end %} {# if is_admin #}
@@ -144,7 +180,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="container-fluid">
       <hr class="mb-0">
       <div class="row">
@@ -163,7 +199,7 @@
             integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
             crossorigin="anonymous">
     </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" 
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous">
     </script>
