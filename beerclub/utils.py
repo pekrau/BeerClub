@@ -87,7 +87,7 @@ def get_db():
     try:
         return server[settings['DATABASE_NAME']]
     except couchdb.http.ResourceNotFound:
-        raise KeyError("CouchDB database '%s' does not exist." % 
+        raise KeyError("CouchDB database '%s' does not exist." %
                        settings['DATABASE_NAME'])
 
 def initialize(db=None):
