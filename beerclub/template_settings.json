@@ -13,9 +13,10 @@
   },
   "DATABASE_ACCOUNT": "admin",
   "DATABASE_PASSWORD": "admin",
-  "DATABASE_SERVER": "http://0.0.0.0:5984/",
-  "DATABASE_NAME": "beerclub",
-  "DATABASE_PASSWORD": "beerclub",
+  "DISPLAY_NAVBAR_THEME": "navbar-dark",
+  "DISPLAY_NAVBAR_BG_COLOR": "bg-dark",
+  "DISPLAY_NAVBAR_STYLE_COLOR": null,
+  "DISPLAY_NAVBAR_LOGO": "BeerClubLogo_DarkBg.svg",
   "RULES_HTML": "<ol><li>You must be a registered member to buy beer.</li><li><strong>Every</strong> purchase must be recorded here.</li><li>If your balance is negative: Pay your debt.</li><li>If you are reminded to pay your debt, just do it.</li></ol>",
   "PAYMENT_INFO_HTML": "<ul><li>Pay cash to the Beer Club administrator.</li><li>Pay to the Beer Club's bank account in Lehman Brothers <strong class=\"text-nowrap\">0123 456 789</strong>. Give your name as the message.</li></ul>",
   "BEVERAGE": [
