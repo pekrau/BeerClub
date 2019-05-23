@@ -47,6 +47,13 @@ The `template_settings.json` file contains the following defaults
 "DATABASE_PASSWORD": "beerclub",
 ```
 
+The BeerClub site needs to have it's directory added to the `PYTHONPATH` to work,
+so from the repository root directory run the following:
+
+```bash
+export PYTHONPATH="`pwd`"
+```
+
 Finally, run the tornado web server:
 
 ```bash
