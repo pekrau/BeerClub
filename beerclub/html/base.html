@@ -61,9 +61,10 @@
          {% end %}
          >
       <a class="navbar-brand" href="{{ reverse_url('home') }}">
-        <img src="{{ static_url('favicon-196x196.png') }}"
+        <img src="{{ static_url(settings['DISPLAY_NAVBAR_LOGO']) }}"
              alt="{{ settings['SITE_NAME'] }}"
-             title="{{ settings['SITE_NAME'] }}">
+             title="{{ settings['SITE_NAME'] }}"
+             class="mr-2">
         {{ settings['SITE_NAME'] }}
       </a>
       <button class="navbar-toggler" type="button"

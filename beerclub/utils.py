@@ -87,8 +87,11 @@ def get_db():
     try:
         return server[settings['DATABASE_NAME']]
     except couchdb.http.ResourceNotFound:
-        raise KeyError("CouchDB database '%s' does not exist." % 
-                       settings['DATABASE_NAME'])
+        raise couchdb.http.ResourceNotFound("CouchDB database '%s' does not exist." %
+                       settings.get('DATABASE_NAME'))
+    except couchdb.http.Unauthorized:
+        raise couchdb.http.Unauthorized("CouchDB account '%s' is not authorized to access database '%s'." %
+                       (settings.get('DATABASE_ACCOUNT'), settings.get('DATABASE_NAME')))
 
 def initialize(db=None):
     "Load the design documents, or update."
