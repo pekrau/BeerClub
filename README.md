@@ -51,7 +51,7 @@ The BeerClub site needs to have it's directory added to the `PYTHONPATH` to work
 so from the repository root directory run the following:
 
 ```bash
-export PYTHONPATH="`pwd`"
+export PYTHONPATH=$PWD:$PYTHONPATH
 ```
 
 Finally, run the tornado web server:
