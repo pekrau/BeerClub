@@ -2,7 +2,7 @@
 
 import csv
 import logging
-from cStringIO import StringIO
+from io import StringIO
 
 import tornado.web
 

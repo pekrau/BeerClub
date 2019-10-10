@@ -15,7 +15,7 @@ It's recommended to use conda to keep the installation environment clean.
 First, create a new environment and install the dependencies:
 
 ```bash
-conda create --name BeerClub --yes python=2.7.15
+conda create --name BeerClub --yes python=3.6.8
 conda activate BeerClub
 pip install -r requirements.txt
 ```

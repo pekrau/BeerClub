@@ -1,7 +1,5 @@
 "Send reminder email to indebted enabled members."
 
-from __future__ import print_function
-
 import argparse
 import csv
 import email.mime.text
@@ -25,13 +23,12 @@ def email_reminders(settings, csvfile, execute=True):
     insignificant = settings.get('DEBT_INSIGNIFICANT') or 0
     emailserver = EmailServer(settings)
     reader = csv.reader(csvfile)
-    reader.next()               # Skip past header.
+    next(reader)               # Skip past header.
     for row in reader:
         balance = float(row[BALANCE])
         if balance >= insignificant : continue
         if row[STATUS] != 'enabled': continue
-        name = u"{} {}".format(row[FIRST_NAME].decode('utf8'),
-                               row[LAST_NAME].decode('utf8'))
+        name = "{} {}".format(row[FIRST_NAME], row[LAST_NAME])
         message = settings['DEBT_EMAIL_MESSAGE_TEXT'].format(
             name=name, amount=abs(balance))
         print(row[EMAIL], balance)
@@ -91,11 +88,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Send email to indebted members.')
     parser.add_argument('-s', '--settings',
-                        type=argparse.FileType('rb'),
+                        type=argparse.FileType('r'),
                         default='email_settings.json',
                         help='Settings for connecting to the email server.')
     parser.add_argument('-c', '--csvfile',
-                        type=argparse.FileType('rb'),
+                        type=argparse.FileType('r'),
                         default='members.csv',
                         help='CSV file of BeerClub members.')
     parser.add_argument('-x', '--execute',

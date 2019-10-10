@@ -32,7 +32,7 @@ class RequestHandler(tornado.web.RequestHandler):
 
     def get_template_namespace(self):
         "Set the variables accessible within the template."
-        result = super(RequestHandler, self).get_template_namespace()
+        result = super().get_template_namespace()
         result['constants'] = constants
         result['settings'] = settings
         result['is_admin'] = self.is_admin()
@@ -67,11 +67,10 @@ class RequestHandler(tornado.web.RequestHandler):
 
     def reverse_url(self, name, *args, **query):
         "Allow adding query arguments to the URL."
-        url = super(RequestHandler, self).reverse_url(name, *args)
+        url = super().reverse_url(name, *args)
         url = url.rstrip('?')   # tornado bug? sometimes left-over '?'
         if query:
-            query = dict([(k, utils.to_utf8(v)) for k,v in query.items()])
-            url += '?' + urllib.urlencode(query)
+            url += '?' + urllib.parse.urlencode(query)
         return url
 
     def set_message_flash(self, message):
@@ -175,6 +174,7 @@ class RequestHandler(tornado.web.RequestHandler):
             constants.USER_COOKIE,
             max_age_days=settings['LOGIN_SESSION_DAYS'])
         if not email: raise ValueError
+        email = email.decode('utf-8')
         try:
             member = self.get_member(email)
         except KeyError:
@@ -205,6 +205,8 @@ class RequestHandler(tornado.web.RequestHandler):
             auth = base64.b64decode(auth[1])
             email, password = auth.split(':', 1)
             member = self.get_member(email)
+            print('given', utils.hashed_password(password))
+            print('stored', member.get('password'))
             if utils.hashed_password(password) != member.get('password'):
                 raise ValueError
         except (IndexError, ValueError, TypeError):
