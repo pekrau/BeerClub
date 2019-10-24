@@ -100,7 +100,7 @@ if __name__ == '__main__':
                         help='filename of settings JSON file')
     parser.add_argument('-c', '--csv',
                         action='store', dest='csvfilepath', metavar='FILE',
-                        default=None, help='filename of CSV file')
+                        default='Export.csv', help='filename of CSV file')
     parser.add_argument('-x', action='store_const', dest='execute',
                         const=True, default=False,
                         help='actually perform the load; else dry-run')
