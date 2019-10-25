@@ -308,7 +308,7 @@ class Activity(RequestHandler):
             except KeyError:
                 activity[row.value] = row.key
         activity.pop(constants.BEERCLUB, None)
-        activity = activity.items()
+        activity = list(activity.items())
         activity.sort(key=lambda i: i[1])
         # This is more efficient than calling for each member.
         all_members = self.get_docs('member/email')
