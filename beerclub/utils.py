@@ -1,7 +1,5 @@
 "Various supporting functions."
 
-from __future__ import print_function
-
 import datetime
 import email.mime.text
 import hashlib
@@ -12,8 +10,7 @@ import smtplib
 import string
 import sys
 import time
-import unicodedata
-import urlparse
+import urllib                   # formerly: urlparse
 import uuid
 
 import couchdb
@@ -66,7 +63,7 @@ def setup():
         sys.exit(1)
     # Compute settings
     if not settings.get('PORT'):
-        parts = urlparse.urlparse(settings['BASE_URL'])
+        parts = urllib.parse.urlparse(settings['BASE_URL'])
         settings['PORT'] = parts.port or 80
     settings['MONEY_DECIMAL_STEP'] = 10**(-settings['MONEY_DECIMAL_PLACES'])
     # Convert format specifiers in statements.
@@ -106,10 +103,11 @@ def get_doc(db, key, viewname=None):
     if viewname is None:
         try:
             return db[key]
-        except couchdb.ResourceNotFound:
+        except couchdb.http.ResourceNotFound:
             raise KeyError
     else:
-        result = list(db.view(viewname, include_docs=True, reduce=False)[key])
+        view = db.view(viewname, include_docs=True, reduce=False)
+        result = list(view[str(key)])
         if len(result) != 1:
             raise KeyError("%i items found", len(result))
         return result[0].doc
@@ -166,8 +164,8 @@ def get_iuid():
 
 def hashed_password(password):
     "Return the password in hashed form."
-    sha256 = hashlib.sha256(settings['PASSWORD_SALT'])
-    sha256.update(to_utf8(password))
+    sha256 = hashlib.sha256(settings['PASSWORD_SALT'].encode('utf-8'))
+    sha256.update(password.encode('utf-8'))
     return sha256.hexdigest()
 
 def check_password(password):
@@ -197,27 +195,13 @@ def today(days=None):
     result = instant.isoformat()
     return result[:result.index('T')]
 
-def to_ascii(value):
-    "Convert any non-ASCII character to its closest ASCII equivalent."
-    if not isinstance(value, unicode):
-        value = unicode(value, 'utf-8')
-    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-
-def to_utf8(value):
-    "Convert value to UTF-8 representation."
-    if isinstance(value, basestring):
-        if not isinstance(value, unicode):
-            value = unicode(value, 'utf-8')
-        return value.encode('utf-8')
-    else:
-        return value
-
 def normalize_swish(value):
     "Return normalized Swish phone number. Get rid of all non-digits."
     return ''.join([c for c in value if c in string.digits])
 
 def timeit(label):
     logging.debug("%f %f %s", time.clock(), time.time(), label)
+
 
 class EmailServer(object):
     "A connection to an email server for sending emails."

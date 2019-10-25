@@ -3,7 +3,7 @@
 import csv
 import logging
 import fnmatch
-from cStringIO import StringIO
+from io import StringIO
 
 import tornado.web
 
@@ -213,8 +213,8 @@ class MembersCsv(Members):
         writer.writerow(row)
         for member in members:
             row = [member['email'],
-                   utils.to_utf8(member['first_name']),
-                   utils.to_utf8(member['last_name']),
+                   member['first_name'],
+                   member['last_name'],
                    member['balance'],
                    member['role'],
                    member['status'],
@@ -223,7 +223,7 @@ class MembersCsv(Members):
                 row.extend([member.get('swish') or '',
                             member.get('swish_lazy') or ''])
             if settings['MEMBER_ADDRESS']:
-                row.append(utils.to_utf8(member.get('address')) or '')
+                row.append(member.get('address') or '')
             writer.writerow(row)
         self.write(csvbuffer.getvalue())
         self.set_header('Content-Type', constants.CSV_MIME)
@@ -292,7 +292,6 @@ class Reset(RequestHandler):
     "Reset the password of a member account."
 
     def post(self):
-        URL = self.absolute_reverse_url
         try:
             member = self.get_member(self.get_argument('email'))
         except (tornado.web.MissingArgumentError, KeyError):
@@ -347,7 +346,7 @@ class Password(RequestHandler):
         try:
             if len(password) < settings['MIN_PASSWORD_LENGTH']:
                 raise ValueError('The password is too short.')
-        except ValueError, msg:
+        except ValueError as msg:
             self.see_other('password',
                            email=self.get_argument('email') or '',
                            code=self.get_argument('code') or '',

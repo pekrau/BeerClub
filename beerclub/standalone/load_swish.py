@@ -9,9 +9,9 @@ It requires a settings file which contains the base URL,
 the API key to use and the Swish number prefix replacements.
 """
 
-from __future__ import print_function
-
+import argparse
 import csv
+import json
 import time
 
 import requests
@@ -28,7 +28,7 @@ MESSAGE_COLUMN = 11
 
 
 def load_swish(settings, csvfilepath, execute=False):
-    with open(csvfilepath, 'rb') as infile:
+    with open(csvfilepath, 'r') as infile:
         reader = csv.reader(infile)
         # Skip past header records
         for i in range(N_HEADER_ROWS):
@@ -90,14 +90,12 @@ def load_swish(settings, csvfilepath, execute=False):
 
 
 if __name__ == '__main__':
-    import argparse
-    import json
     parser = argparse.ArgumentParser(
         description='Load Swish payments from CSV from SEB Excel')
     parser.add_argument('-s', '--settings',
-                        action='store', dest='settings', metavar='FILE',
+                        type=argparse.FileType('r'),
                         default='swish_settings.json',
-                        help='filename of settings JSON file')
+                        help='Settings for Swish CSV file processing.')
     parser.add_argument('-c', '--csv',
                         action='store', dest='csvfilepath', metavar='FILE',
                         default='Export.csv', help='filename of CSV file')
@@ -105,6 +103,6 @@ if __name__ == '__main__':
                         const=True, default=False,
                         help='actually perform the load; else dry-run')
     args = parser.parse_args()
-    with open(args.settings, 'rb') as infile:
-        settings = json.load(infile)
-    load_swish(settings, args.csvfilepath, args.execute)
+    load_swish(json.load(args.settings), 
+               args.csvfilepath,
+               args.execute)

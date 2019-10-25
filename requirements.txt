@@ -1,6 +1,7 @@
-backports-abc==0.5
+certifi==2019.9.11
+chardet==3.0.4
 CouchDB==1.2
-futures==3.2.0
-singledispatch==3.4.0.3
-six==1.11.0
-tornado==5.1.1
+idna==2.8
+requests==2.22.0
+tornado==6.0.3
+urllib3==1.25.6

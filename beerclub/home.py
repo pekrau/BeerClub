@@ -1,7 +1,7 @@
 "Home page, and misc others."
 
 import csv
-from cStringIO import StringIO
+from io import StringIO
 import logging
 
 import tornado.web

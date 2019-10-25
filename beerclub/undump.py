@@ -6,8 +6,6 @@ NOTE: The dabase instance must exist, and should be empty. If it is not
 empty, this script may overwrite existing documents.
 """
 
-from __future__ import print_function
-
 import argparse
 import json
 import os
