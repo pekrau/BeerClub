@@ -7,6 +7,7 @@
 {% block body_title %}Dashboard{% end %}
 
 {% block content %}
+{% include 'balance_row.html' %}
 <div class="row mt-4">
   <div class="col-md">
     <div id="balance"></div>
@@ -23,7 +24,7 @@
     var balanceSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v2.0.json",
       "description": "Development of balance over time.",
-      "title": "Overall balance",
+      "title": "Balance over time",
       "width": 600,
       "data": {"url": "/balance.csv?from={{ from_ }}&to={{ to }}&new=2",
                "format": {"type": "csv"}},

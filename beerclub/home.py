@@ -92,7 +92,11 @@ class Dashboard(RequestHandler):
             to = utils.today()
         if from_ > to:
             to = from_
-        self.render('dashboard.html', from_=from_, to=to)
+        self.render('dashboard.html',
+                    beerclub_balance=self.get_beerclub_balance(),
+                    members_balance=self.get_balance(),
+                    from_=from_,
+                    to=to)
 
 
 class BalanceCsv(Snapshots):

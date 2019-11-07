@@ -174,6 +174,7 @@ class Payment(RequestHandler):
             self.set_error_flash(str(error))
             self.see_other('home')
         else:
+            member['balance'] = self.get_balance(member)
             self.render('payment.html', member=member)
 
     @tornado.web.authenticated
