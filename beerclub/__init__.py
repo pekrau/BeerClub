@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '2.1.0'
+__version__ = '2.1.1'
 
 settings = dict(
     VERSION=__version__,

@@ -40,7 +40,7 @@
         {{ event.get('description') or '' }}
       </td>
       <td>{% module Money(event['credit'], currency=False) %}</td>
-      <td>{{ event.get('date') or '-' }}</td>
+      <td>{{ event.get('date') or event['log']['timestamp'].split('T')[0] }}</td>
       <td class="localtime small text-nowrap">{{ event['log']['timestamp'] }}</td>
     </tr>
     {% end %} {# for event in events #}
