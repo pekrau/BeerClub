@@ -9,6 +9,7 @@
       {% end %}
       <th scope="col">Description</th>
       <th scope="col">Credit ({{ settings['CURRENCY'] }})</th>
+      <th scope="col">Date</th>
       <th scope="col">Timestamp</th>
     </tr>
   </thead>
@@ -39,6 +40,7 @@
         {{ event.get('description') or '' }}
       </td>
       <td>{% module Money(event['credit'], currency=False) %}</td>
+      <td>{{ event.get('date') or '-' }}</td>
       <td class="localtime small text-nowrap">{{ event['log']['timestamp'] }}</td>
     </tr>
     {% end %} {# for event in events #}

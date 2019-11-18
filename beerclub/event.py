@@ -2,8 +2,10 @@
 
 import csv
 import logging
+import tempfile
 from io import StringIO
 
+import openpyxl
 import tornado.web
 
 from . import constants
@@ -55,6 +57,7 @@ class EventSaver(Saver):
             else:
                 self['credit'] = 0.0
             self.message = 'You purchased an unknown beverage.'
+        self['date'] = kwargs.get('date') or utils.today()
 
     def set_payment(self, **kwargs):
         self['action'] = constants.PAYMENT
@@ -214,6 +217,92 @@ class Payment(RequestHandler):
         self.see_other('account', member['email'])
 
         
+class Load(RequestHandler):
+    "Load payments data file, e.g. XLSX Swish records."
+
+    @tornado.web.authenticated
+    def get(self):
+        self.check_admin()
+        self.render('load.html', missing=[])
+
+    @tornado.web.authenticated
+    def post(self):
+        self.check_admin()
+        try:
+            infiles = self.request.files.get('sebfile')
+            if not infiles:
+                raise ValueError('no file selected')
+            infile = infiles[0]
+            tmp = tempfile.NamedTemporaryFile(suffix='.xlsx')
+            tmp.write(infile['body'])
+            tmp.seek(0)
+            wb = openpyxl.load_workbook(tmp.name)
+            records = list(wb.active.values)
+            if len(records) < 6:
+                raise ValueError('no data in XLSX file')
+            header = records[4]
+            for pos, cell in enumerate(header):
+                if cell == 'Belopp':
+                    belopp_pos = pos
+                    break
+            else:
+                raise ValueError("no column 'Belopp'")
+            for pos, cell in enumerate(header):
+                if cell == 'Valutadatum':
+                    datum_pos = pos
+                    break
+            else:
+                raise ValueError("no column 'Valutadatum'")
+            for pos, cell in enumerate(header):
+                if cell == 'Avsändarens Swishnummer':
+                    swish_pos = pos
+                    break
+            else:
+                raise ValueError("no column 'Avsändarens Swishnummer'")
+            for pos, cell in enumerate(header):
+                if cell == 'Avsändare':
+                    avsandare_pos = pos
+                    break
+            else:
+                raise ValueError("no column 'Avsändare'")
+            payments = []
+            missing = []
+            for record in records[5:]:
+                swish = record[swish_pos]
+                for prefix, replacement in settings['SWISH_NUMBER_PREFIXES'].items():
+                    if swish.startswith(prefix):
+                        swish = replacement + swish[len(prefix):]
+                        break
+                try:
+                    member = self.get_member(swish)
+                except KeyError:
+                    missing.append(f"{swish} {record[avsandare_pos]}")
+                else:
+                    payments.append({'member': member['email'],
+                                     'lazy': member.get('swish_lazy'),
+                                     'date': record[datum_pos],
+                                     'amount': float(record[belopp_pos])})
+            if missing:
+                raise ValueError('Some Swish numbers missing')
+            for payment in payments:
+                with EventSaver(rqh=self) as saver:
+                    saver['member'] = payment['member']
+                    saver.set_payment(payment='swish',
+                                      amount=payment['amount'],
+                                      date=payment['date'])
+                if payment['lazy']:
+                    with EventSaver(rqh=self) as saver:
+                        saver['member'] = payment['member']
+                        saver.set_purchase(purchase='credit',
+                                           amount=payment['amount'],
+                                           description='Swish lazy',
+                                           date=payment['date'])
+        except (IndexError, ValueError, IOError) as error:
+            self.set_error_flash(str(error))
+            self.render('load.html', missing=missing)
+        else:
+            self.see_other('ledger')
+
 class Expenditure(RequestHandler):
     "Expenditure that reduces the credit of the BeerClub master virtual member."
 

@@ -1,0 +1,59 @@
+{# Load payments page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Load payments data file{% end %}
+
+{% block body_title %}Load payments data file{% end %}
+
+{% block content %}
+{% if missing %}
+<p class="text-danger">Missing Swish numbers:</p>
+<pre>{{ '\n'.join(missing) }}</pre>
+<p class="text-danger">No data from file was loaded.</p>
+{% end %}
+<div class="card mt-2">
+  <div class="card-body">
+    <form action="{{ reverse_url('load') }}"
+          enctype="multipart/form-data"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <div class="row form-group">
+        <label for="sebfilefield"
+               class="col-md-2 col-form-label">SEB Swish XLSX file</label>
+        <div class="col-md-10">
+          <div id="sebfilefield" class="custom-file">
+            <input type="file" name="sebfile" id="sebfile"
+                   class="custom-file-input"
+                   aria-describedby="sebfileHelp">
+            <label class="custom-file-label" for="sebfile">Choose file</label>
+            <small id="sebfileHelp" class="form-text text-muted">
+              The payments data file which must be the XLSX file generated
+              from the bank SEB of the Swish payments to an account.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <button type="submit" class="btn btn-warning">Load file</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% end %} {# block content #}
+
+{% block javascript %}
+<script>
+  $(function(){ $("#file").focus(); });
+</script>
+<script>
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script>
+{% end %}
