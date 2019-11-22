@@ -15,6 +15,7 @@
         <th scope="col">Member</th>
         <th scope="col">First name</th>
         <th scope="col">Last name</th>
+        <th scope="col">Swish number</th>
         <th scope="col">Balance ({{ settings['CURRENCY'] }})</th>
         <th scope="col">Role</th>
         <th scope="col">Status</th>
@@ -35,6 +36,7 @@
           </td>
           <td>{{ member['first_name'] }}</td>
           <td>{{ member['last_name'] }}</td>
+          <td>{{ member.get('swish') or '-' }}</td>
           <td>{% module Money(member['balance'], currency=False) %}</td>
           <td>{% module Role(member) %}</td>
           <td>{% module Status(member) %}</td>

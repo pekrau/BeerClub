@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '2.1.1'
+__version__ = '2.1.2'
 
 settings = dict(
     VERSION=__version__,
@@ -90,8 +90,10 @@ settings = dict(
     MONEY_DECIMAL_POINT='.',
     MONEY_THOUSAND_DELIMITER=',',
     SWISH_NUMBER_PREFIXES = {
+        '35': '0035',
+        '39': '0039',
         '46': '0',
         '48': '0048',
-        '39': '0039'
+        '49': '0049'
     }
 )

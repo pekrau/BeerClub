@@ -238,9 +238,12 @@ class Load(RequestHandler):
             tmp.seek(0)
             wb = openpyxl.load_workbook(tmp.name)
             records = list(wb.active.values)
-            if len(records) < 6:
-                raise ValueError('no data in XLSX file')
-            header = records[4]
+            datum_pos = 0
+            for header_pos, header in enumerate(records):
+                if header[datum_pos] == 'Datum':
+                    break
+            else:
+                raise ValueError('could not find header in XLSX file')
             for pos, cell in enumerate(header):
                 if cell == 'Belopp':
                     belopp_pos = pos
@@ -248,26 +251,14 @@ class Load(RequestHandler):
             else:
                 raise ValueError("no column 'Belopp'")
             for pos, cell in enumerate(header):
-                if cell == 'Valutadatum':
-                    datum_pos = pos
-                    break
-            else:
-                raise ValueError("no column 'Valutadatum'")
-            for pos, cell in enumerate(header):
-                if cell == 'Avsändarens Swishnummer':
+                if cell == 'Text':
                     swish_pos = pos
                     break
             else:
-                raise ValueError("no column 'Avsändarens Swishnummer'")
-            for pos, cell in enumerate(header):
-                if cell == 'Avsändare':
-                    avsandare_pos = pos
-                    break
-            else:
-                raise ValueError("no column 'Avsändare'")
+                raise ValueError("no column 'Text'")
             payments = []
             missing = []
-            for record in records[5:]:
+            for record in records[header_pos+1:]:
                 swish = record[swish_pos]
                 for prefix, replacement in settings['SWISH_NUMBER_PREFIXES'].items():
                     if swish.startswith(prefix):
@@ -276,7 +267,7 @@ class Load(RequestHandler):
                 try:
                     member = self.get_member(swish)
                 except KeyError:
-                    missing.append(f"{swish} {record[avsandare_pos]}")
+                    missing.append(swish)
                 else:
                     payments.append({'member': member['email'],
                                      'lazy': member.get('swish_lazy'),
