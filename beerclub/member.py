@@ -94,7 +94,7 @@ class MemberSaver(Saver):
 
     def set_role(self):
         if not self.rqh.is_admin(): return
-        if self.rqh.current_user['email'] != self['email']: return
+        if self.rqh.current_user['email'] == self['email']: return
         try:
             role = self.rqh.get_argument('role')
             if role not in constants.ROLES: raise ValueError
