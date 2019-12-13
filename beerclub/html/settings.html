@@ -65,32 +65,33 @@
         </div>
       </div>
       <div class="row form-group">
-        <label class="col-md-2 col-form-label">Swish lazy</label>
+        <label class="col-md-2 col-form-label">Swish mode</label>
         <div class="col-md-10">
-          <div class="form-check">
-            <input class="form-check-input" type="radio"
-                   name="swish_lazy" id="swish_lazy_false"
-                   {{ not member.get('swish_lazy') and 'checked' }}
-                   value="false">
-            <label class="form-check-label" for="swish_mode_false">
-              I am always recording my purchases, as I should.
-              Therefore every Swish payment goes towards reducing my
-              debt.
-            </label>
-          </div>
           <div class="form-check">
             <input class="form-check-input" type="radio"
                    name="swish_lazy" id="swish_lazy_true" 
                    {{ member.get('swish_lazy') and 'checked' }}
                    value="true">
             <label class="form-check-label" for="swish_lazy_true">
-              I never record my purchases, since I am lazy.
-              Therefore every Swish payment implies a corresponding purchase.
+              <strong>Swish lazy</strong> mode.
+              Every Swish payment implies a corresponding
+              purchase. You should not record purchases separately in
+              this app.
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="swish_lazy" id="swish_lazy_false"
+                   {{ not member.get('swish_lazy') and 'checked' }}
+                   value="false">
+            <label class="form-check-label" for="swish_mode_false">
+              You will always record purchases in this app.  Every
+              Swish payment will go towards reducing your debt.
             </label>
           </div>
           <small id="swishmodeHelp" class="form-text text-muted">
-            The "I never record..." alternative means that you cannot
-            reduce your debt by Swish payment. Tough luck.
+            The <strong>Swish lazy</strong> mode implies that you
+            cannot reduce your debt by Swish payment.
           </small>
         </div>
       </div>

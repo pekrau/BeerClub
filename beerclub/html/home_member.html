@@ -14,6 +14,17 @@
   <div class="col-md">
     <strong>{{ current_user['count'] }}</strong> beverages purchased today.
   </div>
+  {% if settings['MEMBER_SWISH'] %}
+  <div class="col-md">
+    {% if current_user.get('swish_lazy') %}
+    <strong>Swish lazy</strong> mode is on:
+    Just pay by Swish, do <strong>not</strong> record each purchase.
+    {% else %}
+    <strong>Swish lazy</strong> mode is off:
+    Each purchase must be recorded! 
+    {% end %}
+  </div>
+  {% end %}
 </div>
 {% for beverage in settings['BEVERAGE'] %}
 <div class="card mt-3 bg-light">
@@ -69,7 +80,7 @@
 {% end %} {# block content #}
 
 {% block footer_payment %}
-<h4>How to pay your debt</h4>
+<h4>How to pay</h4>
 {% if settings['PAYMENT_INFO_HTML'] %}
 {% raw settings['PAYMENT_INFO_HTML'] %}
 {% else %}
