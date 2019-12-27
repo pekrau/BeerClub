@@ -77,8 +77,11 @@ class MemberSaver(Saver):
             self['swish'] = swish or None
         except tornado.web.MissingArgumentError:
             self['swish'] = None
-        lazy = self.rqh.get_argument('swish_lazy', False)
-        self['swish_lazy'] = lazy and lazy.lower() == 'true'
+        try:
+            lazy = self.rqh.get_argument('swish_lazy')
+            self['swish_lazy'] = lazy.lower() == 'true'
+        except tornado.web.MissingArgumentError:
+            self['swish_lazy'] = False
 
     def set_address(self):
         self['address'] = self.rqh.get_argument('address', None) or None
