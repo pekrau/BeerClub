@@ -1,6 +1,7 @@
 "Event: purchase, payment, etc."
 
 import csv
+import datetime
 import logging
 import tempfile
 from io import StringIO
@@ -263,7 +264,7 @@ class Load(RequestHandler):
             payments = []
             missing = []
             for record in records[header_pos+1:]:
-                swish = record[swish_pos]
+                swish = str(record[swish_pos])
                 for prefix, replacement in settings['SWISH_NUMBER_PREFIXES'].items():
                     if swish.startswith(prefix):
                         swish = replacement + swish[len(prefix):]
@@ -273,10 +274,17 @@ class Load(RequestHandler):
                 except KeyError:
                     missing.append(swish)
                 else:
+                    datum = record[datum_pos]
+                    if isinstance(datum, datetime.datetime):
+                        datum = datum.date().isoformat()
+                    elif isinstance(datum, datetime.date):
+                        datum = datum.isoformat()
+                    else:
+                        datum = str(datum)
                     payments.append({'member': member['email'],
                                      'lazy': settings['GLOBAL_SWISH_LAZY'] or
                                              member.get('swish_lazy'),
-                                     'date': record[datum_pos],
+                                     'date': datum,
                                      'amount': float(record[belopp_pos])})
             if missing:
                 raise ValueError('Some Swish numbers missing')
