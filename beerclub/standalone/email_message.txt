@@ -1,0 +1,35 @@
+Hello {name},
+
+From 1st Jan 2020, there are a couple of important changes in the
+SciLifeLab Beer Club.
+
+
+Short version: Take a beer, pay 25:- SEK by Swish. No other action needed.
+
+
+Longer version:
+
+1) The price for a beer has been increased to 25:- SEK. This is the
+first raise since the Beer Club started ten years ago. The price for a
+soft drink is unchanged at 10:- SEK.
+
+2) The payment process has been simplified:
+
+  - When you pay by Swish, you should *NOT* record the purchase in the
+    Beer Club app.
+
+  - When you pay by cash, you should *NOT* record the purchase in the
+    Beer Club app.
+
+  - The only time you need to record the purchase in the Beer Club app
+    https://beerclub.scilifelab.se/ is when you want to use your credit.
+
+Hopefully, this should simplify things for everyone.
+
+
+Questions? Ask me.
+
+Yours,
+
+Per Kraulis
+SciLifeLab Beer Club administrator

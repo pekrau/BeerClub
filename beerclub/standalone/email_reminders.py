@@ -1,4 +1,4 @@
-"Send reminder email to indebted enabled members."
+"Send email to indebted enabled members."
 
 import argparse
 import csv

@@ -1,0 +1,18 @@
+Hello {name},
+
+According to my notes, you owe the SciLifeLab Beer Club {amount} SEK.
+
+Please pay the amount to the SEB bank account 5694 06 421 88 (Per Kraulis).
+Include your name in the message field! The account is dedicated to handling
+only Beer Club money.
+
+The SciLifeLab Beer Club site at https://beerclub.scilifelab.se/
+has all information, including the current balance of your member account.
+
+If you have paid yesterday or today, your account may not have been updated.
+If so, ignore this message.
+
+Yours sincerely,
+
+Per Kraulis
+SciLifeLab Beer Club administrator
