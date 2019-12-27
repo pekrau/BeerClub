@@ -77,11 +77,13 @@
       <th scope="row">Swish</th>
       <td>{{ member.get('swish') or '-' }}</td>
     </tr>
+    {% if not settings['GLOBAL_SWISH_LAZY'] %}
     <tr>
       <th scope="row">Swish lazy</th>
       <td>{{ member.get('swish_lazy') or False }}</td>
     </tr>
-    {% end %}
+    {% end %} {# if not settings['GLOBAL_SWISH_LAZY'] #}
+    {% end %} {# if settings['MEMBER_SWISH'] #}
     {% if settings['MEMBER_ADDRESS'] %}
     <tr>
       <th scope="row">Address</th>

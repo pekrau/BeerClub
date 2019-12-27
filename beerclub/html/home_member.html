@@ -14,17 +14,19 @@
   <div class="col-md">
     <strong>{{ current_user['count'] }}</strong> beverages purchased today.
   </div>
+  {% if not settings['GLOBAL_SWISH_LAZY'] %}
   {% if settings['MEMBER_SWISH'] %}
   <div class="col-md">
     {% if current_user.get('swish_lazy') %}
-    <strong>Swish lazy</strong> mode is on:
-    Just pay by Swish, do <strong>not</strong> record each purchase.
+    Your <strong>Swish lazy</strong> mode is ON: Just pay by Swish.
+    Do not record the purchase here.
     {% else %}
-    <strong>Swish lazy</strong> mode is off:
-    Each purchase must be recorded! 
+    Your <strong>Swish lazy</strong> mode is OFF:
+    Each purchase must be recorded!
     {% end %}
   </div>
-  {% end %}
+  {% end %} {# if settings['MEMBER_SWISH'] #}
+  {% end %} {# if not settings['GLOBAL_SWISH_LAZY'] #}
 </div>
 {% for beverage in settings['BEVERAGE'] %}
 <div class="card mt-3 bg-light">

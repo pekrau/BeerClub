@@ -49,14 +49,14 @@ class EventSaver(Saver):
             else:
                 self['credit'] = 0.0
             self.message = "You purchased one %s." % beverage['label']
-        else:                   # Special case 'Swish lazy' by standalone script
-            self['beverage'] = kwargs.get('beverage', 'unknown beverage')
+        else:                   # Special case 'Swish lazy'
+            self['beverage'] = 'unknown beverage'
             self['description'] = kwargs.get('description', '')
             if purchase['change'] and kwargs.get('amount'):
                 self['credit'] = - kwargs.get('amount')
             else:
                 self['credit'] = 0.0
-            self.message = 'You purchased an unknown beverage.'
+            self.message = 'You purchased some beverage.'
         self['date'] = kwargs.get('date') or utils.today()
 
     def set_payment(self, **kwargs):
@@ -194,24 +194,28 @@ class Payment(RequestHandler):
                 amount = float(self.get_argument('amount', None))
             except (KeyError, ValueError, TypeError):
                 amount = 0.0
-            with EventSaver(rqh=self) as saver:
-                saver['member'] = member['email']
-                payment = self.get_argument('payment', None)
-                if payment == constants.CORRECTION:
+            payment = self.get_argument('payment', None)
+            if payment is None:
+                raise ValueError('no payment type specified')
+            if payment == constants.CORRECTION:
+                with EventSaver(rqh=self) as saver:
+                    saver['member'] = member['email']
                     saver.set_transfer(amount=amount,
                                        description='manual correction')
-                else:
+            else:
+                with EventSaver(rqh=self) as saver:
+                    saver['member'] = member['email']
                     saver.set_payment(payment=payment,
                                       amount=amount,
                                       date=self.get_argument('date', None))
-            lazy = self.get_argument('swish_lazy', False)
-            if lazy and lazy.lower() == 'true':
-                with EventSaver(rqh=self) as saver:
-                    saver['action']      = constants.PURCHASE
-                    saver['member']      = member['email']
-                    saver['beverage']    = 'unknown beverage'
-                    saver['description'] = 'Swish lazy'
-                    saver['credit']      = - amount
+                lazy = self.get_argument('swish_lazy', False)
+                if lazy and lazy.lower() == 'true':
+                    with EventSaver(rqh=self) as saver:
+                        saver['action']      = constants.PURCHASE
+                        saver['member']      = member['email']
+                        saver['beverage']    = 'unknown beverage'
+                        saver['description'] = 'Swish lazy'
+                        saver['credit']      = - amount
         except ValueError as error:
             self.set_error_flash(str(error))
         self.see_other('account', member['email'])
@@ -270,7 +274,8 @@ class Load(RequestHandler):
                     missing.append(swish)
                 else:
                     payments.append({'member': member['email'],
-                                     'lazy': member.get('swish_lazy'),
+                                     'lazy': settings['GLOBAL_SWISH_LAZY'] or
+                                             member.get('swish_lazy'),
                                      'date': record[datum_pos],
                                      'amount': float(record[belopp_pos])})
             if missing:

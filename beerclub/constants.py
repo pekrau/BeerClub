@@ -27,10 +27,10 @@ MEMBER = 'member'
 ROLES  = (ADMIN, MEMBER)
 
 # Event actions
-TRANSFER = 'transfer'
-PURCHASE = 'purchase'
-PAYMENT  = 'payment'
-CASH     = 'cash'
+TRANSFER = 'transfer'           # Bank account transfer into Beer Club account.
+PURCHASE = 'purchase'           # Purchase of beer for the Beer Club.
+PAYMENT  = 'payment'            # Paying for beer from the Beer Club.
+CASH     = 'cash'               # Cash transfer into Beer Club acount.
 
 # Payment identifier (hardwired)
 EXPENDITURE = 'expenditure'

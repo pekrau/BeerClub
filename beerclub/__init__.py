@@ -4,7 +4,7 @@ A web application to keep track of the beer purchases for registered users.
 
 import os
 
-__version__ = '2.1.5'
+__version__ = '2.2.0'
 
 settings = dict(
     VERSION=__version__,
@@ -52,7 +52,8 @@ settings = dict(
     " you provide to be handled by the {SITE_NAME} according to"
     " applicable laws. No data will be transferred to any external entity.",
     MEMBER_SWISH=True,   # Enable Swish phone number field for member.
-    DEFAULT_SWISH_LAZY=False,   # Set Swish lazy mode for new account.
+    GLOBAL_SWISH_LAZY=False,    # Enforce Swish lazy mode for all.
+    DEFAULT_MEMBER_SWISH_LAZY=False, # Swish lazy mode default for new account.
     MEMBER_ADDRESS=True, # Enable address field for member.
     CREDIT_CLASSES=[(-500, 'bg-danger text-light'),
                     (-250, 'bg-warning'),
