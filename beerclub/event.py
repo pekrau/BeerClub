@@ -223,7 +223,7 @@ class Payment(RequestHandler):
 
         
 class Load(RequestHandler):
-    "Load payments data file, e.g. XLSX Swish records."
+    "Load payments data file, e.g. Excel XLSX Swish records."
 
     @tornado.web.authenticated
     def get(self):
@@ -233,37 +233,52 @@ class Load(RequestHandler):
     @tornado.web.authenticated
     def post(self):
         self.check_admin()
+        missing = []
         try:
-            infiles = self.request.files.get('sebfile')
+            infiles = self.request.files.get('xlsxfile')
             if not infiles:
-                raise ValueError('no file selected')
+                raise ValueError('no XLSX file selected')
             infile = infiles[0]
             tmp = tempfile.NamedTemporaryFile(suffix='.xlsx')
             tmp.write(infile['body'])
             tmp.seek(0)
             wb = openpyxl.load_workbook(tmp.name)
             records = list(wb.active.values)
-            datum_pos = 0
+            header_cell = self.get_argument('header_cell')
+            if not header_cell:
+                raise ValueError('no header cell value provided')
             for header_pos, header in enumerate(records):
-                if header[datum_pos] == 'Datum':
+                if header[0] == header_cell:
                     break
             else:
                 raise ValueError('could not find header in XLSX file')
-            for pos, cell in enumerate(header):
-                if cell == 'Belopp':
-                    belopp_pos = pos
-                    break
-            else:
-                raise ValueError("no column 'Belopp'")
-            for pos, cell in enumerate(header):
-                if cell == 'Text':
-                    swish_pos = pos
-                    break
-            else:
-                raise ValueError("no column 'Text'")
+            try:
+                swish_pos = int(self.get_argument('swish_pos')) - 1
+                if swish_pos < 0: raise ValueError
+            except (TypeError, ValueError):
+                raise ValueError('missing or invalid Swish number column')
+            try:
+                amount_pos = int(self.get_argument('amount_pos')) - 1
+                if amount_pos < 0: raise ValueError
+            except (TypeError, ValueError):
+                raise ValueError('missing or invalid amount column')
+            try:
+                date_pos = int(self.get_argument('date_pos')) - 1
+                if date_pos < 0: raise ValueError
+            except (TypeError, ValueError):
+                date_pos = None
+            try:
+                name_pos = int(self.get_argument('name_pos')) - 1
+                if name_pos < 0: raise ValueError
+            except (TypeError, ValueError):
+                name_pos = None
+
             payments = []
-            missing = []
             for record in records[header_pos+1:]:
+                if name_pos is None:
+                    name = None
+                else:
+                    name = str(record[name_pos])
                 swish = str(record[swish_pos])
                 for prefix, replacement in settings['SWISH_NUMBER_PREFIXES'].items():
                     if swish.startswith(prefix):
@@ -272,22 +287,28 @@ class Load(RequestHandler):
                 try:
                     member = self.get_member(swish)
                 except KeyError:
-                    missing.append(swish)
-                else:
-                    datum = record[datum_pos]
-                    if isinstance(datum, datetime.datetime):
-                        datum = datum.date().isoformat()
-                    elif isinstance(datum, datetime.date):
-                        datum = datum.isoformat()
+                    if name:
+                        missing.append(f"{swish} {name}")
                     else:
-                        datum = str(datum)
+                        missing.append(swish)
+                else:
+                    if date_pos is None:
+                        date = datetime.date.today().isoformat()
+                    else:
+                        date = record[date_pos]
+                        if isinstance(date, datetime.datetime):
+                            date = date.date().isoformat()
+                        elif isinstance(date, datetime.date):
+                            date = date.isoformat()
+                        else:
+                            date = str(date)
                     payments.append({'member': member['email'],
                                      'lazy': settings['GLOBAL_SWISH_LAZY'] or
                                              member.get('swish_lazy'),
-                                     'date': datum,
-                                     'amount': float(record[belopp_pos])})
+                                     'date': date,
+                                     'amount': float(record[amount_pos])})
             if missing:
-                raise ValueError('Some Swish numbers missing')
+                raise ValueError('Swish number(s) missing')
             for payment in payments:
                 with EventSaver(rqh=self) as saver:
                     saver['member'] = payment['member']
@@ -301,7 +322,7 @@ class Load(RequestHandler):
                                            amount=payment['amount'],
                                            description='Swish lazy',
                                            date=payment['date'])
-        except (IndexError, ValueError, IOError) as error:
+        except (IndexError, TypeError, ValueError, IOError) as error:
             self.set_error_flash(str(error))
             self.render('load.html', missing=missing)
         else:

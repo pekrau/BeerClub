@@ -1,10 +1,11 @@
 Hello {name},
 
-From 1st Jan 2020, there are a couple of important changes in the
-SciLifeLab Beer Club.
+Reminder: From 1st Jan 2020, there are a couple of important changes
+in the SciLifeLab Beer Club.
 
 
-Short version: Take a beer, pay 25:- SEK by Swish. No other action needed.
+Short version: Take a beer and pay 25:- SEK by Swish. Do not record anything
+in the Beer Club app.
 
 
 Longer version:
@@ -16,13 +17,15 @@ soft drink is unchanged at 10:- SEK.
 2) The payment process has been simplified:
 
   - When you pay by Swish, you should *NOT* record the purchase in the
-    Beer Club app.
+    Beer Club app. This is the recommended way of paying.
 
   - When you pay by cash, you should *NOT* record the purchase in the
-    Beer Club app.
+    Beer Club app. Please avoid cash. It is cumbersome to handle.
 
   - The only time you need to record the purchase in the Beer Club app
-    https://beerclub.scilifelab.se/ is when you want to use your credit.
+    https://beerclub.scilifelab.se/ is when you want to use your credit,
+    i.e. increase your debt. This should be used only if you will pay your
+    debt ASAP by bank transfer.
 
 Hopefully, this should simplify things for everyone.
 

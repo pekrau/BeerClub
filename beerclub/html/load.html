@@ -2,9 +2,9 @@
 
 {% extends 'base.html' %}
 
-{% block head_title %}Load payments data file{% end %}
+{% block head_title %}Load Swish payments file{% end %}
 
-{% block body_title %}Load payments data file{% end %}
+{% block body_title %}Load Swish payments file{% end %}
 
 {% block content %}
 {% if missing %}
@@ -20,19 +20,101 @@
           method="POST">
       {% module xsrf_form_html() %}
       <div class="row form-group">
-        <label for="sebfilefield"
-               class="col-md-2 col-form-label">SEB Swish XLSX file</label>
+        <label for="xlsxfilefield"
+               class="col-md-2 col-form-label">Swish XLSX file</label>
         <div class="col-md-10">
-          <div id="sebfilefield" class="custom-file">
-            <input type="file" name="sebfile" id="sebfile"
+          <div id="xlsxfilefield" class="custom-file">
+            <input type="file" name="xlsxfile" id="xlsxfile"
                    class="custom-file-input"
-                   aria-describedby="sebfileHelp">
-            <label class="custom-file-label" for="sebfile">Choose file</label>
-            <small id="sebfileHelp" class="form-text text-muted">
-              The payments data file which must be the XLSX file generated
-              from the bank SEB of the Swish payments to an account.
+                   aria-describedby="xlsxfileHelp">
+            <label class="custom-file-label" for="xlsxfile">Choose file</label>
+            <small id="xlsxfileHelp" class="form-text text-muted">
+              The Swish payments file in XLSX format.
             </small>
           </div>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="header_cell" class="col-md-2 col-form-label">
+          Content of first cell in header
+        </label>
+        <div class="col-md-5">
+          <input type="text" name="header_cell" id="header_cell"
+                 class="form-control"
+                 aria-describedby="header_cellHelp"
+                 value="Bokföringsdatum">
+          <small id="header_cellHelp" class="form-text text-muted">
+            <strong>Required.</strong>
+            The content of the first cell in the header record.
+            All subsequent records in the XLSX file are assumed to
+            contain data.
+            <br>
+            The defaults below are appropriate for an XLSX file of Swish
+            payments from the Swedish bank SEB.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="swish_pos" class="col-md-2 col-form-label">
+          Swish number column
+        </label>
+        <div class="col-md-5">
+          <input type="number" name="swish_pos" id="swish_pos"
+                 class="form-control"
+                 aria-describedby="swish_posHelp"
+                 value="6">
+          <small id="swish_posHelp" class="form-text text-muted">
+            <strong>Required.</strong>
+            The number of the column containing the Swish number.
+            The first column is number 1.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="amount_pos" class="col-md-2 col-form-label">
+          Amount column
+        </label>
+        <div class="col-md-5">
+          <input type="number" name="amount_pos" id="amount_pos"
+                 class="form-control"
+                 aria-describedby="amount_posHelp"
+                 value="4">
+          <small id="amount_posHelp" class="form-text text-muted">
+            <strong>Required.</strong>
+            The number of the column containing the amount in SEK.
+            The first column is number 1.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="date_pos" class="col-md-2 col-form-label">
+          Date column
+        </label>
+        <div class="col-md-5">
+          <input type="number" name="date_pos" id="date_pos"
+                 class="form-control"
+                 aria-describedby="date_posHelp"
+                 value="2">
+          <small id="date_posHelp" class="form-text text-muted">
+            The number of the column containing the date in ISO format.
+            The current date is used if not given.
+            The first column is number 1.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="name_pos" class="col-md-2 col-form-label">
+          Name column
+        </label>
+        <div class="col-md-5">
+          <input type="number" name="name_pos" id="name_pos"
+                 class="form-control"
+                 aria-describedby="name_posHelp"
+                 value="7">
+          <small id="name_posHelp" class="form-text text-muted">
+            The number of the column containing the name of the payer.
+            The first column is number 1.
+          </small>
         </div>
       </div>
       <div class="row form-group">
