@@ -19,6 +19,7 @@
         <th scope="col">Balance ({{ settings['CURRENCY'] }})</th>
         <th scope="col">Role</th>
         <th scope="col">Status</th>
+        <th scope="col">Latest event</th>
         <th scope="col">Last login</th>
       </thead>
       <tbody>
@@ -40,7 +41,14 @@
           <td>{% module Money(member['balance'], currency=False) %}</td>
           <td>{% module Role(member) %}</td>
           <td>{% module Status(member) %}</td>
-          <td>{% module LastLogin(member) %}</td>
+          <td>
+            {% if member['latest_event'] %}
+            {% module Datetime(member['latest_event']['log']['timestamp']) %}
+            {% else %}
+            -
+            {% end %}
+          </td>
+          <td>{% module Datetime(member.get('last_login')) %}</td>
         </tr>
         {% end %}
       </tbody>
@@ -64,6 +72,7 @@
   $(function() {
     $("#members").DataTable( {
       "pagingType": "full_numbers",
+      "pageLength": 25,
       "order": [[ 7, "desc"]],
     });
   });

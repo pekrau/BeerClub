@@ -158,6 +158,19 @@ def get_balances(db, members):
         except KeyError:
             pass
 
+def get_latest_events(db, members):
+    "Get and set the latest event for all input members."
+    for member in members:
+        events = get_docs(db, 'event/member',            
+                          key=[member['email'], constants.CEILING],
+                          last=[member['email'], ''],
+                          descending=True,
+                          limit=1)
+        if events:
+            member['latest_event'] = events[0]
+        else:
+            member['latest_event'] = None
+
 def get_iuid():
     "Return a unique instance identifier."
     return uuid.uuid4().hex

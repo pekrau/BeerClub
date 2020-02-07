@@ -106,7 +106,17 @@
     </tr>
     <tr>
       <th scope="row">Last login</th>
-      <td>{% module LastLogin(member) %}</td>
+      <td>{% module Datetime(member.get('last_login'), small=False) %}</td>
+    </tr>
+    <tr>
+      <th scope="row">Latest event</th>
+      <td>
+        {% if member['latest_event'] %}
+        {% module Datetime(member['latest_event']['log']['timestamp'], small=False) %}
+        {% else %}
+        -
+        {% end %}
+      </td>
     </tr>
   </tbody>
 </table>

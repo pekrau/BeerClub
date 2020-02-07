@@ -62,12 +62,13 @@ class Role(tornado.web.UIModule):
         else: 
             return member['role']
 
-class LastLogin(tornado.web.UIModule):
-    "HTML for member last login."
+class Datetime(tornado.web.UIModule):
+    "HTML for a datetime value."
 
-    def render(self, member):
-        if member.get('last_login'):
-            return '<span class="localtime small">%s</span>' % member['last_login']
+    def render(self, datetime, small=True):
+        if datetime:
+            small = small and 'small' or ''
+            return f'<span class="localtime {small}">{datetime}</span>'
         else: 
             return '-'
 
