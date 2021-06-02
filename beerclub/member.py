@@ -109,15 +109,6 @@ class MemberSaver(Saver):
 class Member(RequestHandler):
     "View a member account."
 
-    def no_events(self, member):
-        "Are there no events for the member?"
-        events = self.get_docs('event/member',            
-                               key=[member['email'], constants.CEILING],
-                               last=[member['email'], ''],
-                               descending=True,
-                               limit=1)
-        return len(events) == 0
-
     @tornado.web.authenticated
     def get(self, email):
         try:
@@ -126,7 +117,8 @@ class Member(RequestHandler):
             self.see_other('home')
         else:
             member['balance'] = self.get_balance(member)
-            deletable = self.no_events(member) and \
+            utils.get_latest_events(self.db, [member])
+            deletable = not member['latest_event'] and \
                         member['role'] != constants.ADMIN
             self.render('member.html', member=member, deletable=deletable)
 
@@ -136,11 +128,12 @@ class Member(RequestHandler):
         self.check_admin()
         try:
             member = self.get_member(email, check=True)
+            utils.get_latest_events(self.db, [member])
         except KeyError:
             self.see_other('home')
             return
         if self.get_argument('_http_method', None) == 'DELETE' and \
-           self.no_events(member) and member['role'] != constants.ADMIN:
+           not member['latest_event'] and member['role'] != constants.ADMIN:
             self.db.delete(member)
         url = self.get_argument('next', None)
         if url:
@@ -193,6 +186,7 @@ class Members(RequestHandler):
         self.check_admin()
         members = self.get_docs('member/email')
         utils.get_balances(self.db, members)
+        utils.get_latest_events(self.db, members)
         self.render('members.html', members=members)
 
 

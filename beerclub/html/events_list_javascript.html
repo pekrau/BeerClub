@@ -3,6 +3,7 @@
   $(function() {
     $("#events").DataTable( {
       "pagingType": "full_numbers",
+      "pageLength": 25,
       "order": [[ {{ is_admin and 4 or 3 }}, "desc"]],
     });
   });
